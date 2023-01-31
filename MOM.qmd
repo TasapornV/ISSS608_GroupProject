@@ -4,15 +4,17 @@ title: "Minute of Meeting"
 
 ### **Meeting Minutes 1**
 
-**Date:** 14 Jan 2023 
-
-**Present**: KHOO Wei Lun, LAW Shiang Rou, Tasaporn VISAWAMETEEKUL 
-
-**Absent**: NIL 
-
-**Minute taker**: LAW Shiang Rou 
-
-**Objective**: Explore topics and datasets for group project 
++---------------------------------------------------------------------+
+| **Date:** 14 Jan 2023                                               |
+|                                                                     |
+| **Present**: KHOO Wei Lun, LAW Shiang Rou, Tasaporn VISAWAMETEEKUL  |
+|                                                                     |
+| **Absent**: NIL                                                     |
+|                                                                     |
+| **Minute taker**: LAW Shiang Rou                                    |
+|                                                                     |
+| **Objective**: Explore topics and datasets for group project        |
++---------------------------------------------------------------------+
 
 **Discussion Points** 
 
@@ -20,71 +22,63 @@ A few topics and datasets have been considered during the discussion: 
 
 **Energy-related data**  
 
-Data source:  
+**Data source:**
 
--   <https://www.ema.gov.sg/singapore-energy-statistics/> 
+-   <https://www.ema.gov.sg/singapore-energy-statistics/>
+-   <https://www.singstat.gov.sg/find-data/search-by-theme/industry/energy-and-utilities/latest-data>
 
--   <https://www.singstat.gov.sg/find-data/search-by-theme/industry/energy-and-utilities/latest-data>  
+**Discussion points:**
 
-    Discussion points: 
-
-```{=html}
-<!-- -->
-```
 -   This website provides statistics on Singapore energy sector, including the energy supply, consumption and prices. 
+-   This might be an interesting area of interest both from the supplier and consumer perspective but a valid and strong use case has to be established.
 
--   This might be an interesting area of interest both from the supplier and consumer perspective but a valid and strong use case has to be established.  
-
-1.  One possible use case is to help carve a plan to encourage energy conservation 
+1.  One possible use case is to help carve a plan to encourage energy conservation
 2.  We can also consider combining these data with sustainability-related data for more insights.
 
 **Singapore Economy data**
 
-Discussion points:
+**Discussion points:**
 
-Data source: <https://www.singstat.gov.sg/find-data/search-by-theme?theme=economy&type=all>
+**Data source:** <https://www.singstat.gov.sg/find-data/search-by-theme?theme=economy&type=all>
 
 1.  We can explore some of the Singapore economy data available on Singstats  
-
 2.  We can try think of some fresh perspectives that we can offer using these common data. 
 
-    **Ezlink data** 
+**Ezlink data**
 
--   Data source: TBC 
--   Discussion points:  
+**Data source:** TBC
 
-```{=html}
-<!-- -->
-```
+**Discussion points:**
+
 -   Explore the use of EZlink data to help in planning of public transport route optimization.
 
-**Transformation of Singapore population** 
+**Transformation of Singapore population**
 
-Data source: [https://www.singstat.gov.sg](https://www.singstat.gov.sg/)  
+**Data source:** [https://www.singstat.gov.sg](https://www.singstat.gov.sg/)
 
-Discussion points:  
+**Discussion points:**
 
--   Using the demographic data available on Singstat, we can plot different visualization to showcase the transformation of Singapore population in terms of education level, gender distribution, races, languages, income, consumption preferences and so on.  
+-   Using the demographic data available on Singstat, we can plot different visualization to showcase the transformation of Singapore population in terms of education level, gender distribution, races, languages, income, consumption preferences and so on.
 
-Action Items 
+**Action Items**
 
-1.  All to explore more on above 4 proposed topics or suggest new topic 
+1.  All to explore more on above 4 proposed topics or suggest new topic
 
-**Next meeting** 21 Jan 2023 
+**Next meeting** 21 Jan 2023
 
-### 
+### Minute of Meeting 2
 
-Minute of Meeting 2
-
-**Date:** 28 Jan 2023
-
-**Present**: KHOO Wei Lun, LAW Shiang Rou, Tasaporn VISAWAMETEEKUL
-
-**Absent**: NIL
-
-**Minute taker**: KHOO Wei Lun
-
-**Objective**: Reviewing individual ideas from ideation, explore potential spin-off
++-------------------------------------------------------------------------------------+
+| **Date:** 28 Jan 2023                                                               |
+|                                                                                     |
+| **Present**: KHOO Wei Lun, LAW Shiang Rou, Tasaporn VISAWAMETEEKUL                  |
+|                                                                                     |
+| **Absent**: NIL                                                                     |
+|                                                                                     |
+| **Minute taker**: KHOO Wei Lun                                                      |
+|                                                                                     |
+| **Objective**: Reviewing individual ideas from ideation, explore potential spin-off |
++-------------------------------------------------------------------------------------+
 
 **Discussion Points**
 
@@ -116,18 +110,12 @@ Explore ways to spin-off current idea and to discuss
 5.  **Next million dollar HDB**
 
 -   Find factors that might be correlated in driving the HDB price up.
-
-```{=html}
-<!-- -->
-```
 -   Explore realis dataset
 
 6.  **Visualisation of election votes of different years**
 
 -   Explore whether demographics
-
 -   Possible but challenging to show how election areas had changed over time
-
 -   Need to find more dataset that can be visualized and correlate.
 
 7.  **Singapore Energy**
@@ -144,32 +132,15 @@ Explore ways to spin-off current idea and to discuss
 9.  **Online Retail**
 
 -   Segmentation of customers
-
-```{=html}
-<!-- -->
-```
 -   Frequent pattern mining
 
 **Choosing of projects**
 
 -   Choosing topics that are more familiar for us (e.g. Singapore)
 -   Eliminated
-
-```{=html}
-<!-- -->
-```
 -   twitter topic analysis (not able to visualize)
-
-```{=html}
-<!-- -->
-```
 -   Singapore energy (difficult to understand the mechanism -- no area of expertise in this field in the team)
-
 -   Next million dollar HDB (similar topics had been done previous
-
-```{=html}
-<!-- -->
-```
 -   Final top two ideas selected: Visualisation of election votes of different years and Low birth rate
 
 **Action Items**
@@ -179,3 +150,19 @@ Explore ways to spin-off current idea and to discuss
 3.  Find dataset on low birth rate for other countries.
 
 **Next meeting** 31 Jan 2023
+
+### Minute of Meeting 3 (Consultation session)
+
++--------------------------------------------------------------------+
+| **Date:** 31 Jan 2023                                              |
+|                                                                    |
+| **Present**: KHOO Wei Lun, LAW Shiang Rou, Tasaporn VISAWAMETEEKUL |
+|                                                                    |
+| **Absent**: NIL                                                    |
+|                                                                    |
+| **Minute taker**: Tasaporn VISAWAMETEEKUL                          |
+|                                                                    |
+| **Objective**:                                                     |
++--------------------------------------------------------------------+
+
+**Discussion Points**

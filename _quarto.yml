@@ -16,7 +16,7 @@ website:
     - text: "Poster"
     - text: "Shiny App"
     - text: "MOM"
-
+      href: MOM.qmd
     right:
       - icon: github
         href: https://github.com/TasapornV/ISSS608-VAA.git
