@@ -1,0 +1,27 @@
+---
+title: "Sandbox"
+author: "G9"
+---
+
+## 1. Install and launching R packages
+
+```{r}
+pacman::p_load(readr)
+```
+
+## 2. Importing data
+
+```{r, warning=FALSE, message=FALSE}
+consumption <- read_csv("data/T3-5.csv")
+head(consumption,5)
+```
+
+## 3. Data Preparation
+
+```{r}
+
+```
+
+```{r}
+
+```

@@ -1,50 +1,66 @@
-#
-# This is a Shiny web application. You can run the application by clicking
-# the 'Run App' button above.
-#
-# Find out more about building applications with Shiny here:
-#
-#    http://shiny.rstudio.com/
-#
 
 library(shiny)
 
-# Define UI for application that draws a histogram
-ui <- fluidPage(
 
-    # Application title
-    titlePanel("Old Faithful Geyser Data"),
+## 1. Prepare library
+packages = c('colourpicker','dplyr','ggplot2','igraph','network','networkD3','plotly',
+             'quantmod','RColorBrewer','readr','readxl','reshape2','shiny',
+             'shinycssloaders','shinydashboard','shinythemes','shinyWidgets',
+             'sna','SnowballC','tidyverse','tidyquant','tm')
 
-    # Sidebar with a slider input for number of bins 
-    sidebarLayout(
-        sidebarPanel(
-            sliderInput("bins",
-                        "Number of bins:",
-                        min = 1,
-                        max = 50,
-                        value = 30)
-        ),
+for(p in packages){
+  library(p, character.only = T)}
 
-        # Show a plot of the generated distribution
-        mainPanel(
-           plotOutput("distPlot")
-        )
-    )
+## 2. Read data file
+
+ui <- dashboardPage(skin = "yellow",
+                    dashboardHeader(title = "Singapore Energy Analysis"),
+                    dashboardSidebar(sidebarMenu(
+                      id = "sbm", collapsible = T,
+                      HTML(paste0(
+                        "<br>",
+                        "<a><img style = 'display: block; margin-left: auto; margin-right: auto;' src='twitter-default-profile.jpg' width = '186'></a>",
+                        "<br>",
+                        "<p style = 'text-align: center;'><small><a>Cryptoverse logo disclaimer</a></small></p>",
+                        "<br>"
+                      )
+                      ),
+                      menuItem("Dashboard",tabName = "tab_dashboard",icon = icon("dashboard")),
+                      menuItem("Cluster", tabName = "tab_clustering", icon = icon("stream")),
+                      menuItem("Inferential", tabName = "tab_inferential", icon = icon("info")),
+                      menuItem("Forecasting", tabName = "tab_forecasting", icon = icon("info"))         
+                    )
+                    ),
+                    
+                    dashboardBody(
+                      tabItems(
+                        
+                        tabItem(tabName = "tab_dashboard"),
+                        tabItem(tabName = "tab_clustering"),
+                        tabItem(tabName = "tab_inferential",
+                                titlePanel("Inferential Analysis - Household consumption"),
+                                
+                                ),
+                        tabItem(tabName = "tab_forecasting")
+                      )
+                    )
+                    
+                    
 )
 
 # Define server logic required to draw a histogram
 server <- function(input, output) {
-
-    output$distPlot <- renderPlot({
-        # generate bins based on input$bins from ui.R
-        x    <- faithful[, 2]
-        bins <- seq(min(x), max(x), length.out = input$bins + 1)
-
-        # draw the histogram with the specified number of bins
-        hist(x, breaks = bins, col = 'darkgray', border = 'white',
-             xlab = 'Waiting time to next eruption (in mins)',
-             main = 'Histogram of waiting times')
-    })
+  
+  output$distPlot <- renderPlot({
+    # generate bins based on input$bins from ui.R
+    x    <- faithful[, 2]
+    bins <- seq(min(x), max(x), length.out = input$bins + 1)
+    
+    # draw the histogram with the specified number of bins
+    hist(x, breaks = bins, col = 'darkgray', border = 'white',
+         xlab = 'Waiting time to next eruption (in mins)',
+         main = 'Histogram of waiting times')
+  })
 }
 
 # Run the application 

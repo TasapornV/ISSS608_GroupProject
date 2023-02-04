@@ -1,5 +1,6 @@
 ---
 title: "Proposal"
+author: "G9"
 format: 
   html:
     mainfont: system-ui
