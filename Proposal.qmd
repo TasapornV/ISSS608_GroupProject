@@ -1,0 +1,9 @@
+---
+title: "Proposal"
+format: 
+  html:
+    mainfont: system-ui
+    page-layout: full
+---
+
+This is for proposal

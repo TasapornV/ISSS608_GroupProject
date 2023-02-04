@@ -4,17 +4,17 @@ title: "Minute of Meeting"
 
 ### **Meeting Minutes 1**
 
-+---------------------------------------------------------------------+
-| **Date:** 14 Jan 2023                                               |
-|                                                                     |
-| **Present**: KHOO Wei Lun, LAW Shiang Rou, Tasaporn VISAWAMETEEKUL  |
-|                                                                     |
-| **Absent**: NIL                                                     |
-|                                                                     |
-| **Minute taker**: LAW Shiang Rou                                    |
-|                                                                     |
-| **Objective**: Explore topics and datasets for group project        |
-+---------------------------------------------------------------------+
++--------------------------------------------------------------------+
+| **Date:** 14 Jan 2023                                              |
+|                                                                    |
+| **Present**: KHOO Wei Lun, LAW Shiang Rou, Tasaporn VISAWAMETEEKUL |
+|                                                                    |
+| **Absent**: NIL                                                    |
+|                                                                    |
+| **Minute taker**: LAW Shiang Rou                                   |
+|                                                                    |
+| **Objective**: Explore topics and datasets for group project       |
++--------------------------------------------------------------------+
 
 **Discussion Points** 
 
@@ -100,7 +100,7 @@ Explore ways to spin-off current idea and to discuss
 3.  **Global cost of living**
 
 -   Limited by few input parameters
--   Possible to combine with \'Low birth rate\'
+-   Possible to combine with 'Low birth rate'
 -   Not able to standalone
 
 4.  **Twitter topic analysis**
@@ -145,7 +145,7 @@ Explore ways to spin-off current idea and to discuss
 
 **Action Items**
 
-1.  Book Prof Kam\'s time to run through final project ideas.
+1.  Book Prof Kam's time to run through final project ideas.
 2.  Find more possible factors that might correlate with election votes/results.
 3.  Find dataset on low birth rate for other countries.
 
