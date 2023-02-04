@@ -12,7 +12,7 @@ website:
     - icon: "house-fill"
       href: "index.html"
     - text: "Proposal"
-      href: ""
+      href: "proposal.html"
     - text: "Poster"
     - text: "Shiny App"
     - text: "MOM"
@@ -24,7 +24,7 @@ website:
         href: about.qmd
 format:
   html:
-    theme: minty
+    theme: Lumen
     css: styles.css
     toc: true
 

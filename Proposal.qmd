@@ -6,4 +6,40 @@ format:
     page-layout: full
 ---
 
-This is for proposal
+# 1. Introduction
+
+# 
+
+2. Data
+
+# 3. Visualization and Analysis
+
+## 3.1 Overview Dashboard
+
+### Analysis
+
+### Visual Design
+
+## 3.2 Clustering Analysis
+
+### Analysis
+
+### Visual Design
+
+### Package use
+
+## 3.3 Inferential Analysis
+
+### Analysis
+
+### Visual Design
+
+### Package use
+
+## 3.4 Forecasting
+
+### Analysis
+
+### Visual Design
+
+### Package use
