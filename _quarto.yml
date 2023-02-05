@@ -15,16 +15,16 @@ website:
       href: "proposal.html"
     - text: "Poster"
     - text: "Shiny App"
-    - text: "MOM"
+    - text: "Meeting Minutes"
       href: MOM.qmd
     right:
       - icon: github
         href: https://github.com/TasapornV/ISSS608-VAA.git
-      - text: "about us"
+      - text: "About Us"
         href: about.qmd
 format:
   html:
-    theme: Lumen
+    theme: Lux
     css: styles.css
     toc: true
 
