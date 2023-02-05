@@ -10,7 +10,7 @@ website:
   favicon: "logo.png"
 
   navbar:
-    logo: "logo.png"
+    logo: "logo2.png"
     background: "#AF8D2F"
     left:
     - icon: "house-fill"
