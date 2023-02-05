@@ -7,10 +7,10 @@ website:
       repo: quarto-dev/quarto-web
   title: "Power Visual"
   page-navigation: true
-  favicon: "logo.png"
+  favicon: "logo1.png"
 
   navbar:
-    logo: "logo2.png"
+    logo: "nav_logo.png"
     background: "#AF8D2F"
     left:
     - icon: "house-fill"
