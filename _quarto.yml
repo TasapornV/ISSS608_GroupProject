@@ -5,9 +5,12 @@ website:
   comments: 
     utterances: 
       repo: quarto-dev/quarto-web
-  title: "ISSS608-VAA"
+  title: "Power Visual"
+  page-navigation: true
+  favicon: "logo.png"
 
   navbar:
+    logo: "logo.png"
     background: "#AF8D2F"
     left:
     - icon: "house-fill"
@@ -20,7 +23,7 @@ website:
       href: MOM.qmd
     right:
       - icon: github
-        href: https://github.com/TasapornV/ISSS608-VAA.git
+        href: https://github.com/TasapornV/ISSS608_GroupProject
       - text: "The Team"
         href: about.qmd
 format:

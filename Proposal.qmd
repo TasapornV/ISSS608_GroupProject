@@ -10,6 +10,7 @@ format:
   html:
     #mainfont: system-ui
     page-layout: full
+    title-block-banner: true
 ---
 
 # Introduction
