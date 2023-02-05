@@ -1,7 +1,10 @@
 ---
 title: "Proposal"
 author: "**Group 9**"
+date: 5 February 2023
+date-format: medium
 toc: true
+title-block-banner: true
 number-sections: true # auto section numbering
 format: 
   html:

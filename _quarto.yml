@@ -8,6 +8,7 @@ website:
   title: "ISSS608-VAA"
 
   navbar:
+    background: "#AF8D2F"
     left:
     - icon: "house-fill"
       href: "index.html"
@@ -20,7 +21,7 @@ website:
     right:
       - icon: github
         href: https://github.com/TasapornV/ISSS608-VAA.git
-      - text: "About Us"
+      - text: "The Team"
         href: about.qmd
 format:
   html:
