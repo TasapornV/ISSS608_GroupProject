@@ -5,23 +5,96 @@ author: "G9"
 
 ## 1. Install and launching R packages
 
-```{r}
-pacman::p_load(readr)
+```{r, results='hide', message=FALSE}
+packages = c('tidyverse', 'ggstatsplot', 'psych', 'lubridate', 'ggrepel', 'plotly')
+for(p in packages){
+  if(!require(p,character.only = T)){
+    install.packages(p)
+  }
+  library(p,character.only = T)
+}
 ```
 
 ## 2. Importing data
 
 ```{r, warning=FALSE, message=FALSE}
 consumption <- read_csv("data/T3-5.csv")
-head(consumption,5)
+consumption <- consumption %>% 
+  mutate(kwh_per_acc = as.numeric(kwh_per_acc)) %>% 
+  mutate(year = as.character(year))
+glimpse(consumption)
 ```
 
-## 3. Data Preparation
-
-```{r}
-
+```{r, warning=FALSE, message=FALSE}
+energycost <- read_csv("data/T5-3.csv")
+energycost <- energycost %>% 
+  mutate(year = as.character(year))
+glimpse(energycost)
 ```
 
 ```{r}
+#merge
+a <- consumption %>% 
+  select("year", "kwh_per_acc") %>% 
+  group_by(year) %>%
+  na.omit() %>%
+  summarize(kwh_per_acc=mean(kwh_per_acc))
+b <- b %>% 
+  data.frame(energycost,a) %>% 
+  select("year", "kwh_per_acc", "energy_costs_cent_per_kwh")
+```
 
+```{r}
+consumption %>% 
+  group_by(year) %>%
+  # filter(year == "2022") %>% 
+  ggplot(mapping = aes(x = year, y = kwh_per_acc)) +
+  # Make grouped boxplot
+  geom_boxplot(aes(fill = as.factor(Region)), color = "grey") +
+  theme_minimal() +
+  theme(legend.position = "top") +
+  scale_fill_viridis_d(option = "C") +
+  labs(title = "Average consumption per year by Region", y="kwh per acc", fill = "Region")
+```
+
+```{r}
+set.seed(1234)
+
+ggbetweenstats(
+  data = consumption,
+  x = Region,
+  y = kwh_per_acc,
+  # type = "np",
+  messages = FALSE
+)
+```
+
+```{r, message=FALSE}
+consumption %>%
+  mutate(class = fct_reorder(Description, kwh_per_acc, .fun='mean')) %>%
+  ggplot( aes(x=reorder(Description, kwh_per_acc), y=kwh_per_acc)) +
+  geom_boxplot() +
+  stat_summary(fun.y=mean, geom="point", color="red") +
+  theme(legend.position="none") +
+  theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1)) +
+  ggtitle("Boxplot of consumption per planning area")
+```
+
+```{r}
+retailshare <- read_csv("data/T3-1.csv")
+
+ggplot(data = retailshare, mapping = aes(y=Market_Share_of_Elec_Retail, fill= Electricity_Retails)) +
+  theme_minimal() +
+  geom_bar(position = "fill") +
+  scale_fill_viridis_d(option = "C") 
+  # labs(title = "Market Share of Elec Retail", fill = "Electricity Retails", 
+  #      x = "Count", y = "")
+
+
+# ggplot(data = Resale, mapping = aes(y=town, fill=flat_type)) +
+#   theme_minimal() +
+#   geom_bar(position = "fill") +
+#   scale_fill_viridis_d(option = "C") +
+#   labs(title = "Flat type proportion by town", fill = "Flat type", 
+#        x = "Count", y = "")
 ```
