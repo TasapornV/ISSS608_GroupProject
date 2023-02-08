@@ -44,7 +44,7 @@ The data used in this project is extracted from Energy Market Authority (EMA) Si
 
 ## Visualization and Analysis
 
-### 1. Overview Dashboard
+### Overview Dashboard
 
 #### Analysis
 
@@ -62,7 +62,7 @@ The data used in this project is extracted from Energy Market Authority (EMA) Si
 
 #### Package use
 
-### 2. Clustering Analysis
+### Clustering Analysis
 
 #### Analysis
 
@@ -72,7 +72,7 @@ The data used in this project is extracted from Energy Market Authority (EMA) Si
 
 #### Package use
 
-### 3. Inferential Analysis
+### Inferential Analysis
 
 #### Analysis
 
@@ -84,7 +84,7 @@ The data used in this project is extracted from Energy Market Authority (EMA) Si
 
 #### Package use
 
-### 4. Forecasting
+### Forecasting
 
 #### Analysis
 
@@ -94,7 +94,7 @@ The data used in this project is extracted from Energy Market Authority (EMA) Si
 
 #### Package use
 
-### 5. Data
+### Data
 
 #### Visual Design
 
