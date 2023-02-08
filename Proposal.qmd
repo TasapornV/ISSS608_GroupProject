@@ -13,13 +13,13 @@ format:
     title-block-banner: true
 ---
 
-# Introduction
+## Introduction
 
 Singapore has progressively moved towards an open electricity market since 2001 with the objectives to ensure reliable energy supply and promote effective competition in the energy market.
 
 To support these objectives, we build this RShinny app to provide relevant stakeholders with deeper understanding of the Singapore electricity consumption through several analytics models and visualizations.
 
-# Proposed Scope
+## Proposed Scope
 
 Our RShinny app allows users to interact with the data to:
 
@@ -30,7 +30,7 @@ Our RShinny app allows users to interact with the data to:
 
 A detailed description and sketch of the proposed analyses and visualizations are presented in section 4 of this proposal.
 
-# Data
+## Data
 
 The data used in this project is extracted from Energy Market Authority (EMA) Singapore. It contains data between year 2005 and 2022, with a total of 35 tabs. The tabs are broadly categorized into 7 sections, namely:
 
@@ -42,34 +42,44 @@ The data used in this project is extracted from Energy Market Authority (EMA) Si
 6.  Solar
 7.  Manpower
 
-# Visualization and Analysis
+## Visualization and Analysis
 
-## Overview Dashboard
+### 1. Overview Dashboard
 
-### Analysis
+#### Analysis
 
-### Visual Design
+#### Visual Design
 
-## Clustering Analysis
+![](DesignDraft1.png)
 
-### Analysis
+![](DesignDraft2.png)
 
-### Visual Design
+![](DesignDraft3.png)
 
-### Package use
+![](DesignDraft4.png)
 
-## Inferential Analysis
+#### Package use
 
-### Analysis
+### 2. Clustering Analysis
 
-### Visual Design
+#### Analysis
 
-### Package use
+#### Visual Design
 
-## Forecasting
+#### Package use
 
-### Analysis
+### 3. Inferential Analysis
 
-### Visual Design
+#### Analysis
 
-### Package use
+#### Visual Design
+
+#### Package use
+
+### 4. Forecasting
+
+#### Analysis
+
+#### Visual Design
+
+#### Package use

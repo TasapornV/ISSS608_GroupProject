@@ -75,5 +75,26 @@
     "title": "Sandbox",
     "section": "3. Data Preparation",
     "text": "3. Data Preparation"
+  },
+  {
+    "objectID": "Proposal.html#proposed-scope",
+    "href": "Proposal.html#proposed-scope",
+    "title": "Proposal",
+    "section": "2 Proposed Scope",
+    "text": "2 Proposed Scope\nOur RShinny app allows users to interact with the data to:\n\nGain an overview of the current electricity market in Singapore, in terms of supply, consumption and pricing,\nObserve similarities in consumption patterns based on spatio-temporal clustering\nPerform inferential statistical analysis, and\nPerform time series forecasting.\n\nA detailed description and sketch of the proposed analyses and visualizations are presented in section 4 of this proposal."
+  },
+  {
+    "objectID": "Proposal.html#data",
+    "href": "Proposal.html#data",
+    "title": "Proposal",
+    "section": "3 Data",
+    "text": "3 Data\nThe data used in this project is extracted from Energy Market Authority (EMA) Singapore. It contains data between year 2005 and 2022, with a total of 35 tabs. The tabs are broadly categorized into 7 sections, namely:\n\nEnergy Supply\nEnergy Transformation\nEnergy Consumption\nEnergy Balances\nEnergy Prices\nSolar\nManpower"
+  },
+  {
+    "objectID": "Proposal.html#visualization-and-analysis",
+    "href": "Proposal.html#visualization-and-analysis",
+    "title": "Proposal",
+    "section": "4 Visualization and Analysis",
+    "text": "4 Visualization and Analysis\n\n4.1 1. Overview Dashboard\n\n4.1.1 Analysis\n\n\n4.1.2 Visual Design\n\n\n\n\n\n\n4.1.3 Package use\n\n\n\n4.2 2. Clustering Analysis\n\n4.2.1 Analysis\n\n\n4.2.2 Visual Design\n\n\n4.2.3 Package use\n\n\n\n4.3 3. Inferential Analysis\n\n4.3.1 Analysis\n\n\n4.3.2 Visual Design\n\n\n4.3.3 Package use\n\n\n\n4.4 4. Forecasting\n\n4.4.1 Analysis\n\n\n4.4.2 Visual Design\n\n\n4.4.3 Package use"
   }
 ]
