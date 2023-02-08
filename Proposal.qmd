@@ -93,3 +93,9 @@ The data used in this project is extracted from Energy Market Authority (EMA) Si
 ![](DesignDraft9.png)
 
 #### Package use
+
+### 5. Data
+
+#### Visual Design
+
+![](DesignDraft10.png)
