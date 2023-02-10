@@ -6,5 +6,4 @@ format:
     page-layout: full
 ---
 
-Welcome to **ISSS608 Visual Analytics and Applications**. 
-Group project homepage
+Welcome to **ISSS608 Visual Analytics and Applications**. Group project homepage

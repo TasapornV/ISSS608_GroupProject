@@ -28,73 +28,38 @@
     "text": "Singapore has progressively moved towards an open electricity market since 2001 with the objectives to ensure reliable energy supply and promote effective competition in the energy market.\nTo support these objectives, we build this RShinny app to provide relevant stakeholders with deeper understanding of the Singapore electricity consumption through several analytics models and visualizations."
   },
   {
-    "objectID": "Proposal.html#overview-dashboard",
-    "href": "Proposal.html#overview-dashboard",
-    "title": "Proposal",
-    "section": "4.1 Overview Dashboard",
-    "text": "4.1 Overview Dashboard\n\n4.1.1 Analysis\n\n\n4.1.2 Visual Design"
-  },
-  {
-    "objectID": "Proposal.html#clustering-analysis",
-    "href": "Proposal.html#clustering-analysis",
-    "title": "Proposal",
-    "section": "4.2 Clustering Analysis",
-    "text": "4.2 Clustering Analysis\n\n4.2.1 Analysis\n\n\n4.2.2 Visual Design\n\n\n4.2.3 Package use"
-  },
-  {
-    "objectID": "Proposal.html#inferential-analysis",
-    "href": "Proposal.html#inferential-analysis",
-    "title": "Proposal",
-    "section": "4.3 Inferential Analysis",
-    "text": "4.3 Inferential Analysis\n\n4.3.1 Analysis\n\n\n4.3.2 Visual Design\n\n\n4.3.3 Package use"
-  },
-  {
-    "objectID": "Proposal.html#forecasting",
-    "href": "Proposal.html#forecasting",
-    "title": "Proposal",
-    "section": "4.4 Forecasting",
-    "text": "4.4 Forecasting\n\n4.4.1 Analysis\n\n\n4.4.2 Visual Design\n\n\n4.4.3 Package use"
-  },
-  {
-    "objectID": "Shiny_App_G9/sandbox.html",
-    "href": "Shiny_App_G9/sandbox.html",
-    "title": "Sandbox",
-    "section": "",
-    "text": "pacman::p_load(readr)"
-  },
-  {
-    "objectID": "Shiny_App_G9/sandbox.html#importing-data",
-    "href": "Shiny_App_G9/sandbox.html#importing-data",
-    "title": "Sandbox",
-    "section": "2. Importing data",
-    "text": "2. Importing data\n\nconsumption <- read_csv(\"data/T3-5.csv\")\nhead(consumption,5)\n\n# A tibble: 5 × 6\n  dwelling_type    year month Region         Description    kwh_per_acc\n  <chr>           <dbl> <chr> <chr>          <chr>          <chr>      \n1 1-room / 2-room  2005 1     Central Region Bishan         104.9      \n2 1-room / 2-room  2005 1     Central Region Bukit Merah    140.7      \n3 1-room / 2-room  2005 1     Central Region Central Region 136.5      \n4 1-room / 2-room  2005 1     Central Region Geylang        148.5      \n5 1-room / 2-room  2005 1     Central Region Kallang        115.6"
-  },
-  {
-    "objectID": "Shiny_App_G9/sandbox.html#data-preparation",
-    "href": "Shiny_App_G9/sandbox.html#data-preparation",
-    "title": "Sandbox",
-    "section": "3. Data Preparation",
-    "text": "3. Data Preparation"
-  },
-  {
     "objectID": "Proposal.html#proposed-scope",
     "href": "Proposal.html#proposed-scope",
     "title": "Proposal",
     "section": "2 Proposed Scope",
-    "text": "2 Proposed Scope\nOur RShinny app allows users to interact with the data to:\n\nGain an overview of the current electricity market in Singapore, in terms of supply, consumption and pricing,\nObserve similarities in consumption patterns based on spatio-temporal clustering\nPerform inferential statistical analysis, and\nPerform time series forecasting.\n\nA detailed description and sketch of the proposed analyses and visualizations are presented in section 4 of this proposal."
+    "text": "2 Proposed Scope\nOur RShinny app allows users to interact with the data to:\n\nGain an overview of the current electricity market in Singapore,\nCluster planning areas based on similarities in consumption patterns,\nPerform inferential statistical analysis, and\nPerform time series forecasting.\n\nA detailed description and sketch of the proposed analyses and visualizations are presented in section 4 of this proposal."
   },
   {
     "objectID": "Proposal.html#data",
     "href": "Proposal.html#data",
     "title": "Proposal",
     "section": "3 Data",
-    "text": "3 Data\nThe data used in this project is extracted from Energy Market Authority (EMA) Singapore. It contains data between year 2005 and 2022, with a total of 35 tabs. The tabs are broadly categorized into 7 sections, namely:\n\nEnergy Supply\nEnergy Transformation\nEnergy Consumption\nEnergy Balances\nEnergy Prices\nSolar\nManpower"
+    "text": "3 Data\nThe data used in this project is extracted from Energy Market Authority (EMA) Singapore. It contains data between year 2005 and 2022, with a total of 35 tabs. The tabs are broadly categorized into 7 sections, namely:\n\nEnergy Supply\nEnergy Transformation\nEnergy Consumption\nEnergy Balances\nEnergy Prices\nSolar\nManpower\n\nFor this project, we will be focusing on electricity consumption, supply and prices."
   },
   {
     "objectID": "Proposal.html#visualization-and-analysis",
     "href": "Proposal.html#visualization-and-analysis",
     "title": "Proposal",
     "section": "4 Visualization and Analysis",
-    "text": "4 Visualization and Analysis\n\n4.1 Overview Dashboard\n\n4.1.1 Analysis\n\n\n4.1.2 Visual Design\n\n\n\n\n\n\n\n4.1.3 Package use\n\n\n\n4.2 Clustering Analysis\n\n4.2.1 Analysis\n\n\n4.2.2 Visual Design\n\n\n\n4.2.3 Package use\n\n\n\n4.3 Inferential Analysis\n\n4.3.1 Analysis\n\n\n4.3.2 Visual Design\n\n\n\n\n4.3.3 Package use\n\n\n\n4.4 Forecasting\n\n4.4.1 Analysis\n\n\n4.4.2 Visual Design\n\n\n\n4.4.3 Package use\n\n\n\n4.5 Data\n\n4.5.1 Visual Design"
+    "text": "4 Visualization and Analysis\n\n4.1 Overview Dashboard\nTo provide users some basic insights on the Singapore electricity market, an Overview tab is built for users to explore the electricity supply, prices and consumption by areas, regions and dwelling types. Changes over time are also visualized to provide users a more comprehensive view.\n\n4.1.1 Main R Packages\n\nggplot2: for descriptive visualization such as boxplots\nggiraph: for interactive visualization\ngeofacet: for visualization laid out according to the geographic topology\ntimetk: for time series visualization\n\n\n\n4.1.2 Proposed Visual Design\n\n\n\n\n\n\n\n\n4.2 Clustering Analysis\nClustering analysis is performed to help users identify clusters with different consumption patterns. The clustering analysis is done using the consumption data for each planning area and dwelling type over time. This analysis will help stakeholders in performing future strategic planning activities such as supply planning and pricing.\n\n4.2.1 Main R Packages\n\ndtwclust: for time series clustering\ndendextend: to visualize and compare hierarchical clustering’s dendogram\ntmap: representing clusters on interactive map visual\n\n\n\n4.2.2 Porposed Visual Design\n\n\n\n\n4.3 Inferential Analysis\n\n4.3.1 Analysis\n\n\n4.3.2 Visual Design\n\n\n\n\n4.3.3 Package use\n\n\n\n4.4 Forecasting\n\n4.4.1 Analysis\n\n\n4.4.2 Visual Design\n\n\n\n4.4.3 Package use\n\n\n\n4.5 Data\n\n4.5.1 Visual Design"
+  },
+  {
+    "objectID": "Shiny_App_G9/sandbox.html",
+    "href": "Shiny_App_G9/sandbox.html",
+    "title": "Sandbox",
+    "section": "",
+    "text": "packages = c('tidyverse', 'ggstatsplot', 'psych', 'lubridate', 'ggrepel', 'plotly')\nfor(p in packages){\n  if(!require(p,character.only = T)){\n    install.packages(p)\n  }\n  library(p,character.only = T)\n}"
+  },
+  {
+    "objectID": "Shiny_App_G9/sandbox.html#importing-data",
+    "href": "Shiny_App_G9/sandbox.html#importing-data",
+    "title": "Sandbox",
+    "section": "2. Importing data",
+    "text": "2. Importing data\n\nconsumption <- read_csv(\"data/T3-5.csv\")\nconsumption <- consumption %>% \n  mutate(kwh_per_acc = as.numeric(kwh_per_acc)) %>% \n  mutate(year = as.character(year))\nglimpse(consumption)\n\nRows: 65,932\nColumns: 6\n$ dwelling_type <chr> \"1-room / 2-room\", \"1-room / 2-room\", \"1-room / 2-room\",…\n$ year          <chr> \"2005\", \"2005\", \"2005\", \"2005\", \"2005\", \"2005\", \"2005\", …\n$ month         <chr> \"1\", \"1\", \"1\", \"1\", \"1\", \"1\", \"1\", \"1\", \"1\", \"1\", \"1\", \"…\n$ Region        <chr> \"Central Region\", \"Central Region\", \"Central Region\", \"C…\n$ Description   <chr> \"Bishan\", \"Bukit Merah\", \"Central Region\", \"Geylang\", \"K…\n$ kwh_per_acc   <dbl> 104.9, 140.7, 136.5, 148.5, 115.6, 165.3, 136.1, 114.2, …\n\n\n\nenergycost <- read_csv(\"data/T5-3.csv\")\nenergycost <- energycost %>% \n  mutate(year = as.character(year))\nglimpse(energycost)\n\nRows: 20\nColumns: 5\n$ year                                      <chr> \"2005\", \"2006\", \"2007\", \"200…\n$ energy_costs_cent_per_kwh                 <dbl> 11.8, 15.3, 14.5, 19.9, 15.3…\n$ grid_charges_cent_per_kwh                 <dbl> 5.5, 5.4, 5.4, 5.2, 4.9, 4.9…\n$ mkt_support_service_fees_cent_per_kwh     <dbl> 0.3, 0.3, 0.3, 0.3, 0.3, 0.2…\n$ power_sys_ops_mkt_admin_fees_cent_per_kwh <dbl> 0.1, 0.1, 0.1, 0.1, 0.1, 0.1…\n\n\n\n#merge\na <- consumption %>% \n  select(\"year\", \"kwh_per_acc\") %>% \n  group_by(year) %>%\n  na.omit() %>%\n  summarize(kwh_per_acc=mean(kwh_per_acc))\n#b <- b %>% \n#  data.frame(energycost,a) %>% \n#  select(\"year\", \"kwh_per_acc\", \"energy_costs_cent_per_kwh\")\n\n\nconsumption %>% \n  group_by(year) %>%\n  # filter(year == \"2022\") %>% \n  ggplot(mapping = aes(x = year, y = kwh_per_acc)) +\n  # Make grouped boxplot\n  geom_boxplot(aes(fill = as.factor(Region)), color = \"grey\") +\n  theme_minimal() +\n  theme(legend.position = \"top\") +\n  scale_fill_viridis_d(option = \"C\") +\n  labs(title = \"Average consumption per year by Region\", y=\"kwh per acc\", fill = \"Region\")\n\nWarning: Removed 801 rows containing non-finite values (`stat_boxplot()`).\n\n\n\n\n\n\nset.seed(1234)\n\nggbetweenstats(\n  data = consumption,\n  x = Region,\n  y = kwh_per_acc,\n  # type = \"np\",\n  messages = FALSE\n)\n\n\n\n\n\nconsumption %>%\n  mutate(class = fct_reorder(Description, kwh_per_acc, .fun='mean')) %>%\n  ggplot( aes(x=reorder(Description, kwh_per_acc), y=kwh_per_acc)) +\n  geom_boxplot() +\n  stat_summary(fun.y=mean, geom=\"point\", color=\"red\") +\n  theme(legend.position=\"none\") +\n  theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1)) +\n  ggtitle(\"Boxplot of consumption per planning area\")\n\nWarning: The `fun.y` argument of `stat_summary()` is deprecated as of ggplot2 3.3.0.\nℹ Please use the `fun` argument instead.\n\n\nWarning: Removed 801 rows containing non-finite values (`stat_boxplot()`).\n\n\nWarning: Removed 801 rows containing non-finite values (`stat_summary()`).\n\n\n\n\n\n\n#retailshare <- read_csv(\"data/T3-1.csv\")\n\n#ggplot(data = retailshare, mapping = aes(y=Market_Share_of_Elec_Retail, fill= #Electricity_Retails)) +\n#  theme_minimal() +\n#  geom_bar(position = \"fill\") +\n#  scale_fill_viridis_d(option = \"C\") \n  # labs(title = \"Market Share of Elec Retail\", fill = \"Electricity Retails\", \n  #      x = \"Count\", y = \"\")\n\n\n# ggplot(data = Resale, mapping = aes(y=town, fill=flat_type)) +\n#   theme_minimal() +\n#   geom_bar(position = \"fill\") +\n#   scale_fill_viridis_d(option = \"C\") +\n#   labs(title = \"Flat type proportion by town\", fill = \"Flat type\", \n#        x = \"Count\", y = \"\")"
   }
 ]

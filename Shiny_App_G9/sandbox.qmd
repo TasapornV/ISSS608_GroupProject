@@ -39,9 +39,9 @@ a <- consumption %>%
   group_by(year) %>%
   na.omit() %>%
   summarize(kwh_per_acc=mean(kwh_per_acc))
-b <- b %>% 
-  data.frame(energycost,a) %>% 
-  select("year", "kwh_per_acc", "energy_costs_cent_per_kwh")
+#b <- b %>% 
+#  data.frame(energycost,a) %>% 
+#  select("year", "kwh_per_acc", "energy_costs_cent_per_kwh")
 ```
 
 ```{r}
@@ -81,12 +81,12 @@ consumption %>%
 ```
 
 ```{r}
-retailshare <- read_csv("data/T3-1.csv")
+#retailshare <- read_csv("data/T3-1.csv")
 
-ggplot(data = retailshare, mapping = aes(y=Market_Share_of_Elec_Retail, fill= Electricity_Retails)) +
-  theme_minimal() +
-  geom_bar(position = "fill") +
-  scale_fill_viridis_d(option = "C") 
+#ggplot(data = retailshare, mapping = aes(y=Market_Share_of_Elec_Retail, fill= #Electricity_Retails)) +
+#  theme_minimal() +
+#  geom_bar(position = "fill") +
+#  scale_fill_viridis_d(option = "C") 
   # labs(title = "Market Share of Elec Retail", fill = "Electricity Retails", 
   #      x = "Count", y = "")
 

@@ -2,7 +2,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
 
 <meta charset="utf-8">
-<meta name="generator" content="quarto-1.2.313">
+<meta name="generator" content="quarto-1.2.269">
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
@@ -184,8 +184,8 @@ ul.task-list li input[type="checkbox"] {
 <h2 data-number="2" class="anchored" data-anchor-id="proposed-scope"><span class="header-section-number">2</span> Proposed Scope</h2>
 <p>Our RShinny app allows users to interact with the data to:</p>
 <ol type="1">
-<li>Gain an overview of the current electricity market in Singapore, in terms of supply, consumption and pricing,</li>
-<li>Observe similarities in consumption patterns based on spatio-temporal clustering</li>
+<li>Gain an overview of the current electricity market in Singapore,</li>
+<li>Cluster planning areas based on similarities in consumption patterns,</li>
 <li>Perform inferential statistical analysis, and</li>
 <li>Perform time series forecasting.</li>
 </ol>
@@ -203,70 +203,78 @@ ul.task-list li input[type="checkbox"] {
 <li>Solar</li>
 <li>Manpower</li>
 </ol>
+<p>For this project, we will be focusing on electricity consumption, supply and prices.</p>
 </section>
 <section id="visualization-and-analysis" class="level2" data-number="4">
 <h2 data-number="4" class="anchored" data-anchor-id="visualization-and-analysis"><span class="header-section-number">4</span> Visualization and Analysis</h2>
 <section id="overview-dashboard" class="level3" data-number="4.1">
 <h3 data-number="4.1" class="anchored" data-anchor-id="overview-dashboard"><span class="header-section-number">4.1</span> Overview Dashboard</h3>
-<section id="analysis" class="level4" data-number="4.1.1">
-<h4 data-number="4.1.1" class="anchored" data-anchor-id="analysis"><span class="header-section-number">4.1.1</span> Analysis</h4>
+<p>To provide users some basic insights on the Singapore electricity market, an Overview tab is built for users to explore the electricity supply, prices and consumption by areas, regions and dwelling types. Changes over time are also visualized to provide users a more comprehensive view.</p>
+<section id="main-r-packages" class="level4" data-number="4.1.1">
+<h4 data-number="4.1.1" class="anchored" data-anchor-id="main-r-packages"><span class="header-section-number">4.1.1</span> Main R Packages</h4>
+<ul>
+<li><p>ggplot2: for descriptive visualization such as boxplots</p></li>
+<li><p>ggiraph: for interactive visualization</p></li>
+<li><p>geofacet: for visualization laid out according to the geographic topology</p></li>
+<li><p>timetk: for time series visualization</p></li>
+</ul>
 </section>
-<section id="visual-design" class="level4" data-number="4.1.2">
-<h4 data-number="4.1.2" class="anchored" data-anchor-id="visual-design"><span class="header-section-number">4.1.2</span> Visual Design</h4>
+<section id="proposed-visual-design" class="level4" data-number="4.1.2">
+<h4 data-number="4.1.2" class="anchored" data-anchor-id="proposed-visual-design"><span class="header-section-number">4.1.2</span> Proposed Visual Design</h4>
 <p><img src="DesignDraft1.png" class="img-fluid"></p>
 <p><img src="DesignDraft2.png" class="img-fluid"></p>
 <p><img src="DesignDraft3.png" class="img-fluid"></p>
 <p><img src="DesignDraft5.png" class="img-fluid"></p>
 <p><img src="DesignDraft4.png" class="img-fluid"></p>
 </section>
-<section id="package-use" class="level4" data-number="4.1.3">
-<h4 data-number="4.1.3" class="anchored" data-anchor-id="package-use"><span class="header-section-number">4.1.3</span> Package use</h4>
-</section>
 </section>
 <section id="clustering-analysis" class="level3" data-number="4.2">
 <h3 data-number="4.2" class="anchored" data-anchor-id="clustering-analysis"><span class="header-section-number">4.2</span> Clustering Analysis</h3>
-<section id="analysis-1" class="level4" data-number="4.2.1">
-<h4 data-number="4.2.1" class="anchored" data-anchor-id="analysis-1"><span class="header-section-number">4.2.1</span> Analysis</h4>
+<p>Clustering analysis is performed to help users identify clusters with different consumption patterns. The clustering analysis is done using the consumption data for each planning area and dwelling type over time. This analysis will help stakeholders in performing future strategic planning activities such as supply planning and pricing.</p>
+<section id="main-r-packages-1" class="level4" data-number="4.2.1">
+<h4 data-number="4.2.1" class="anchored" data-anchor-id="main-r-packages-1"><span class="header-section-number">4.2.1</span> Main R Packages</h4>
+<ul>
+<li><p>dtwclust: for time series clustering</p></li>
+<li><p>dendextend: to visualize and compare hierarchical clustering’s dendogram</p></li>
+<li><p>tmap: representing clusters on interactive map visual</p></li>
+</ul>
 </section>
-<section id="visual-design-1" class="level4" data-number="4.2.2">
-<h4 data-number="4.2.2" class="anchored" data-anchor-id="visual-design-1"><span class="header-section-number">4.2.2</span> Visual Design</h4>
+<section id="porposed-visual-design" class="level4" data-number="4.2.2">
+<h4 data-number="4.2.2" class="anchored" data-anchor-id="porposed-visual-design"><span class="header-section-number">4.2.2</span> Porposed Visual Design</h4>
 <p><img src="DesignDraft6.png" class="img-fluid"></p>
-</section>
-<section id="package-use-1" class="level4" data-number="4.2.3">
-<h4 data-number="4.2.3" class="anchored" data-anchor-id="package-use-1"><span class="header-section-number">4.2.3</span> Package use</h4>
 </section>
 </section>
 <section id="inferential-analysis" class="level3" data-number="4.3">
 <h3 data-number="4.3" class="anchored" data-anchor-id="inferential-analysis"><span class="header-section-number">4.3</span> Inferential Analysis</h3>
-<section id="analysis-2" class="level4" data-number="4.3.1">
-<h4 data-number="4.3.1" class="anchored" data-anchor-id="analysis-2"><span class="header-section-number">4.3.1</span> Analysis</h4>
+<section id="analysis" class="level4" data-number="4.3.1">
+<h4 data-number="4.3.1" class="anchored" data-anchor-id="analysis"><span class="header-section-number">4.3.1</span> Analysis</h4>
 </section>
-<section id="visual-design-2" class="level4" data-number="4.3.2">
-<h4 data-number="4.3.2" class="anchored" data-anchor-id="visual-design-2"><span class="header-section-number">4.3.2</span> Visual Design</h4>
+<section id="visual-design" class="level4" data-number="4.3.2">
+<h4 data-number="4.3.2" class="anchored" data-anchor-id="visual-design"><span class="header-section-number">4.3.2</span> Visual Design</h4>
 <p><img src="DesignDraft7.png" class="img-fluid"></p>
 <p><img src="DesignDraft8.png" class="img-fluid"></p>
 </section>
-<section id="package-use-2" class="level4" data-number="4.3.3">
-<h4 data-number="4.3.3" class="anchored" data-anchor-id="package-use-2"><span class="header-section-number">4.3.3</span> Package use</h4>
+<section id="package-use" class="level4" data-number="4.3.3">
+<h4 data-number="4.3.3" class="anchored" data-anchor-id="package-use"><span class="header-section-number">4.3.3</span> Package use</h4>
 </section>
 </section>
 <section id="forecasting" class="level3" data-number="4.4">
 <h3 data-number="4.4" class="anchored" data-anchor-id="forecasting"><span class="header-section-number">4.4</span> Forecasting</h3>
-<section id="analysis-3" class="level4" data-number="4.4.1">
-<h4 data-number="4.4.1" class="anchored" data-anchor-id="analysis-3"><span class="header-section-number">4.4.1</span> Analysis</h4>
+<section id="analysis-1" class="level4" data-number="4.4.1">
+<h4 data-number="4.4.1" class="anchored" data-anchor-id="analysis-1"><span class="header-section-number">4.4.1</span> Analysis</h4>
 </section>
-<section id="visual-design-3" class="level4" data-number="4.4.2">
-<h4 data-number="4.4.2" class="anchored" data-anchor-id="visual-design-3"><span class="header-section-number">4.4.2</span> Visual Design</h4>
+<section id="visual-design-1" class="level4" data-number="4.4.2">
+<h4 data-number="4.4.2" class="anchored" data-anchor-id="visual-design-1"><span class="header-section-number">4.4.2</span> Visual Design</h4>
 <p><img src="DesignDraft9.png" class="img-fluid"></p>
 </section>
-<section id="package-use-3" class="level4" data-number="4.4.3">
-<h4 data-number="4.4.3" class="anchored" data-anchor-id="package-use-3"><span class="header-section-number">4.4.3</span> Package use</h4>
+<section id="package-use-1" class="level4" data-number="4.4.3">
+<h4 data-number="4.4.3" class="anchored" data-anchor-id="package-use-1"><span class="header-section-number">4.4.3</span> Package use</h4>
 </section>
 </section>
 <section id="data-1" class="level3" data-number="4.5">
 <h3 data-number="4.5" class="anchored" data-anchor-id="data-1"><span class="header-section-number">4.5</span> Data</h3>
-<section id="visual-design-4" class="level4" data-number="4.5.1">
-<h4 data-number="4.5.1" class="anchored" data-anchor-id="visual-design-4"><span class="header-section-number">4.5.1</span> Visual Design</h4>
+<section id="visual-design-2" class="level4" data-number="4.5.1">
+<h4 data-number="4.5.1" class="anchored" data-anchor-id="visual-design-2"><span class="header-section-number">4.5.1</span> Visual Design</h4>
 <p><img src="DesignDraft10.png" class="img-fluid"></p>
 
 
