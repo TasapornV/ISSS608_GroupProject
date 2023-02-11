@@ -94,16 +94,19 @@ Clustering analysis is performed to help users identify clusters with different 
 
 When we have more than two sample groups, we utilize ANOVA (Analysis of Variance) to see if there are any statistically significant differences between the means of two or more independent sample groups. In other words, it compares the means of different samples to determine the influence of one or more factors.
 
-#### Visual Design
+#### Main R Packages
+
+-   ggplot2: for descriptive visualization such as boxplots
+
+-   ggbetweenstats: A combination of box and violin plots along with jittered data points for between-subjects designs with statistical details included in the plot as a subtitle
+
+-   ggcorrplot: Visualize a correlation matrix using ggplot2. It provides a solution for reordering the correlation matrix and displays the significance level on the correlogram. It includes also a function for computing a matrix of correlation p-values.
+
+#### Porposed Visual Design
 
 ![](DesignDraft7.png)
 
 ![](DesignDraft8.png)
-
-#### Main R Packages
-
--   ggplot
--   
 
 ### Forecasting
 
