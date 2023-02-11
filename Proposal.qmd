@@ -116,9 +116,9 @@ When we have more than two sample groups, we utilize ANOVA (Analysis of Variance
 
 ![](DesignDraft9.png)
 
-#### Package use
-
 ### Data
+
+A data view is introduced to provide the user with an overview of how the data appears. Users will be able to choose which table and columns to display.
 
 #### Visual Design
 
