@@ -52,13 +52,13 @@ To provide users some basic insights on the Singapore electricity market, an Ove
 
 #### Main R Packages
 
--   ggplot2: for descriptive visualization such as boxplots
+-   **ggplot2:** for descriptive visualization such as boxplots
 
--   ggiraph: for interactive visualization
+-   **ggiraph:** for interactive visualization
 
--   geofacet: for visualization laid out according to the geographic topology
+-   **geofacet:** for visualization laid out according to the geographic topology
 
--   timetk: for time series visualization
+-   **timetk:** for time series visualization
 
 #### Proposed Visual Design
 
@@ -78,11 +78,11 @@ Clustering analysis is performed to help users identify clusters with different 
 
 #### Main R Packages
 
--   dtwclust: for time series clustering
+-   **dtwclust:** for time series clustering
 
--   dendextend: to visualize and compare hierarchical clustering's dendogram
+-   **dendextend:** to visualize and compare hierarchical clustering's dendogram
 
--   tmap: representing clusters on interactive map visual
+-   **tmap:** representing clusters on interactive map visual
 
 #### Porposed Visual Design
 
@@ -96,21 +96,26 @@ When we have more than two sample groups, we utilize ANOVA (Analysis of Variance
 
 #### Main R Packages
 
--   ggplot2: for descriptive visualization such as boxplots
-
--   ggbetweenstats: A combination of box and violin plots along with jittered data points for between-subjects designs with statistical details included in the plot as a subtitle
-
--   ggcorrplot: Visualize a correlation matrix using ggplot2. It provides a solution for reordering the correlation matrix and displays the significance level on the correlogram. It includes also a function for computing a matrix of correlation p-values.
+-   **ggplot2:** for descriptive visualization such as boxplots
+-   **ggbetweenstats:** A combination of box and violin plots along with jittered data points for between-subjects designs with statistical details included in the plot as a subtitle
+-   **ggcorrplot:** Visualize a correlation matrix using ggplot2. It provides a solution for reordering the correlation matrix and displays the significance level on the correlogram. It includes also a function for computing a matrix of correlation p-values.
 
 #### Porposed Visual Design
 
-![](DesignDraft7.png)
-
 ![](DesignDraft8.png)
+
+![](DesignDraft7.png)
 
 ### Forecasting
 
 #### Analysis
+
+The objective of the forecasting visualization is to develop a tool that allows the user to select different data tables via data exploration and display the resulting forecast.
+
+#### Main R Packages
+
+-   **modeltime:** The time series forecasting framework for use with the 'tidymodels' ecosystem. Models include ARIMA, Exponential Smoothing, and additional time series models from the 'forecast' and 'prophet' packages.
+-   **tidymodels:** a collection of packages for modeling and machine learning using [**tidyverse**](https://www.tidyverse.org/) principles.
 
 #### Visual Design
 
