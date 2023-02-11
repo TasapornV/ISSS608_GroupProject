@@ -17,13 +17,13 @@ format:
 
 Singapore has progressively moved towards an open electricity market since 2001 with the objectives to ensure reliable energy supply and promote effective competition in the energy market.
 
-To support these objectives, we build this RShinny app to provide relevant stakeholders with deeper understanding of the Singapore electricity consumption through several analytics models and visualizations.
+To support these objectives, we build this RShinny app to provide relevant stakeholders with deeper understanding of the Singapore electricity and gas consumption through several analytics models and visualizations.
 
 ## Proposed Scope
 
 Our RShinny app allows users to interact with the data to:
 
-1.  Gain an overview of the current electricity market in Singapore,
+1.  Gain an overview of the current electricity and gas market in Singapore,
 2.  Cluster planning areas based on similarities in consumption patterns,
 3.  Perform inferential statistical analysis, and
 4.  Perform time series forecasting.
@@ -42,13 +42,13 @@ The data used in this project is extracted from Energy Market Authority (EMA) Si
 6.  Solar
 7.  Manpower
 
-For this project, we will be focusing on electricity consumption, supply and prices.
+For this project, we will be focusing on electricity and gas consumption, supply and prices.
 
 ## Visualization and Analysis
 
 ### Overview Dashboard
 
-To provide users some basic insights on the Singapore electricity market, an Overview tab is built for users to explore the electricity supply, prices and consumption by areas, regions and dwelling types. Changes over time are also visualized to provide users a more comprehensive view.
+To provide users some basic insights on the Singapore energy market, an Overview tab is built for users to explore the electricity and gas supply, prices and consumption by areas, regions and dwelling types. Changes over time are also visualized to provide users a more comprehensive view.
 
 #### Main R Packages
 
