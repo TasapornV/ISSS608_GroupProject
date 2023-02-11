@@ -53,11 +53,8 @@ To provide users some basic insights on the Singapore energy market, an Overview
 #### Main R Packages
 
 -   **ggplot2:** for descriptive visualization such as boxplots
-
 -   **ggiraph:** for interactive visualization
-
 -   **geofacet:** for visualization laid out according to the geographic topology
-
 -   **timetk:** for time series visualization
 
 #### Proposed Visual Design
@@ -79,9 +76,7 @@ Clustering analysis is performed to help users identify clusters with different 
 #### Main R Packages
 
 -   **dtwclust:** for time series clustering
-
 -   **dendextend:** to visualize and compare hierarchical clustering's dendogram
-
 -   **tmap:** representing clusters on interactive map visual
 
 #### Porposed Visual Design
