@@ -84,7 +84,8 @@ To address this challenge, we build this RShinny app to provide relevant stakeho
                                                                ),
                                                                column(9)
                                                              )
-                                                           )),
+                                                           )
+                                                  ),
                                                   tabPanel("Lineplot",
                                                            fluidPage(
                                                              fluidRow(
@@ -151,32 +152,38 @@ To address this challenge, we build this RShinny app to provide relevant stakeho
                                                  )
                                        )),
                               tabPanel("DATA", tabName = "data", icon = icon("info"),
-                                       fluidPage(titlePanel("DATA"),
-                                                 sidebarPanel(
-                                                   
-                                                   textInput("txt", "Text input:", "text here"),
-                                                   sliderInput("slider", "Slider input:", 1, 100, 30),
-                                                   actionButton("action", "Button"),
-                                                   actionButton("action2", "Button2", class = "btn-primary")
-                                                 )
-                                       )),
+                                       fluidPage(
+                                         
+                                         fluidRow(
+                                           column(4,wellPanel(
+                                             
+                                             
+                                             
+                                             selectizeInput('SelectColumn', "Select Column", choices = c("A","B","C") ,multiple = TRUE),
+                                             
+                                             radioButtons("SelectTable",
+                                                          label = "Select Data",
+                                                          choices = c("Peak System Demand",
+                                                                      "Market Share of Electricity Generation",
+                                                                      "Total Household Electricity Consumption by Dwelling Type",
+                                                                      "Average Monthly Household Electricity Consumption by Planning Area & Dwelling Type",
+                                                                      "Market Share for Natural Gas Retail",
+                                                                      "Natural Gas Consumption by Sub-Sector",
+                                                                      "Total Household Town Gas Consumption by Dwelling Type",
+                                                                      "Average Monthly Household Town Gas Consumption by Planning Area & Dwelling Type",
+                                                                      "Electricity and Gas Tariffs",
+                                                                      "Monthly Electricity Tariffs (Low Tension Tariffs)",
+                                                                      "Annual Electricity Tariffs by Components (Low Tension Tariffs)",
+                                                                      "Average Monthly Uniform Singapore Energy Prices (USEP)",
+                                                                      "Monthly Town Gas Tariffs"),
+                                                          selected = "Electricity")
+                                             
+                                           )
+                                           )
+                                         )
+                                       )
+                              ),
                  )
-                 # ,
-                 # 
-                 #   dashboardBody(
-                 #     tabItems(
-                 #       tabItem(tabName = "tab_dashboard",
-                 #               fluidPage(titlePanel("tab_dashboard"),
-                 #                         sidebarPanel(
-                 #                           textInput("txt", "Text input:", "text here"),
-                 #                           sliderInput("slider", "Slider input:", 1, 100, 30),
-                 #                           actionButton("action", "Button"),
-                 #                           actionButton("action2", "Button2", class = "btn-primary")
-                 #                         ),)),
-                 #       tabItem(tabName = "tab_tweet_wall"),
-                 #       tabItem(tabName = "tab_about")
-                 #     )
-                 #   )
                )
                
 )
