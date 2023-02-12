@@ -58,6 +58,10 @@ T5.5 <- read_csv("data/T5-5.csv")
 saveRDS(T5.4, file = "data/RDS/T5-5.rds")
 ```
 
+```{r}
+T2.3 <- readRDS(file = "data/RDS/T2-3.rds")
+```
+
 ```{r, warning=FALSE, message=FALSE}
 consumption <- read_csv("data/T3-5.csv")
 consumption <- consumption %>% 
