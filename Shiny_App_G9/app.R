@@ -210,6 +210,11 @@ To address this challenge, we build this RShinny app to provide relevant stakeho
 )
 
 server = function(input, output) {
+  
+  
+  
+  # ----------------- Box plot ------------------ #
+  
   output$boxplot <- renderPlotly({
     ggplotly(
       consumption %>% 

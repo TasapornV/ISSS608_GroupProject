@@ -15,7 +15,48 @@ for(p in packages){
 }
 ```
 
-## 2. Importing data
+## 2. Read data and compress in RDS file
+
+```{r read data, warning=FALSE, message=FALSE}
+T2.3 <- read_csv("data/T2-3.csv")
+saveRDS(T2.3, file = "data/RDS/T2-3.rds")
+
+T2.6 <- read_csv("data/T2-6.csv")
+saveRDS(T2.6, file = "data/RDS/T2-6.rds")
+
+T3.4 <- read_csv("data/T3-4.csv")
+saveRDS(T3.4, file = "data/RDS/T3-4.rds")
+
+T3.5 <- read_csv("data/T3-5.csv")
+saveRDS(T3.5, file = "data/RDS/T3-5.rds")
+
+T3.6 <- read_csv("data/T3-6.csv")
+saveRDS(T3.6, file = "data/RDS/T3-6.rds")
+
+T3.7 <- read_csv("data/T3-7.csv")
+saveRDS(T3.7, file = "data/RDS/T3-7.rds")
+
+T3.8 <- read_csv("data/T3-8.csv")
+saveRDS(T3.8, file = "data/RDS/T3-8.rds")
+
+T3.9 <- read_csv("data/T3-9.csv")
+saveRDS(T3.9, file = "data/RDS/T3-9.rds")
+
+T5.1 <- read_csv("data/T5-1.csv")
+saveRDS(T5.1, file = "data/RDS/T5-1.rds")
+
+T5.2 <- read_csv("data/T5-2.csv")
+saveRDS(T5.2, file = "data/RDS/T5-2.rds")
+
+T5.3 <- read_csv("data/T5-3.csv")
+saveRDS(T5.3, file = "data/RDS/T5-3.rds")
+
+T5.4 <- read_csv("data/T5-4.csv")
+saveRDS(T5.4, file = "data/RDS/T5-4.rds")
+
+T5.5 <- read_csv("data/T5-5.csv")
+saveRDS(T5.4, file = "data/RDS/T5-5.rds")
+```
 
 ```{r, warning=FALSE, message=FALSE}
 consumption <- read_csv("data/T3-5.csv")
