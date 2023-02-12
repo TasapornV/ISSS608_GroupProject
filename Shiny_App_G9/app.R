@@ -25,11 +25,12 @@ T5.3 <- readRDS(file = "RDS/T5-3.rds")
 T5.4 <- readRDS(file = "RDS/T5-4.rds")
 T5.5 <- readRDS(file = "RDS/T5-5.rds")
 
-#wrangling data
-consumption <- T3.5
-consumption <- consumption %>% 
-  mutate(kwh_per_acc = as.numeric(kwh_per_acc)) %>% 
-  mutate(year = as.character(year))
+# wrangling data
+# consumption <- T3.5
+# consumption <- consumption %>%
+#   mutate(kwh_per_acc = as.numeric(kwh_per_acc)) %>%
+#   mutate(year = as.character(year))
+
 
 ## Set up parameter
 years <- c("2022","2021", "2020", "2019", "2018", "2017")
@@ -63,22 +64,27 @@ users explore more information about the Singapore energy market easily through 
 ui = fluidPage(
   theme = shinytheme("slate"),
   headerPanel(title = "Singapore Energy Consumption"),
+  
   dashboardSidebar(
     navlistPanel(
       widths = c(3, 9),
+      
+      # ========================== OVERVIEW ========================== #      
       tabPanel("OVERVIEW",tabName = "overview",icon = icon("chalkboard-user"),
                navbarPage("OVERVIEW", 
+                          # =================== Introduction =================== # 
                           tabPanel("Introduction",introtext),
+                          
+                          # ====================== Boxplot ====================== #
                           tabPanel("Boxplot",
                                    fluidPage(
                                      fluidRow(
-                                       column(3,
-                                              wellPanel(
-                                                pickerInput(inputId = "BoxYear", label = "Select Year", choices = years, selected = "2022", 
-                                                            options = list(`actions-box` = TRUE), multiple = F
-                                                ),
-                                                checkboxGroupInput("BoxRegion", label = "Select Region", choices = regions, selected = regions)
-                                              )
+                                       column(3,wellPanel(
+                                         pickerInput(inputId = "BoxYear", label = "Select Year", choices = years, selected = "2022", 
+                                                     options = list(`actions-box` = TRUE), multiple = F
+                                         ),
+                                         checkboxGroupInput("BoxRegion", label = "Select Region", choices = regions, selected = regions)
+                                       )
                                        ),
                                        column(width = 9, plotlyOutput("boxplot",height=400))
                                      )
@@ -86,23 +92,25 @@ ui = fluidPage(
                                    
                           ),
                           
+                          # ====================== Geofacet ====================== #
                           tabPanel("Geofacet",
                                    fluidPage(
                                      fluidRow(
-                                       column(3,
-                                              wellPanel(
-                                                pickerInput(
-                                                  inputId = "GeofacetYear", label = "Select Year", choices = years,
-                                                  selected = "2022", options = list(`actions-box` = TRUE), multiple = F
-                                                ),
-                                                checkboxGroupInput("GeofacetRegion", label = "Select Region",
-                                                                   choices = regions, selected = regions)
-                                              )
+                                       column(3,wellPanel(
+                                         pickerInput(
+                                           inputId = "GeofacetYear", label = "Select Year", choices = years,
+                                           selected = "2022", options = list(`actions-box` = TRUE), multiple = F
+                                         ),
+                                         checkboxGroupInput("GeofacetRegion", label = "Select Region",
+                                                            choices = regions, selected = regions)
+                                       )
                                        ),
                                        column(9)
                                      )
                                    )
                           ),
+                          
+                          # ====================== Lineplot ====================== #
                           
                           tabPanel("Lineplot",
                                    fluidPage(
@@ -126,6 +134,8 @@ ui = fluidPage(
                                    )
                           ),
                           
+                          # ====================== Bar chart ====================== #
+                          
                           tabPanel("Barchart",
                                    fluidPage(
                                      fluidRow(
@@ -139,56 +149,153 @@ ui = fluidPage(
                                      )
                                    )
                           )
+                          # ******************* END Bar chart ******************* #
                )
       ),
+      
+      # ************************ END OVERVIEW ************************ #       
+      
+      # ========================== CLUSTERING ========================== #
       
       tabPanel("CLUSTERING", tabName = "clustering", icon = icon("circle-nodes"),
                navbarPage("CLUSTERING", 
                           tabPanel("Hierachical Clustering"),
-                          tabPanel("Choropleth map"),
+                          tabPanel("DTW"),
                           tabPanel("Time Series Clustering")
                )
       ),
       
+      # ************************ END CLUSTERING ************************ #
+      
+      # ========================== INFERENTIAL ========================== #     
+      
       tabPanel("INFERENTIAL STATISTICS", tabName = "inferential", icon = icon("magnifying-glass-chart"),
                navbarPage("INFERENTIAL STATISTICS", 
-                          tabPanel("ANOVA"),
-                          tabPanel("Correlation Analysis")
+                          
+                          # ====================== Anova ====================== #
+                          tabPanel("ANOVA",
+                                   fluidPage(
+                                     fluidRow(
+                                       column(3,
+                                              wellPanel(
+                                                pickerInput(inputId = "AnovaVar1", label = "Select Variable", 
+                                                            choices = years, selected = "2022", 
+                                                            options = list(`actions-box` = TRUE), multiple = F
+                                                ),
+                                                pickerInput(inputId = "AnovaVar2", label = "Select Dependent Variable", 
+                                                            choices = years, selected = "2022", 
+                                                            options = list(`actions-box` = TRUE), multiple = F
+                                                ),
+                                                sliderInput("slider_significant", "Significance level (alpha):",min = 0.0001, 
+                                                            max = 0.01, 
+                                                            value =  0.001)
+                                              )
+                                       ),
+                                       column(width = 9, plotlyOutput("boxplot",height=400))
+                                     )
+                                   )),
+                          # ====================== End Anova ====================== #
+                          
+                          # ====================== Correlation ====================== #
+                          tabPanel("Correlation Analysis",
+                                   fluidPage(
+                                     fluidRow(
+                                       column(3,
+                                              wellPanel(
+                                                pickerInput(inputId = "CorreSelect", label = "Select Dataset", 
+                                                            choices = years, selected = "2022", 
+                                                            options = list(`actions-box` = TRUE), multiple = F)
+                                              )
+                                       ),
+                                       column(width = 9, plotlyOutput("boxplot",height=400))
+                                     )
+                                   )
+                          )
+                          
+                          # ******************** End Correlation ******************** #
                )
       ),
+      
+      # ************************* END INFERENTIAL ************************* #        
+      
+      # ========================== TIME SERIES ========================== #     
       
       tabPanel("TIME SERIES FORECASTING", tabName = "time_series", icon = icon("chart-line"),
-               fluidPage(titlePanel("TIME SERIES FORECASTING"),
-                         sidebarPanel(
-                           textInput("txt", "Text input:", "text here"),
-                           sliderInput("slider", "Slider input:", 1, 100, 30),
-                           actionButton("action", "Button"),
-                           actionButton("action2", "Button2", class = "btn-primary")
-                         )
+               navbarPage("TIME SERIES FORECASTING",
+                          
+                          # ==================== Electricity consumption ==================== #
+                          tabPanel("Electricity consumption",
+                                   fluidPage(
+                                     fluidRow(
+                                       column(3,
+                                              wellPanel(
+                                                pickerInput(inputId = "BoxYear", label = "Select Year", 
+                                                            choices = years, selected = "2022", 
+                                                            options = list(`actions-box` = TRUE), multiple = F)
+                                              )
+                                       ),
+                                       column(width = 9, plotlyOutput("boxplot",height=400))
+                                     )
+                                   )
+                          ),
+                          
+                          # ******************** End Electricity consumption ******************** #
+                          
+                          # ======================= Oil consumption ======================= #
+                          tabPanel("Oil consumption",
+                                   fluidPage(
+                                     fluidRow(
+                                       column(3,
+                                              wellPanel(
+                                                pickerInput(inputId = "BoxYear", label = "Select Year", 
+                                                            choices = years, selected = "2022", 
+                                                            options = list(`actions-box` = TRUE), multiple = F)
+                                              )
+                                       ),
+                                       column(width = 9, plotlyOutput("boxplot",height=400))
+                                     )
+                                   )
+                          )
+                          
+                          # ******************** End Oil consumption ******************** #
                )
       ),
       
+      # *************************** END TIME SERIES *************************** #
+      
+      # =============================== DATA =============================== #     
+      
       tabPanel("DATA", tabName = "data", icon = icon("table"),
-               fluidPage(
-                 fluidRow(
-                   column(4,
-                          wellPanel(
-                            selectizeInput('SelectColumn', "Select Column", choices = c("A","B","C") ,multiple = TRUE)
-                          )
-                   ),
-                   column(8,
-                          wellPanel(
-                            radioButtons("SelectTable",
-                                         label = "Select Data",
-                                         choices = tables,
-                                         selected = "Electricity")
-                          )
-                   ),
-                   column(12, dataTableOutput("table"))
-                 )
+               navbarPage("DATA",
+                          tabPanel("data table",
+                                   fluidPage(
+                                     fluidRow(
+                                       column(4,
+                                              wellPanel(
+                                                selectizeInput('SelectColumn', "Select Column", choices = c("A","B","C") ,multiple = TRUE)
+                                              )
+                                       ),
+                                       column(8,
+                                              wellPanel(
+                                                radioButtons("SelectTable",
+                                                             label = "Select Data",
+                                                             choices = tables,
+                                                             selected = "Electricity")
+                                              )
+                                       ),
+                                       column(12, dataTableOutput("table"))
+                                     )
+                                   ))
                )
       ),
+      
+      # ******************************* END DATA ******************************* #    
+      
+      # =============================== ABOUT =============================== #    
+      
       tabPanel("ABOUT", tabName = "about", icon = icon("info"))
+      
+      # ****************************** END ABOUT ****************************** #    
     )
   )
 )
@@ -198,20 +305,21 @@ server = function(input, output) {
   # --------------------- Table --------------------- #
   observeEvent((input$SelectTable),
                { if(input$SelectTable == "T2.3")  tabletext <- T2.3
-                 if(input$SelectTable == "T2.6")  tabletext <- T2.6
-                 if(input$SelectTable == "T3.4")  tabletext <- T3.4
-                 if(input$SelectTable == "T3.5")  tabletext <- T3.5
-                 if(input$SelectTable == "T3.6")  tabletext <- T3.6
-                 if(input$SelectTable == "T3.7")  tabletext <- T3.7
-                 if(input$SelectTable == "T3.8")  tabletext <- T3.8
-                 if(input$SelectTable == "T3.9")  tabletext <- T3.9
-                 if(input$SelectTable == "T5.1")  tabletext <- T5.1
-                 if(input$SelectTable == "T5.2")  tabletext <- T5.2
-                 if(input$SelectTable == "T5.3")  tabletext <- T5.3
-                 if(input$SelectTable == "T5.4")  tabletext <- T5.4
-                 if(input$SelectTable == "T5.5")  tabletext <- T5.5
-                 
-                 output$table <- renderDataTable(tabletext)}
+               if(input$SelectTable == "T2.6")  tabletext <- T2.6
+               if(input$SelectTable == "T3.4")  tabletext <- T3.4
+               if(input$SelectTable == "T3.5")  tabletext <- T3.5
+               if(input$SelectTable == "T3.6")  tabletext <- T3.6
+               if(input$SelectTable == "T3.7")  tabletext <- T3.7
+               if(input$SelectTable == "T3.8")  tabletext <- T3.8
+               if(input$SelectTable == "T3.9")  tabletext <- T3.9
+               if(input$SelectTable == "T5.1")  tabletext <- T5.1
+               if(input$SelectTable == "T5.2")  tabletext <- T5.2
+               if(input$SelectTable == "T5.3")  tabletext <- T5.3
+               if(input$SelectTable == "T5.4")  tabletext <- T5.4
+               if(input$SelectTable == "T5.5")  tabletext <- T5.5
+               output$table <- renderDataTable(tabletext)
+               }
+               
   )
   
   
