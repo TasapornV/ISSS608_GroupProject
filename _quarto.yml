@@ -19,7 +19,7 @@ website:
       href: "proposal.html"
     - text: "Poster"
     - text: "Shiny App"
-      href: "https://tasapornv.shinyapps.io/Shiny_App_G9/""
+      href: "https://tasapornv.shinyapps.io/Shiny_App_G9/"
     - text: "Meeting Minutes"
       href: MOM.qmd
     right:
