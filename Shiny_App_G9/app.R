@@ -67,7 +67,7 @@ ui = fluidPage(
   dashboardSidebar(
     navlistPanel(
       widths = c(3, 9),
-      tabPanel("OVERVIEW",tabName = "overview",icon = icon("dashboard"),
+      tabPanel("OVERVIEW",tabName = "overview",icon = icon("chalkboard-user"),
                navbarPage("OVERVIEW", 
                           tabPanel("Introduction",introtext),
                           tabPanel("Boxplot",
@@ -146,7 +146,7 @@ ui = fluidPage(
                )
       ),
       
-      tabPanel("CLUSTERING", tabName = "clustering", icon = icon("stream"),
+      tabPanel("CLUSTERING", tabName = "clustering", icon = icon("circle-nodes"),
                navbarPage("CLUSTERING", 
                           tabPanel("Hierachical Clustering"),
                           tabPanel("Choropleth map"),
@@ -154,14 +154,14 @@ ui = fluidPage(
                )
       ),
       
-      tabPanel("INFERENTIAL STATISTICS", tabName = "inferential", icon = icon("info"),
+      tabPanel("INFERENTIAL STATISTICS", tabName = "inferential", icon = icon("magnifying-glass-chart"),
                navbarPage("INFERENTIAL STATISTICS", 
                           tabPanel("ANOVA"),
                           tabPanel("Correlation Analysis")
                )
       ),
       
-      tabPanel("TIME SERIES FORECASTING", tabName = "time_series", icon = icon("info"),
+      tabPanel("TIME SERIES FORECASTING", tabName = "time_series", icon = icon("chart-line"),
                fluidPage(titlePanel("TIME SERIES FORECASTING"),
                          sidebarPanel(
                            
@@ -173,7 +173,7 @@ ui = fluidPage(
                )
       ),
       
-      tabPanel("DATA", tabName = "data", icon = icon("info"),
+      tabPanel("DATA", tabName = "data", icon = icon("table"),
                fluidPage(
                  fluidRow(
                    column(4,
