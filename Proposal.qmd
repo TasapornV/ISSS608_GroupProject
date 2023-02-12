@@ -15,9 +15,11 @@ format:
 
 ## Introduction
 
-Singapore has progressively moved towards an open electricity market since 2001 with the objectives to ensure reliable energy supply and promote effective competition in the energy market.
+Singapore has progressively moved towards an open electricity market since 2001 to ensure a reliable energy supply and promote effective competition in the energy market.
 
-To support these objectives, we build this RShinny app to provide relevant stakeholders with deeper understanding of the Singapore electricity and gas consumption through several analytics models and visualizations.
+However, it is challenging to analyze the energy market and make informed decisions due to several variable components that could influence the market. First, the price of electricity in the wholesale market fluctuates depending on the electricity demand and supply, which are dependent on consumption patterns as well as gas industry respectively. About 95% of electricity is generated using natural gas. Next, there are also multiple parties (Electricity Market Authority, Power generation companies, Electricity Retailers, etc) involved in the electricity market.
+
+To address this challenge, we build this RShinny app to provide relevant stakeholders with means of analyzing and explore the large dataset using applicable analytics models. Also, we want to help the users digest the information about the Singapore energy market easily through visualizations.
 
 ## Proposed Scope
 
@@ -107,11 +109,11 @@ Correlation plots, also known as correlograms for more than two variables, facil
 
 #### Analysis
 
-The objective of the forecasting visualization is to develop a tool that allows the user to select different data tables via data exploration and display the resulting forecast.
+The objective of the forecasting visualization is to develop a tool that allows the user to select different data tables via data exploration and display the resulting forecast. Different predictive models would be run and the model accuracy and confidence level would be make available to the users. The best performing model is recommended.
 
 #### Main R Packages
 
--   **modeltime:** The time series forecasting framework for use with the 'tidymodels' ecosystem. Models include ARIMA, Exponential Smoothing, and additional time series models from the 'forecast' and 'prophet' packages.
+-   **modeltime:** The time series forecasting framework for use with the 'tidymodels' ecosystem. Models considered include ARIMA, Exponential Smoothing, SARIMA, Long Short-Term Memory and additional time series models from the 'forecast', 'tseries' and 'prophet' packages.
 -   **tidymodels:** a collection of packages for modeling and machine learning using [**tidyverse**](https://www.tidyverse.org/) principles.
 
 #### Visual Design
@@ -125,3 +127,7 @@ A data view is introduced to provide the user with an overview of how the data a
 #### Visual Design
 
 ![](DesignDraft10.png)
+
+## Proposed Project Timeline
+
+![](images/Project%20timeline.png)

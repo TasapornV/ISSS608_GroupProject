@@ -66,6 +66,8 @@ A few topics and datasets have been considered during the discussion: 
 
 **Next meeting** 21 Jan 2023
 
+------------------------------------------------------------------------
+
 ### Minute of Meeting 2
 
 +-------------------------------------------------------------------------------------+
@@ -151,18 +153,104 @@ Explore ways to spin-off current idea and to discuss
 
 **Next meeting** 31 Jan 2023
 
+------------------------------------------------------------------------
+
 ### Minute of Meeting 3 (Consultation session)
 
++------------------------------------------------------------------------------------------+
+| **Date:** 31 Jan 2023                                                                    |
+|                                                                                          |
+| **Present**: KHOO Wei Lun, LAW Shiang Rou, Tasaporn VISAWAMETEEKUL                       |
+|                                                                                          |
+| **Absent**: NIL                                                                          |
+|                                                                                          |
+| **Minute taker**: Tasaporn VISAWAMETEEKUL                                                |
+|                                                                                          |
+| **Objective**: Finalise the topics and dataset to seek for comments/inputs from Prof Kam |
++------------------------------------------------------------------------------------------+
+
+**Discussion Points**
+
+-   Seek for Prof.Kam advice on the problem statement selected and the possible concern on the dataset.
+
+-   Prof's advice: Problem statement is how to make full use of the data to gain insights (for data analyst)
+
+-   The dataset from the competition has some concern about the missing data. Prof recommend using dataset which has rather complete data to build an application.
+
+-   Proposal need to include:
+
+    1.  data visualization sketch
+
+    2.  packages we plan to use
+
+    3.  analysis we plan to do
+
+**Action Items**
+
+1.  Explore DAL and other datasets suggested by Prof Kam
+
+2.  Finalise dataset to move forward with the project
+
+3.  Brainstorm on visual techniques that can be applied or explored
+
+**Next meeting** 4 Feb 2023
+
+------------------------------------------------------------------------
+
+### Minute of Meeting 4
+
 +--------------------------------------------------------------------+
-| **Date:** 31 Jan 2023                                              |
+| **Date:** 4 Feb 2023 \|                                            |
 |                                                                    |
 | **Present**: KHOO Wei Lun, LAW Shiang Rou, Tasaporn VISAWAMETEEKUL |
 |                                                                    |
 | **Absent**: NIL                                                    |
 |                                                                    |
-| **Minute taker**: Tasaporn VISAWAMETEEKUL                          |
+| **Minute taker**: Khoo Wei Lun \|                                  |
 |                                                                    |
-| **Objective**:                                                     |
+| **Objective**: To draft an approach for the project \|             |
 +--------------------------------------------------------------------+
 
 **Discussion Points**
+
+Create skeleton for project content:
+
+-   Overview of Singapore Electricity
+
+    1.  Establish storyline
+
+    2.  Exploratory data analysis
+
+-   Content
+
+    1.  Keep it open for user exploration
+
+-   Inferential Analysis
+
+    1.  Correlation with consumption: supply, price, planning area characteristics, demographics
+
+    2.  ANOVA by months, regions, type of dwellings
+
+-   Electricity consumption pattern clustering
+
+    1.  Electricity consumption pattern clustering
+
+    2.  Spatial clustering - patterns of consumption, dwelling type, overall country
+
+    3.  Temporal clustering - grouping months by power consumption
+
+-   Forecasting
+
+    1.  Prediction on price, consumption and supply
+
+    2.  Time series forecasting (ARIMA, ETS -- enable selection)
+
+**Action Items**
+
+1.  Create shared git repository for the project
+
+2.  Sketch visualisation designs
+
+3.  Create first draft for proposal
+
+**Next meeting** 11 Feb 2023
