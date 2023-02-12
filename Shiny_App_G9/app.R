@@ -4,8 +4,28 @@ library(shinythemes)
 library(shinydashboard)
 library(shinyWidgets)
 
-
+#set up library
+packages = c('tidyverse', 'ggstatsplot', 'psych', 'lubridate', 'ggrepel', 'plotly')
+for(p in packages){
+  if(!require(p,character.only = T)){
+    install.packages(p)
+  }
+  library(p,character.only = T)
+}
 ## Read data file
+consumption <- read_csv("data/T3-5.csv")
+
+
+#wrangling data
+consumption <- consumption %>% 
+  mutate(kwh_per_acc = as.numeric(kwh_per_acc)) %>% 
+  mutate(year = as.character(year))
+
+a <- consumption %>% 
+  select("year", "kwh_per_acc") %>% 
+  group_by(year) %>%
+  na.omit() %>%
+  summarize(kwh_per_acc=mean(kwh_per_acc))
 
 ## Set up parameter
 tickers <- c("2022","2021", "2020", "2019", "2018", "2017")
@@ -51,7 +71,7 @@ To address this challenge, we build this RShinny app to provide relevant stakeho
                                                                  )
                                                                )
                                                                ),
-                                                               column(9)
+                                                               column(width = 9, plotlyOutput("boxplot",height=400))
                                                              )
                                                            )
                                                            
@@ -188,7 +208,24 @@ To address this challenge, we build this RShinny app to provide relevant stakeho
                
 )
 
-server = function(input, output) {}
+server = function(input, output) {
+  
+  output$boxplot <- renderPlotly({
+    ggplotly(
+      consumption %>% 
+        group_by(year) %>%
+        # filter(year == "2022") %>% 
+        ggplot(mapping = aes(x = year, y = kwh_per_acc)) +
+        # Make grouped box plot
+        geom_boxplot(aes(fill = as.factor(Region)), color = "grey") +
+        theme_minimal() +
+        theme(legend.position = "top") +
+        scale_fill_viridis_d(option = "C") +
+        labs(title = "Average consumption per year by Region", y="kwh per acc", fill = "Region")
+    )
+  }
+  )
+}
 
 
 shinyApp(ui = ui, server = server)
