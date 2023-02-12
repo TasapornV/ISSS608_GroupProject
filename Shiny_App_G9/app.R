@@ -178,14 +178,18 @@ ui = fluidPage(
                  fluidRow(
                    column(4,
                           wellPanel(
-                            selectizeInput('SelectColumn', "Select Column", choices = c("A","B","C") ,multiple = TRUE),
+                            selectizeInput('SelectColumn', "Select Column", choices = c("A","B","C") ,multiple = TRUE)
+                          )
+                   ),
+                   column(8,
+                          wellPanel(
                             radioButtons("SelectTable",
                                          label = "Select Data",
                                          choices = tables,
                                          selected = "Electricity")
                           )
                    ),
-                   column(8, dataTableOutput("table"))
+                   column(12, dataTableOutput("table"))
                  )
                )
       ),
