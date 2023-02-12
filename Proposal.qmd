@@ -61,15 +61,15 @@ To provide users some basic insights on the Singapore energy market, an Overview
 
 #### Proposed Visual Design
 
-![](DesignDraft1.png)
+![](images/DesignDraft1.png)
 
-![](DesignDraft2.png)
+![](images/DesignDraft2.png)
 
-![](DesignDraft3.png)
+![](images/DesignDraft3.png)
 
-![](DesignDraft5.png)
+![](images/DesignDraft5.png)
 
-![](DesignDraft4.png)
+![](images/DesignDraft4.png)
 
 ### Clustering Analysis
 
@@ -83,9 +83,9 @@ Clustering analysis is performed to help users identify clusters with different 
 
 #### Porposed Visual Design
 
-![](DesignDraft6.png)
+![](images/DesignDraft6.png)
 
-![](DesignDraft6.5.png)
+![](images/DesignDraft6.5.png)
 
 ### Inferential Analysis
 
@@ -101,9 +101,9 @@ Correlation plots, also known as correlograms for more than two variables, facil
 
 #### Porposed Visual Design
 
-![](DesignDraft8.png)
+![](images/DesignDraft8.png)
 
-![](DesignDraft7.png)
+![](images/DesignDraft7.png)
 
 ### Forecasting
 
@@ -124,7 +124,7 @@ A data view is introduced to provide the user with an overview of how the data a
 
 #### Visual Design
 
-![](DesignDraft10.png)
+![](images/DesignDraft10.png)
 
 ## Proposed Project Timeline
 
