@@ -19,7 +19,7 @@ Singapore has progressively moved towards an open electricity market since 2001 
 
 However, it is challenging to analyze the energy market and make informed decisions due to several variable components that could influence the market. First, the price of electricity in the wholesale market fluctuates depending on the electricity demand and supply, which are dependent on consumption patterns as well as gas industry respectively. About 95% of electricity is generated using natural gas. Next, there are also multiple parties (Electricity Market Authority, Power generation companies, Electricity Retailers, etc) involved in the electricity market.
 
-To address this challenge, we build this RShinny app to provide relevant stakeholders with means of analyzing and explore the large dataset using applicable analytics models. Also, we want to help the users digest the information about the Singapore energy market easily through visualizations.
+To address this challenge, we build this RShinny app to provide relevant stakeholders with means to analyse and understand the data with applicable analytics models. Also, we want to help the users explore more information about the Singapore energy market easily through visualizations.
 
 ## Proposed Scope
 
@@ -34,7 +34,7 @@ A detailed description and sketch of the proposed analyses and visualizations ar
 
 ## Data
 
-The data used in this project is extracted from Energy Market Authority (EMA) Singapore. It contains data between year 2005 and 2022, with a total of 35 tabs. The tabs are broadly categorized into 7 sections, namely:
+The data used in this project is extracted from [Energy Market Authority (EMA) Singapore](https://www.ema.gov.sg/Singapore_Energy_Statistics.aspx). It contains data between year 2005 and 2022, with a total of 35 tabs. The tabs are broadly categorized into 7 sections, namely:
 
 1.  Energy Supply
 2.  Energy Transformation
@@ -73,9 +73,9 @@ To provide users some basic insights on the Singapore energy market, an Overview
 
 ### Clustering Analysis
 
-Clustering analysis is performed to help users identify clusters with different consumption patterns. The clustering analysis is done using the consumption data for each planning area and dwelling type over time. This analysis will help stakeholders in performing future strategic planning activities such as supply planning and pricing.
+Clustering analysis is performed to help users identify clusters with different consumption patterns. The clustering analysis is done using the consumption data for each planning area and dwelling type over time. This analysis will help stakeholders in future strategic planning activities such as supply planning and pricing.
 
-#### Main R Packages
+#### Main R Packages & Functions
 
 -   **dtwclust:** for time series clustering
 -   **dendextend:** to visualize and compare hierarchical clustering's dendogram
@@ -85,15 +85,15 @@ Clustering analysis is performed to help users identify clusters with different 
 
 ![](DesignDraft6.png)
 
-### Inferential Analysis
+![](DesignDraft6.5.png)
 
-#### Analysis
+### Inferential Analysis
 
 When we have more than two sample groups, we utilize ANOVA (Analysis of Variance) to see if there are any statistically significant differences between the means of two or more independent sample groups. In other words, it compares the means of different samples to determine the influence of one or more factors.
 
 Correlation plots, also known as correlograms for more than two variables, facilitate the visualization of the correlation between continuous variables.
 
-#### Main R Packages
+#### Main R Packages & Functions
 
 -   **ggplot2:** for descriptive visualization such as boxplots
 -   **ggbetweenstats:** A combination of box and violin plots along with jittered data points for between-subjects designs with statistical details included in the plot as a subtitle
@@ -107,16 +107,14 @@ Correlation plots, also known as correlograms for more than two variables, facil
 
 ### Forecasting
 
-#### Analysis
-
 The objective of the forecasting visualization is to develop a tool that allows the user to select different data tables via data exploration and display the resulting forecast. Different predictive models would be run and the model accuracy and confidence level would be make available to the users. The best performing model is recommended.
 
-#### Main R Packages
+#### Main R Packages & Functions
 
 -   **modeltime:** The time series forecasting framework for use with the 'tidymodels' ecosystem. Models considered include ARIMA, Exponential Smoothing, SARIMA, Long Short-Term Memory and additional time series models from the 'forecast', 'tseries' and 'prophet' packages.
 -   **tidymodels:** a collection of packages for modeling and machine learning using [**tidyverse**](https://www.tidyverse.org/) principles.
 
-#### Visual Design
+#### Proposed Visual Design
 
 ![](DesignDraft9.png)
 
