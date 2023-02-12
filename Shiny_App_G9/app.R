@@ -60,7 +60,6 @@ To address this challenge, we build this RShinny app to provide relevant stakeho
 to analyse and understand the data with applicable analytics models. Also, we want to help the 
 users explore more information about the Singapore energy market easily through visualizations."
 
-
 ui = fluidPage(
   theme = shinytheme("slate"),
   headerPanel(title = "Singapore Energy Consumption"),
@@ -121,12 +120,12 @@ ui = fluidPage(
                                                             choices = c("price", "consumption", "supply"),
                                                             selected = c("price", "consumption", "supply")
                                          )
-                                         
                                        )
                                        )
                                      )
                                    )
                           ),
+                          
                           tabPanel("Barchart",
                                    fluidPage(
                                      fluidRow(
@@ -139,9 +138,6 @@ ui = fluidPage(
                                        )
                                      )
                                    )
-                                   
-                                   
-                                   
                           )
                )
       ),
@@ -164,7 +160,6 @@ ui = fluidPage(
       tabPanel("TIME SERIES FORECASTING", tabName = "time_series", icon = icon("chart-line"),
                fluidPage(titlePanel("TIME SERIES FORECASTING"),
                          sidebarPanel(
-                           
                            textInput("txt", "Text input:", "text here"),
                            sliderInput("slider", "Slider input:", 1, 100, 30),
                            actionButton("action", "Button"),
@@ -196,7 +191,6 @@ ui = fluidPage(
       tabPanel("ABOUT", tabName = "about", icon = icon("info"))
     )
   )
-  
 )
 
 server = function(input, output) {
@@ -238,8 +232,6 @@ server = function(input, output) {
     )
   }
   )
-  
-  
 }
 
 
