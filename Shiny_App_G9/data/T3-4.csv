@@ -1,0 +1,2283 @@
+year,month,DWELLING_TYPE,consumption_GWh
+2005,1,Overall,447.8
+2005,2,Overall,437.1
+2005,3,Overall,479.7
+2005,4,Overall,533.6
+2005,5,Overall,535
+2005,6,Overall,560.2
+2005,7,Overall,537.4
+2005,8,Overall,528.8
+2005,9,Overall,516.3
+2005,10,Overall,520
+2005,11,Overall,518.6
+2005,12,Overall,478
+2005,1,Public Housing,280.7
+2005,2,Public Housing,270.8
+2005,3,Public Housing,295.4
+2005,4,Public Housing,331.6
+2005,5,Public Housing,330.5
+2005,6,Public Housing,347.9
+2005,7,Public Housing,335.3
+2005,8,Public Housing,330.1
+2005,9,Public Housing,321
+2005,10,Public Housing,319
+2005,11,Public Housing,319.7
+2005,12,Public Housing,295.4
+2005,1,1-room / 2-room,6.3
+2005,2,1-room / 2-room,6
+2005,3,1-room / 2-room,6.1
+2005,4,1-room / 2-room,6.9
+2005,5,1-room / 2-room,6.8
+2005,6,1-room / 2-room,7
+2005,7,1-room / 2-room,6.9
+2005,8,1-room / 2-room,7
+2005,9,1-room / 2-room,6.6
+2005,10,1-room / 2-room,6.5
+2005,11,1-room / 2-room,6.4
+2005,12,1-room / 2-room,6
+2005,1,3-room,52.9
+2005,2,3-room,51.5
+2005,3,3-room,55.4
+2005,4,3-room,61.4
+2005,5,3-room,61.5
+2005,6,3-room,64.4
+2005,7,3-room,61.9
+2005,8,3-room,61.7
+2005,9,3-room,59.4
+2005,10,3-room,59.1
+2005,11,3-room,59.1
+2005,12,3-room,55.3
+2005,1,4-room,111.1
+2005,2,4-room,107.3
+2005,3,4-room,117.1
+2005,4,4-room,131.5
+2005,5,4-room,130.9
+2005,6,4-room,138.3
+2005,7,4-room,133
+2005,8,4-room,130.8
+2005,9,4-room,127.5
+2005,10,4-room,126.6
+2005,11,4-room,127
+2005,12,4-room,117
+2005,1,5-room and Executive,110.4
+2005,2,5-room and Executive,106
+2005,3,5-room and Executive,116.8
+2005,4,5-room and Executive,131.8
+2005,5,5-room and Executive,131.2
+2005,6,5-room and Executive,138.1
+2005,7,5-room and Executive,133.5
+2005,8,5-room and Executive,130.7
+2005,9,5-room and Executive,127.6
+2005,10,5-room and Executive,126.8
+2005,11,5-room and Executive,127.2
+2005,12,5-room and Executive,117.2
+2005,1,Private Housing,166.2
+2005,2,Private Housing,165.5
+2005,3,Private Housing,183.3
+2005,4,Private Housing,200.9
+2005,5,Private Housing,203.5
+2005,6,Private Housing,211.3
+2005,7,Private Housing,201.1
+2005,8,Private Housing,197.7
+2005,9,Private Housing,194.3
+2005,10,Private Housing,200
+2005,11,Private Housing,197.8
+2005,12,Private Housing,181.6
+2005,1,Private Apartments and Condominiums,95.8
+2005,2,Private Apartments and Condominiums,94.8
+2005,3,Private Apartments and Condominiums,104.8
+2005,4,Private Apartments and Condominiums,117.9
+2005,5,Private Apartments and Condominiums,120.4
+2005,6,Private Apartments and Condominiums,124.5
+2005,7,Private Apartments and Condominiums,118.9
+2005,8,Private Apartments and Condominiums,116.2
+2005,9,Private Apartments and Condominiums,114.1
+2005,10,Private Apartments and Condominiums,118.1
+2005,11,Private Apartments and Condominiums,117.2
+2005,12,Private Apartments and Condominiums,106.9
+2005,1,Landed Properties,70.4
+2005,2,Landed Properties,70.7
+2005,3,Landed Properties,78.5
+2005,4,Landed Properties,83.1
+2005,5,Landed Properties,83.1
+2005,6,Landed Properties,86.8
+2005,7,Landed Properties,82.2
+2005,8,Landed Properties,81.4
+2005,9,Landed Properties,80.2
+2005,10,Landed Properties,81.9
+2005,11,Landed Properties,80.6
+2005,12,Landed Properties,74.7
+2005,1,Others,0.9
+2005,2,Others,0.9
+2005,3,Others,1
+2005,4,Others,1.1
+2005,5,Others,1.1
+2005,6,Others,1.1
+2005,7,Others,1
+2005,8,Others,1
+2005,9,Others,1
+2005,10,Others,1.1
+2005,11,Others,1
+2005,12,Others,0.9
+2005,Annual,Overall,6092.5
+2005,Annual,Public Housing,3777.4
+2005,Annual,1-room / 2-room,78.5
+2005,Annual,3-room,703.6
+2005,Annual,4-room,1498.1
+2005,Annual,5-room and Executive,1497.3
+2005,Annual,Private Housing,2303.2
+2005,Annual,Private Apartments and Condominiums,1349.6
+2005,Annual,Landed Properties,953.6
+2005,Annual,Others,12.1
+2006,1,Overall,465.5
+2006,2,Overall,452.3
+2006,3,Overall,470
+2006,4,Overall,511.3
+2006,5,Overall,522
+2006,6,Overall,533.2
+2006,7,Overall,513.2
+2006,8,Overall,544.2
+2006,9,Overall,541.4
+2006,10,Overall,525.7
+2006,11,Overall,535.2
+2006,12,Overall,495
+2006,1,Public Housing,289.6
+2006,2,Public Housing,277.9
+2006,3,Public Housing,286.1
+2006,4,Public Housing,311.8
+2006,5,Public Housing,318.9
+2006,6,Public Housing,329
+2006,7,Public Housing,317.4
+2006,8,Public Housing,334.9
+2006,9,Public Housing,331.8
+2006,10,Public Housing,320
+2006,11,Public Housing,327.2
+2006,12,Public Housing,302.4
+2006,1,1-room / 2-room,5.8
+2006,2,1-room / 2-room,5.5
+2006,3,1-room / 2-room,5.4
+2006,4,1-room / 2-room,5.9
+2006,5,1-room / 2-room,6
+2006,6,1-room / 2-room,6.1
+2006,7,1-room / 2-room,5.9
+2006,8,1-room / 2-room,6.1
+2006,9,1-room / 2-room,6.1
+2006,10,1-room / 2-room,6
+2006,11,1-room / 2-room,6.1
+2006,12,1-room / 2-room,5.8
+2006,1,3-room,53.3
+2006,2,3-room,51.8
+2006,3,3-room,52.9
+2006,4,3-room,57.8
+2006,5,3-room,59.1
+2006,6,3-room,60.7
+2006,7,3-room,58.4
+2006,8,3-room,61.3
+2006,9,3-room,60.7
+2006,10,3-room,59
+2006,11,3-room,59.6
+2006,12,3-room,55.5
+2006,1,4-room,114.8
+2006,2,4-room,109.9
+2006,3,4-room,113.7
+2006,4,4-room,123.8
+2006,5,4-room,126.6
+2006,6,4-room,130.8
+2006,7,4-room,125.8
+2006,8,4-room,133.1
+2006,9,4-room,131.5
+2006,10,4-room,126.8
+2006,11,4-room,129.7
+2006,12,4-room,119.6
+2006,1,5-room and Executive,115.6
+2006,2,5-room and Executive,110.7
+2006,3,5-room and Executive,114
+2006,4,5-room and Executive,124.3
+2006,5,5-room and Executive,127.2
+2006,6,5-room and Executive,131.5
+2006,7,5-room and Executive,127.3
+2006,8,5-room and Executive,134.4
+2006,9,5-room and Executive,133.4
+2006,10,5-room and Executive,128.2
+2006,11,5-room and Executive,131.8
+2006,12,5-room and Executive,121.4
+2006,1,Private Housing,175
+2006,2,Private Housing,173.5
+2006,3,Private Housing,183
+2006,4,Private Housing,198.5
+2006,5,Private Housing,202.1
+2006,6,Private Housing,203.2
+2006,7,Private Housing,194.8
+2006,8,Private Housing,208.3
+2006,9,Private Housing,208.6
+2006,10,Private Housing,204.6
+2006,11,Private Housing,207
+2006,12,Private Housing,191.6
+2006,1,Private Apartments and Condominiums,103.5
+2006,2,Private Apartments and Condominiums,100.8
+2006,3,Private Apartments and Condominiums,106.2
+2006,4,Private Apartments and Condominiums,117.3
+2006,5,Private Apartments and Condominiums,121
+2006,6,Private Apartments and Condominiums,121.7
+2006,7,Private Apartments and Condominiums,116.9
+2006,8,Private Apartments and Condominiums,124.1
+2006,9,Private Apartments and Condominiums,124.6
+2006,10,Private Apartments and Condominiums,121.3
+2006,11,Private Apartments and Condominiums,124.1
+2006,12,Private Apartments and Condominiums,114.5
+2006,1,Landed Properties,71.5
+2006,2,Landed Properties,72.7
+2006,3,Landed Properties,76.8
+2006,4,Landed Properties,81.2
+2006,5,Landed Properties,81.1
+2006,6,Landed Properties,81.5
+2006,7,Landed Properties,78
+2006,8,Landed Properties,84.2
+2006,9,Landed Properties,84
+2006,10,Landed Properties,83.3
+2006,11,Landed Properties,82.9
+2006,12,Landed Properties,77.1
+2006,1,Others,0.9
+2006,2,Others,0.9
+2006,3,Others,0.9
+2006,4,Others,1.1
+2006,5,Others,1.1
+2006,6,Others,1.1
+2006,7,Others,1
+2006,8,Others,1
+2006,9,Others,1
+2006,10,Others,1.1
+2006,11,Others,1.1
+2006,12,Others,1
+2006,Annual,Overall,6109
+2006,Annual,Public Housing,3747
+2006,Annual,1-room / 2-room,70.7
+2006,Annual,3-room,690.1
+2006,Annual,4-room,1486.1
+2006,Annual,5-room and Executive,1499.8
+2006,Annual,Private Housing,2350.2
+2006,Annual,Private Apartments and Condominiums,1396
+2006,Annual,Landed Properties,954.3
+2006,Annual,Others,12.2
+2007,1,Overall,473.6
+2007,2,Overall,444.4
+2007,3,Overall,451.8
+2007,4,Overall,511
+2007,5,Overall,542.8
+2007,6,Overall,556
+2007,7,Overall,563.1
+2007,8,Overall,555
+2007,9,Overall,513.6
+2007,10,Overall,514.7
+2007,11,Overall,547.9
+2007,12,Overall,489.9
+2007,1,Public Housing,291.5
+2007,2,Public Housing,271.6
+2007,3,Public Housing,274.4
+2007,4,Public Housing,311.5
+2007,5,Public Housing,330.2
+2007,6,Public Housing,340.3
+2007,7,Public Housing,343.6
+2007,8,Public Housing,340.6
+2007,9,Public Housing,315.6
+2007,10,Public Housing,314.5
+2007,11,Public Housing,333.8
+2007,12,Public Housing,299.9
+2007,1,1-room / 2-room,5.7
+2007,2,1-room / 2-room,5.5
+2007,3,1-room / 2-room,5.3
+2007,4,1-room / 2-room,5.8
+2007,5,1-room / 2-room,6.2
+2007,6,1-room / 2-room,6.4
+2007,7,1-room / 2-room,6.4
+2007,8,1-room / 2-room,6.3
+2007,9,1-room / 2-room,6.1
+2007,10,1-room / 2-room,6
+2007,11,1-room / 2-room,6.4
+2007,12,1-room / 2-room,5.9
+2007,1,3-room,53.5
+2007,2,3-room,51
+2007,3,3-room,50.4
+2007,4,3-room,57.3
+2007,5,3-room,60.8
+2007,6,3-room,62.6
+2007,7,3-room,63.2
+2007,8,3-room,62.8
+2007,9,3-room,58.4
+2007,10,3-room,57.7
+2007,11,3-room,61.6
+2007,12,3-room,55.8
+2007,1,4-room,115.4
+2007,2,4-room,107.1
+2007,3,4-room,108.5
+2007,4,4-room,123.6
+2007,5,4-room,130.7
+2007,6,4-room,134.6
+2007,7,4-room,135.7
+2007,8,4-room,134.8
+2007,9,4-room,124.6
+2007,10,4-room,124.3
+2007,11,4-room,132.1
+2007,12,4-room,118.6
+2007,1,5-room and Executive,116.8
+2007,2,5-room and Executive,108.1
+2007,3,5-room and Executive,110.1
+2007,4,5-room and Executive,124.9
+2007,5,5-room and Executive,132.5
+2007,6,5-room and Executive,136.7
+2007,7,5-room and Executive,138.3
+2007,8,5-room and Executive,136.7
+2007,9,5-room and Executive,126.4
+2007,10,5-room and Executive,126.5
+2007,11,5-room and Executive,133.7
+2007,12,5-room and Executive,119.7
+2007,1,Private Housing,181.1
+2007,2,Private Housing,171.8
+2007,3,Private Housing,176.5
+2007,4,Private Housing,198.4
+2007,5,Private Housing,211.5
+2007,6,Private Housing,214.6
+2007,7,Private Housing,218.5
+2007,8,Private Housing,213.3
+2007,9,Private Housing,197
+2007,10,Private Housing,199.1
+2007,11,Private Housing,213
+2007,12,Private Housing,189.1
+2007,1,Private Apartments and Condominiums,107.9
+2007,2,Private Apartments and Condominiums,100.8
+2007,3,Private Apartments and Condominiums,103.7
+2007,4,Private Apartments and Condominiums,117.7
+2007,5,Private Apartments and Condominiums,128
+2007,6,Private Apartments and Condominiums,129.4
+2007,7,Private Apartments and Condominiums,131.6
+2007,8,Private Apartments and Condominiums,127.9
+2007,9,Private Apartments and Condominiums,118.1
+2007,10,Private Apartments and Condominiums,118.1
+2007,11,Private Apartments and Condominiums,127.2
+2007,12,Private Apartments and Condominiums,112.4
+2007,1,Landed Properties,73.2
+2007,2,Landed Properties,71
+2007,3,Landed Properties,72.7
+2007,4,Landed Properties,80.6
+2007,5,Landed Properties,83.5
+2007,6,Landed Properties,85.2
+2007,7,Landed Properties,86.8
+2007,8,Landed Properties,85.4
+2007,9,Landed Properties,78.9
+2007,10,Landed Properties,81
+2007,11,Landed Properties,85.9
+2007,12,Landed Properties,76.6
+2007,1,Others,1
+2007,2,Others,0.9
+2007,3,Others,0.9
+2007,4,Others,1.1
+2007,5,Others,1.1
+2007,6,Others,1.1
+2007,7,Others,1.1
+2007,8,Others,1.1
+2007,9,Others,1
+2007,10,Others,1.1
+2007,11,Others,1.1
+2007,12,Others,1
+2007,Annual,Overall,6163.8
+2007,Annual,Public Housing,3767.5
+2007,Annual,1-room / 2-room,72
+2007,Annual,3-room,695.1
+2007,Annual,4-room,1490
+2007,Annual,5-room and Executive,1510.4
+2007,Annual,Private Housing,2383.9
+2007,Annual,Private Apartments and Condominiums,1422.8
+2007,Annual,Landed Properties,960.8
+2007,Annual,Others,12.5
+2008,1,Overall,467.1
+2008,2,Overall,472.7
+2008,3,Overall,449.5
+2008,4,Overall,491.5
+2008,5,Overall,544
+2008,6,Overall,572.5
+2008,7,Overall,525.8
+2008,8,Overall,510.1
+2008,9,Overall,519.1
+2008,10,Overall,522.1
+2008,11,Overall,535.6
+2008,12,Overall,484
+2008,1,Public Housing,288.5
+2008,2,Public Housing,288.6
+2008,3,Public Housing,272.2
+2008,4,Public Housing,303.2
+2008,5,Public Housing,333.1
+2008,6,Public Housing,345.5
+2008,7,Public Housing,323.7
+2008,8,Public Housing,312.8
+2008,9,Public Housing,319.2
+2008,10,Public Housing,318.8
+2008,11,Public Housing,323.9
+2008,12,Public Housing,294.4
+2008,1,1-room / 2-room,5.8
+2008,2,1-room / 2-room,5.7
+2008,3,1-room / 2-room,5.3
+2008,4,1-room / 2-room,5.8
+2008,5,1-room / 2-room,6.3
+2008,6,1-room / 2-room,6.5
+2008,7,1-room / 2-room,6.2
+2008,8,1-room / 2-room,6
+2008,9,1-room / 2-room,6.1
+2008,10,1-room / 2-room,6.2
+2008,11,1-room / 2-room,6.4
+2008,12,1-room / 2-room,5.7
+2008,1,3-room,53.6
+2008,2,3-room,53.9
+2008,3,3-room,50.6
+2008,4,3-room,56.1
+2008,5,3-room,61.7
+2008,6,3-room,64.4
+2008,7,3-room,59.5
+2008,8,3-room,58
+2008,9,3-room,59.1
+2008,10,3-room,58.6
+2008,11,3-room,60.1
+2008,12,3-room,55
+2008,1,4-room,114
+2008,2,4-room,114.1
+2008,3,4-room,107.6
+2008,4,4-room,120.1
+2008,5,4-room,132.2
+2008,6,4-room,136.7
+2008,7,4-room,128.2
+2008,8,4-room,124.1
+2008,9,4-room,126.6
+2008,10,4-room,126.3
+2008,11,4-room,128.5
+2008,12,4-room,117
+2008,1,5-room and Executive,115.1
+2008,2,5-room and Executive,115
+2008,3,5-room and Executive,108.7
+2008,4,5-room and Executive,121.2
+2008,5,5-room and Executive,132.9
+2008,6,5-room and Executive,137.8
+2008,7,5-room and Executive,129.9
+2008,8,5-room and Executive,124.7
+2008,9,5-room and Executive,127.4
+2008,10,5-room and Executive,127.8
+2008,11,5-room and Executive,129
+2008,12,5-room and Executive,116.6
+2008,1,Private Housing,177.6
+2008,2,Private Housing,183.1
+2008,3,Private Housing,176.3
+2008,4,Private Housing,187.3
+2008,5,Private Housing,209.8
+2008,6,Private Housing,225.9
+2008,7,Private Housing,201.1
+2008,8,Private Housing,196.3
+2008,9,Private Housing,198.9
+2008,10,Private Housing,202.2
+2008,11,Private Housing,210.5
+2008,12,Private Housing,188.6
+2008,1,Private Apartments and Condominiums,104.8
+2008,2,Private Apartments and Condominiums,106.6
+2008,3,Private Apartments and Condominiums,103.9
+2008,4,Private Apartments and Condominiums,111.1
+2008,5,Private Apartments and Condominiums,126
+2008,6,Private Apartments and Condominiums,135.9
+2008,7,Private Apartments and Condominiums,120.2
+2008,8,Private Apartments and Condominiums,117.5
+2008,9,Private Apartments and Condominiums,117.7
+2008,10,Private Apartments and Condominiums,120.6
+2008,11,Private Apartments and Condominiums,127.3
+2008,12,Private Apartments and Condominiums,111.9
+2008,1,Landed Properties,72.8
+2008,2,Landed Properties,76.5
+2008,3,Landed Properties,72.4
+2008,4,Landed Properties,76.2
+2008,5,Landed Properties,83.8
+2008,6,Landed Properties,90
+2008,7,Landed Properties,80.9
+2008,8,Landed Properties,78.8
+2008,9,Landed Properties,81.2
+2008,10,Landed Properties,81.6
+2008,11,Landed Properties,83.2
+2008,12,Landed Properties,76.7
+2008,1,Others,1
+2008,2,Others,1
+2008,3,Others,0.9
+2008,4,Others,1
+2008,5,Others,1.1
+2008,6,Others,1.2
+2008,7,Others,1
+2008,8,Others,1
+2008,9,Others,1.1
+2008,10,Others,1.1
+2008,11,Others,1.1
+2008,12,Others,1
+2008,Annual,Overall,6094
+2008,Annual,Public Housing,3723.9
+2008,Annual,1-room / 2-room,72
+2008,Annual,3-room,690.6
+2008,Annual,4-room,1475.4
+2008,Annual,5-room and Executive,1486.1
+2008,Annual,Private Housing,2357.6
+2008,Annual,Private Apartments and Condominiums,1403.5
+2008,Annual,Landed Properties,954.1
+2008,Annual,Others,12.5
+2009,1,Overall,476.4
+2009,2,Overall,460.5
+2009,3,Overall,461.2
+2009,4,Overall,510.5
+2009,5,Overall,556.6
+2009,6,Overall,609.5
+2009,7,Overall,592.7
+2009,8,Overall,572.1
+2009,9,Overall,554.9
+2009,10,Overall,557.4
+2009,11,Overall,562.9
+2009,12,Overall,516
+2009,1,Public Housing,290.8
+2009,2,Public Housing,280.3
+2009,3,Public Housing,279
+2009,4,Public Housing,310.2
+2009,5,Public Housing,336.4
+2009,6,Public Housing,370.9
+2009,7,Public Housing,359.9
+2009,8,Public Housing,349.7
+2009,9,Public Housing,337.5
+2009,10,Public Housing,337.8
+2009,11,Public Housing,339
+2009,12,Public Housing,310.9
+2009,1,1-room / 2-room,5.9
+2009,2,1-room / 2-room,5.6
+2009,3,1-room / 2-room,5.5
+2009,4,1-room / 2-room,6.1
+2009,5,1-room / 2-room,6.6
+2009,6,1-room / 2-room,6.8
+2009,7,1-room / 2-room,6.8
+2009,8,1-room / 2-room,6.8
+2009,9,1-room / 2-room,6.6
+2009,10,1-room / 2-room,6.7
+2009,11,1-room / 2-room,6.8
+2009,12,1-room / 2-room,6.3
+2009,1,3-room,53.9
+2009,2,3-room,52.4
+2009,3,3-room,51.8
+2009,4,3-room,57.7
+2009,5,3-room,62.6
+2009,6,3-room,68.1
+2009,7,3-room,65.3
+2009,8,3-room,65.5
+2009,9,3-room,62.3
+2009,10,3-room,62.6
+2009,11,3-room,62.7
+2009,12,3-room,57.9
+2009,1,4-room,115.5
+2009,2,4-room,111.1
+2009,3,4-room,110.8
+2009,4,4-room,123.4
+2009,5,4-room,133.3
+2009,6,4-room,147.6
+2009,7,4-room,142.9
+2009,8,4-room,138.2
+2009,9,4-room,134.1
+2009,10,4-room,134
+2009,11,4-room,134.3
+2009,12,4-room,123.3
+2009,1,5-room and Executive,115.5
+2009,2,5-room and Executive,111.1
+2009,3,5-room and Executive,110.8
+2009,4,5-room and Executive,123.1
+2009,5,5-room and Executive,134.1
+2009,6,5-room and Executive,148.3
+2009,7,5-room and Executive,144.9
+2009,8,5-room and Executive,139.2
+2009,9,5-room and Executive,134.5
+2009,10,5-room and Executive,134.5
+2009,11,5-room and Executive,135.2
+2009,12,5-room and Executive,123.3
+2009,1,Private Housing,184.5
+2009,2,Private Housing,179.3
+2009,3,Private Housing,181.3
+2009,4,Private Housing,199.3
+2009,5,Private Housing,219
+2009,6,Private Housing,237.4
+2009,7,Private Housing,231.6
+2009,8,Private Housing,221.3
+2009,9,Private Housing,216.2
+2009,10,Private Housing,218.5
+2009,11,Private Housing,222.8
+2009,12,Private Housing,204.1
+2009,1,Private Apartments and Condominiums,108.7
+2009,2,Private Apartments and Condominiums,104.1
+2009,3,Private Apartments and Condominiums,107.1
+2009,4,Private Apartments and Condominiums,118.8
+2009,5,Private Apartments and Condominiums,133
+2009,6,Private Apartments and Condominiums,143.3
+2009,7,Private Apartments and Condominiums,140.2
+2009,8,Private Apartments and Condominiums,133.3
+2009,9,Private Apartments and Condominiums,130.3
+2009,10,Private Apartments and Condominiums,131.4
+2009,11,Private Apartments and Condominiums,135.8
+2009,12,Private Apartments and Condominiums,122.1
+2009,1,Landed Properties,75.8
+2009,2,Landed Properties,75.3
+2009,3,Landed Properties,74.2
+2009,4,Landed Properties,80.4
+2009,5,Landed Properties,86
+2009,6,Landed Properties,94.1
+2009,7,Landed Properties,91.4
+2009,8,Landed Properties,88
+2009,9,Landed Properties,86
+2009,10,Landed Properties,87.1
+2009,11,Landed Properties,86.9
+2009,12,Landed Properties,81.9
+2009,1,Others,1
+2009,2,Others,0.9
+2009,3,Others,0.9
+2009,4,Others,1.1
+2009,5,Others,1.2
+2009,6,Others,1.2
+2009,7,Others,1.2
+2009,8,Others,1.1
+2009,9,Others,1.1
+2009,10,Others,1.2
+2009,11,Others,1.1
+2009,12,Others,1.1
+2009,Annual,Overall,6430.7
+2009,Annual,Public Housing,3902.4
+2009,Annual,1-room / 2-room,76.5
+2009,Annual,3-room,722.8
+2009,Annual,4-room,1548.5
+2009,Annual,5-room and Executive,1554.5
+2009,Annual,Private Housing,2515.3
+2009,Annual,Private Apartments and Condominiums,1508.1
+2009,Annual,Landed Properties,1007.1
+2009,Annual,Others,13.1
+2010,1,Overall,490.6
+2010,2,Overall,503.9
+2010,3,Overall,547.6
+2010,4,Overall,585
+2010,5,Overall,573.5
+2010,6,Overall,606
+2010,7,Overall,575.2
+2010,8,Overall,539.7
+2010,9,Overall,539.2
+2010,10,Overall,557.8
+2010,11,Overall,581.4
+2010,12,Overall,536.2
+2010,1,Public Housing,298.7
+2010,2,Public Housing,302.9
+2010,3,Public Housing,325.9
+2010,4,Public Housing,352
+2010,5,Public Housing,345.9
+2010,6,Public Housing,365.6
+2010,7,Public Housing,349.9
+2010,8,Public Housing,331.2
+2010,9,Public Housing,328.3
+2010,10,Public Housing,335.8
+2010,11,Public Housing,351.2
+2010,12,Public Housing,323.7
+2010,1,1-room / 2-room,6.2
+2010,2,1-room / 2-room,6.1
+2010,3,1-room / 2-room,6.4
+2010,4,1-room / 2-room,6.8
+2010,5,1-room / 2-room,7
+2010,6,1-room / 2-room,7.2
+2010,7,1-room / 2-room,7
+2010,8,1-room / 2-room,6.9
+2010,9,1-room / 2-room,6.7
+2010,10,1-room / 2-room,7
+2010,11,1-room / 2-room,7.2
+2010,12,1-room / 2-room,6.8
+2010,1,3-room,55.6
+2010,2,3-room,56.5
+2010,3,3-room,60.4
+2010,4,3-room,64.6
+2010,5,3-room,64.6
+2010,6,3-room,67.8
+2010,7,3-room,64.7
+2010,8,3-room,61.8
+2010,9,3-room,60.8
+2010,10,3-room,62.7
+2010,11,3-room,65.3
+2010,12,3-room,59.9
+2010,1,4-room,119
+2010,2,4-room,120.2
+2010,3,4-room,129.4
+2010,4,4-room,140.2
+2010,5,4-room,137.3
+2010,6,4-room,145.6
+2010,7,4-room,139.2
+2010,8,4-room,131.6
+2010,9,4-room,131.2
+2010,10,4-room,133.8
+2010,11,4-room,139.9
+2010,12,4-room,129.1
+2010,1,5-room and Executive,117.9
+2010,2,5-room and Executive,120.1
+2010,3,5-room and Executive,129.7
+2010,4,5-room and Executive,140.4
+2010,5,5-room and Executive,137
+2010,6,5-room and Executive,145
+2010,7,5-room and Executive,139
+2010,8,5-room and Executive,130.8
+2010,9,5-room and Executive,129.6
+2010,10,5-room and Executive,132.4
+2010,11,5-room and Executive,138.8
+2010,12,5-room and Executive,127.9
+2010,1,Private Housing,190.9
+2010,2,Private Housing,199.9
+2010,3,Private Housing,220.7
+2010,4,Private Housing,231.7
+2010,5,Private Housing,226.5
+2010,6,Private Housing,239.1
+2010,7,Private Housing,224.1
+2010,8,Private Housing,207.5
+2010,9,Private Housing,209.8
+2010,10,Private Housing,220.7
+2010,11,Private Housing,229.1
+2010,12,Private Housing,211.4
+2010,1,Private Apartments and Condominiums,113.9
+2010,2,Private Apartments and Condominiums,117.5
+2010,3,Private Apartments and Condominiums,132.7
+2010,4,Private Apartments and Condominiums,140.3
+2010,5,Private Apartments and Condominiums,138.6
+2010,6,Private Apartments and Condominiums,145.2
+2010,7,Private Apartments and Condominiums,137.7
+2010,8,Private Apartments and Condominiums,125.4
+2010,9,Private Apartments and Condominiums,126.1
+2010,10,Private Apartments and Condominiums,134.1
+2010,11,Private Apartments and Condominiums,140.4
+2010,12,Private Apartments and Condominiums,128.7
+2010,1,Landed Properties,77
+2010,2,Landed Properties,82.4
+2010,3,Landed Properties,88
+2010,4,Landed Properties,91.5
+2010,5,Landed Properties,87.9
+2010,6,Landed Properties,93.9
+2010,7,Landed Properties,86.4
+2010,8,Landed Properties,82.1
+2010,9,Landed Properties,83.7
+2010,10,Landed Properties,86.6
+2010,11,Landed Properties,88.7
+2010,12,Landed Properties,82.7
+2010,1,Others,1
+2010,2,Others,1
+2010,3,Others,1.1
+2010,4,Others,1.2
+2010,5,Others,1.2
+2010,6,Others,1.3
+2010,7,Others,1.2
+2010,8,Others,1
+2010,9,Others,1.1
+2010,10,Others,1.2
+2010,11,Others,1.2
+2010,12,Others,1.1
+2010,Annual,Overall,6636.1
+2010,Annual,Public Housing,4011.1
+2010,Annual,1-room / 2-room,81.3
+2010,Annual,3-room,744.7
+2010,Annual,4-room,1596.5
+2010,Annual,5-room and Executive,1588.6
+2010,Annual,Private Housing,2611.4
+2010,Annual,Private Apartments and Condominiums,1580.6
+2010,Annual,Landed Properties,1030.9
+2010,Annual,Others,13.6
+2011,1,Overall,499.3
+2011,2,Overall,461.7
+2011,3,Overall,465.7
+2011,4,Overall,524.4
+2011,5,Overall,565.1
+2011,6,Overall,602.8
+2011,7,Overall,586
+2011,8,Overall,590.6
+2011,9,Overall,582.6
+2011,10,Overall,557.7
+2011,11,Overall,541.1
+2011,12,Overall,505.9
+2011,1,Public Housing,303.6
+2011,2,Public Housing,279.3
+2011,3,Public Housing,279.9
+2011,4,Public Housing,314.6
+2011,5,Public Housing,337.9
+2011,6,Public Housing,364.7
+2011,7,Public Housing,354.9
+2011,8,Public Housing,356.5
+2011,9,Public Housing,354
+2011,10,Public Housing,335.3
+2011,11,Public Housing,326
+2011,12,Public Housing,304.8
+2011,1,1-room / 2-room,6.7
+2011,2,1-room / 2-room,6.1
+2011,3,1-room / 2-room,6.1
+2011,4,1-room / 2-room,6.7
+2011,5,1-room / 2-room,7.2
+2011,6,1-room / 2-room,7.6
+2011,7,1-room / 2-room,7.6
+2011,8,1-room / 2-room,7.7
+2011,9,1-room / 2-room,7.6
+2011,10,1-room / 2-room,7.4
+2011,11,1-room / 2-room,7.3
+2011,12,1-room / 2-room,6.9
+2011,1,3-room,56.4
+2011,2,3-room,52.1
+2011,3,3-room,52.2
+2011,4,3-room,58.7
+2011,5,3-room,63.4
+2011,6,3-room,67.8
+2011,7,3-room,65.9
+2011,8,3-room,66
+2011,9,3-room,65.4
+2011,10,3-room,62.1
+2011,11,3-room,60.2
+2011,12,3-room,56.6
+2011,1,4-room,121.1
+2011,2,4-room,111.2
+2011,3,4-room,111.8
+2011,4,4-room,125.7
+2011,5,4-room,135.2
+2011,6,4-room,146
+2011,7,4-room,141.8
+2011,8,4-room,142.7
+2011,9,4-room,141.6
+2011,10,4-room,134.4
+2011,11,4-room,130.5
+2011,12,4-room,122.2
+2011,1,5-room and Executive,119.4
+2011,2,5-room and Executive,109.9
+2011,3,5-room and Executive,109.9
+2011,4,5-room and Executive,123.5
+2011,5,5-room and Executive,132.1
+2011,6,5-room and Executive,143.3
+2011,7,5-room and Executive,139.6
+2011,8,5-room and Executive,140.1
+2011,9,5-room and Executive,139.3
+2011,10,5-room and Executive,131.4
+2011,11,5-room and Executive,128
+2011,12,5-room and Executive,119.1
+2011,1,Private Housing,194.7
+2011,2,Private Housing,181.5
+2011,3,Private Housing,184.9
+2011,4,Private Housing,208.6
+2011,5,Private Housing,226
+2011,6,Private Housing,236.8
+2011,7,Private Housing,229.9
+2011,8,Private Housing,232.9
+2011,9,Private Housing,227.5
+2011,10,Private Housing,221.2
+2011,11,Private Housing,213.9
+2011,12,Private Housing,200
+2011,1,Private Apartments and Condominiums,117.9
+2011,2,Private Apartments and Condominiums,107.3
+2011,3,Private Apartments and Condominiums,110.1
+2011,4,Private Apartments and Condominiums,127.1
+2011,5,Private Apartments and Condominiums,138.5
+2011,6,Private Apartments and Condominiums,145.4
+2011,7,Private Apartments and Condominiums,142.8
+2011,8,Private Apartments and Condominiums,142.2
+2011,9,Private Apartments and Condominiums,139.9
+2011,10,Private Apartments and Condominiums,134.7
+2011,11,Private Apartments and Condominiums,132
+2011,12,Private Apartments and Condominiums,122.4
+2011,1,Landed Properties,76.8
+2011,2,Landed Properties,74.2
+2011,3,Landed Properties,74.8
+2011,4,Landed Properties,81.5
+2011,5,Landed Properties,87.5
+2011,6,Landed Properties,91.5
+2011,7,Landed Properties,87.1
+2011,8,Landed Properties,90.7
+2011,9,Landed Properties,87.6
+2011,10,Landed Properties,86.5
+2011,11,Landed Properties,82
+2011,12,Landed Properties,77.6
+2011,1,Others,1.1
+2011,2,Others,0.9
+2011,3,Others,1
+2011,4,Others,1.1
+2011,5,Others,1.1
+2011,6,Others,1.3
+2011,7,Others,1.1
+2011,8,Others,1.1
+2011,9,Others,1.1
+2011,10,Others,1.1
+2011,11,Others,1.1
+2011,12,Others,1
+2011,Annual,Overall,6482.9
+2011,Annual,Public Housing,3911.5
+2011,Annual,1-room / 2-room,84.9
+2011,Annual,3-room,726.8
+2011,Annual,4-room,1564.2
+2011,Annual,5-room and Executive,1535.6
+2011,Annual,Private Housing,2557.9
+2011,Annual,Private Apartments and Condominiums,1560.3
+2011,Annual,Landed Properties,997.8
+2011,Annual,Others,13
+2012,1,Overall,503.3
+2012,2,Overall,505
+2012,3,Overall,508.6
+2012,4,Overall,540.9
+2012,5,Overall,557.1
+2012,6,Overall,607.9
+2012,7,Overall,594.8
+2012,8,Overall,585.6
+2012,9,Overall,573.2
+2012,10,Overall,560.2
+2012,11,Overall,568.1
+2012,12,Overall,524.8
+2012,1,Public Housing,303.9
+2012,2,Public Housing,301.5
+2012,3,Public Housing,303.3
+2012,4,Public Housing,323.8
+2012,5,Public Housing,334
+2012,6,Public Housing,364.7
+2012,7,Public Housing,357.5
+2012,8,Public Housing,351
+2012,9,Public Housing,344.2
+2012,10,Public Housing,333.8
+2012,11,Public Housing,338.5
+2012,12,Public Housing,313.8
+2012,1,1-room / 2-room,7.1
+2012,2,1-room / 2-room,6.9
+2012,3,1-room / 2-room,6.9
+2012,4,1-room / 2-room,7.4
+2012,5,1-room / 2-room,7.5
+2012,6,1-room / 2-room,8
+2012,7,1-room / 2-room,8
+2012,8,1-room / 2-room,7.9
+2012,9,1-room / 2-room,7.9
+2012,10,1-room / 2-room,7.5
+2012,11,1-room / 2-room,7.8
+2012,12,1-room / 2-room,7.5
+2012,1,3-room,56.6
+2012,2,3-room,55.8
+2012,3,3-room,56
+2012,4,3-room,59.9
+2012,5,3-room,61.6
+2012,6,3-room,66.8
+2012,7,3-room,65.3
+2012,8,3-room,64.6
+2012,9,3-room,62.9
+2012,10,3-room,61
+2012,11,3-room,61.4
+2012,12,3-room,57.2
+2012,1,4-room,121.9
+2012,2,4-room,121.1
+2012,3,4-room,121.7
+2012,4,4-room,130.3
+2012,5,4-room,134.4
+2012,6,4-room,147
+2012,7,4-room,143.9
+2012,8,4-room,141.2
+2012,9,4-room,138.8
+2012,10,4-room,134.7
+2012,11,4-room,136.4
+2012,12,4-room,126.5
+2012,1,5-room and Executive,118.3
+2012,2,5-room and Executive,117.8
+2012,3,5-room and Executive,118.7
+2012,4,5-room and Executive,126.3
+2012,5,5-room and Executive,130.5
+2012,6,5-room and Executive,142.8
+2012,7,5-room and Executive,140.4
+2012,8,5-room and Executive,137.3
+2012,9,5-room and Executive,134.7
+2012,10,5-room and Executive,130.5
+2012,11,5-room and Executive,132.8
+2012,12,5-room and Executive,122.6
+2012,1,Private Housing,198.4
+2012,2,Private Housing,202.4
+2012,3,Private Housing,204.4
+2012,4,Private Housing,216
+2012,5,Private Housing,222.1
+2012,6,Private Housing,242.1
+2012,7,Private Housing,236.2
+2012,8,Private Housing,233.5
+2012,9,Private Housing,228
+2012,10,Private Housing,225.4
+2012,11,Private Housing,228.5
+2012,12,Private Housing,210.2
+2012,1,Private Apartments and Condominiums,120.9
+2012,2,Private Apartments and Condominiums,121.4
+2012,3,Private Apartments and Condominiums,124.5
+2012,4,Private Apartments and Condominiums,132.5
+2012,5,Private Apartments and Condominiums,138.3
+2012,6,Private Apartments and Condominiums,150.1
+2012,7,Private Apartments and Condominiums,147.6
+2012,8,Private Apartments and Condominiums,144.2
+2012,9,Private Apartments and Condominiums,140.3
+2012,10,Private Apartments and Condominiums,138.1
+2012,11,Private Apartments and Condominiums,142
+2012,12,Private Apartments and Condominiums,129.4
+2012,1,Landed Properties,77.5
+2012,2,Landed Properties,81
+2012,3,Landed Properties,79.9
+2012,4,Landed Properties,83.4
+2012,5,Landed Properties,83.9
+2012,6,Landed Properties,91.9
+2012,7,Landed Properties,88.6
+2012,8,Landed Properties,89.4
+2012,9,Landed Properties,87.6
+2012,10,Landed Properties,87.2
+2012,11,Landed Properties,86.5
+2012,12,Landed Properties,80.8
+2012,1,Others,1
+2012,2,Others,1
+2012,3,Others,1
+2012,4,Others,1.1
+2012,5,Others,1
+2012,6,Others,1.1
+2012,7,Others,1.1
+2012,8,Others,1.1
+2012,9,Others,1
+2012,10,Others,1
+2012,11,Others,1.1
+2012,12,Others,0.9
+2012,Annual,Overall,6629.5
+2012,Annual,Public Housing,3970
+2012,Annual,1-room / 2-room,90.4
+2012,Annual,3-room,729.1
+2012,Annual,4-room,1597.9
+2012,Annual,5-room and Executive,1552.7
+2012,Annual,Private Housing,2647.2
+2012,Annual,Private Apartments and Condominiums,1629.3
+2012,Annual,Landed Properties,1017.7
+2012,Annual,Others,12.4
+2013,1,Overall,513.1
+2013,2,Overall,498
+2013,3,Overall,498.3
+2013,4,Overall,568.3
+2013,5,Overall,601.8
+2013,6,Overall,629.6
+2013,7,Overall,612
+2013,8,Overall,617.5
+2013,9,Overall,560.6
+2013,10,Overall,555
+2013,11,Overall,570.7
+2013,12,Overall,530.1
+2013,1,Public Housing,310
+2013,2,Public Housing,298
+2013,3,Public Housing,295.5
+2013,4,Public Housing,339.1
+2013,5,Public Housing,354.8
+2013,6,Public Housing,378.6
+2013,7,Public Housing,369.4
+2013,8,Public Housing,373.2
+2013,9,Public Housing,337.2
+2013,10,Public Housing,326.3
+2013,11,Public Housing,340.1
+2013,12,Public Housing,316.5
+2013,1,1-room / 2-room,7.5
+2013,2,1-room / 2-room,7.2
+2013,3,1-room / 2-room,7.1
+2013,4,1-room / 2-room,8
+2013,5,1-room / 2-room,8.4
+2013,6,1-room / 2-room,8.8
+2013,7,1-room / 2-room,8.7
+2013,8,1-room / 2-room,9
+2013,9,1-room / 2-room,8.5
+2013,10,1-room / 2-room,8.1
+2013,11,1-room / 2-room,8.5
+2013,12,1-room / 2-room,8.2
+2013,1,3-room,56.3
+2013,2,3-room,54.2
+2013,3,3-room,53.6
+2013,4,3-room,61.9
+2013,5,3-room,64.8
+2013,6,3-room,68.5
+2013,7,3-room,66.6
+2013,8,3-room,67.5
+2013,9,3-room,61.3
+2013,10,3-room,59.9
+2013,11,3-room,61.4
+2013,12,3-room,57.9
+2013,1,4-room,125.6
+2013,2,4-room,120.4
+2013,3,4-room,119.6
+2013,4,4-room,137
+2013,5,4-room,142.3
+2013,6,4-room,154.4
+2013,7,4-room,148.8
+2013,8,4-room,150.9
+2013,9,4-room,136.3
+2013,10,4-room,131.7
+2013,11,4-room,137.9
+2013,12,4-room,128.1
+2013,1,5-room and Executive,120.6
+2013,2,5-room and Executive,116.2
+2013,3,5-room and Executive,115.2
+2013,4,5-room and Executive,132.3
+2013,5,5-room and Executive,139.3
+2013,6,5-room and Executive,146.9
+2013,7,5-room and Executive,145.3
+2013,8,5-room and Executive,145.8
+2013,9,5-room and Executive,131
+2013,10,5-room and Executive,126.6
+2013,11,5-room and Executive,132.3
+2013,12,5-room and Executive,122.3
+2013,1,Private Housing,202.1
+2013,2,Private Housing,199.1
+2013,3,Private Housing,201.8
+2013,4,Private Housing,228.1
+2013,5,Private Housing,245.9
+2013,6,Private Housing,249.7
+2013,7,Private Housing,241.4
+2013,8,Private Housing,243.3
+2013,9,Private Housing,222.4
+2013,10,Private Housing,227.6
+2013,11,Private Housing,229.6
+2013,12,Private Housing,212.7
+2013,1,Private Apartments and Condominiums,124
+2013,2,Private Apartments and Condominiums,121.1
+2013,3,Private Apartments and Condominiums,123.6
+2013,4,Private Apartments and Condominiums,140.7
+2013,5,Private Apartments and Condominiums,154.5
+2013,6,Private Apartments and Condominiums,156.5
+2013,7,Private Apartments and Condominiums,151.7
+2013,8,Private Apartments and Condominiums,151.9
+2013,9,Private Apartments and Condominiums,137.3
+2013,10,Private Apartments and Condominiums,140
+2013,11,Private Apartments and Condominiums,143.4
+2013,12,Private Apartments and Condominiums,131.3
+2013,1,Landed Properties,78.1
+2013,2,Landed Properties,78
+2013,3,Landed Properties,78.2
+2013,4,Landed Properties,87.4
+2013,5,Landed Properties,91.3
+2013,6,Landed Properties,93.3
+2013,7,Landed Properties,89.7
+2013,8,Landed Properties,91.4
+2013,9,Landed Properties,85.2
+2013,10,Landed Properties,87.6
+2013,11,Landed Properties,86.1
+2013,12,Landed Properties,81.4
+2013,1,Others,0.9
+2013,2,Others,0.9
+2013,3,Others,0.9
+2013,4,Others,1.1
+2013,5,Others,1.1
+2013,6,Others,1.2
+2013,7,Others,1.1
+2013,8,Others,1.1
+2013,9,Others,1
+2013,10,Others,1.1
+2013,11,Others,1
+2013,12,Others,0.9
+2013,Annual,Overall,6755
+2013,Annual,Public Housing,4038.7
+2013,Annual,1-room / 2-room,98
+2013,Annual,3-room,733.9
+2013,Annual,4-room,1633
+2013,Annual,5-room and Executive,1573.8
+2013,Annual,Private Housing,2703.7
+2013,Annual,Private Apartments and Condominiums,1676
+2013,Annual,Landed Properties,1027.7
+2013,Annual,Others,12.3
+2014,1,Overall,509.7
+2014,2,Overall,489.3
+2014,3,Overall,488.7
+2014,4,Overall,568.1
+2014,5,Overall,609.5
+2014,6,Overall,639
+2014,7,Overall,628.1
+2014,8,Overall,635.5
+2014,9,Overall,592.4
+2014,10,Overall,580.9
+2014,11,Overall,611.5
+2014,12,Overall,571.8
+2014,1,Public Housing,307.1
+2014,2,Public Housing,293.9
+2014,3,Public Housing,288.3
+2014,4,Public Housing,335.5
+2014,5,Public Housing,359.6
+2014,6,Public Housing,383.6
+2014,7,Public Housing,376.7
+2014,8,Public Housing,382.4
+2014,9,Public Housing,355.3
+2014,10,Public Housing,341.4
+2014,11,Public Housing,362.1
+2014,12,Public Housing,339.7
+2014,1,1-room / 2-room,8
+2014,2,1-room / 2-room,7.7
+2014,3,1-room / 2-room,7.4
+2014,4,1-room / 2-room,8.5
+2014,5,1-room / 2-room,9.2
+2014,6,1-room / 2-room,9.7
+2014,7,1-room / 2-room,9.7
+2014,8,1-room / 2-room,10
+2014,9,1-room / 2-room,9.5
+2014,10,1-room / 2-room,9.3
+2014,11,1-room / 2-room,9.9
+2014,12,1-room / 2-room,9.4
+2014,1,3-room,55.8
+2014,2,3-room,53.3
+2014,3,3-room,52.4
+2014,4,3-room,61.2
+2014,5,3-room,66.1
+2014,6,3-room,69
+2014,7,3-room,68.3
+2014,8,3-room,68.9
+2014,9,3-room,63.9
+2014,10,3-room,62.4
+2014,11,3-room,65.6
+2014,12,3-room,61.3
+2014,1,4-room,124.7
+2014,2,4-room,119.1
+2014,3,4-room,116.8
+2014,4,4-room,136
+2014,5,4-room,146.2
+2014,6,4-room,156
+2014,7,4-room,153
+2014,8,4-room,155.4
+2014,9,4-room,144.4
+2014,10,4-room,138.8
+2014,11,4-room,147.1
+2014,12,4-room,138.3
+2014,1,5-room and Executive,118.5
+2014,2,5-room and Executive,113.7
+2014,3,5-room and Executive,111.7
+2014,4,5-room and Executive,129.7
+2014,5,5-room and Executive,138.1
+2014,6,5-room and Executive,149
+2014,7,5-room and Executive,145.7
+2014,8,5-room and Executive,148.1
+2014,9,5-room and Executive,137.5
+2014,10,5-room and Executive,131
+2014,11,5-room and Executive,139.5
+2014,12,5-room and Executive,130.7
+2014,1,Private Housing,201.7
+2014,2,Private Housing,194.6
+2014,3,Private Housing,199.5
+2014,4,Private Housing,231.6
+2014,5,Private Housing,248.9
+2014,6,Private Housing,254.3
+2014,7,Private Housing,250.4
+2014,8,Private Housing,252.1
+2014,9,Private Housing,236.1
+2014,10,Private Housing,238.4
+2014,11,Private Housing,248.4
+2014,12,Private Housing,231.2
+2014,1,Private Apartments and Condominiums,124.3
+2014,2,Private Apartments and Condominiums,117.9
+2014,3,Private Apartments and Condominiums,122
+2014,4,Private Apartments and Condominiums,143.1
+2014,5,Private Apartments and Condominiums,157.9
+2014,6,Private Apartments and Condominiums,160
+2014,7,Private Apartments and Condominiums,158.9
+2014,8,Private Apartments and Condominiums,158.7
+2014,9,Private Apartments and Condominiums,147.7
+2014,10,Private Apartments and Condominiums,148.7
+2014,11,Private Apartments and Condominiums,158
+2014,12,Private Apartments and Condominiums,145.5
+2014,1,Landed Properties,77.4
+2014,2,Landed Properties,76.7
+2014,3,Landed Properties,77.5
+2014,4,Landed Properties,88.5
+2014,5,Landed Properties,91
+2014,6,Landed Properties,94.3
+2014,7,Landed Properties,91.5
+2014,8,Landed Properties,93.4
+2014,9,Landed Properties,88.3
+2014,10,Landed Properties,89.7
+2014,11,Landed Properties,90.4
+2014,12,Landed Properties,85.7
+2014,1,Others,0.9
+2014,2,Others,0.8
+2014,3,Others,0.9
+2014,4,Others,1.1
+2014,5,Others,1
+2014,6,Others,1.1
+2014,7,Others,1
+2014,8,Others,1
+2014,9,Others,1
+2014,10,Others,1
+2014,11,Others,1
+2014,12,Others,0.9
+2014,Annual,Overall,6924.5
+2014,Annual,Public Housing,4125.6
+2014,Annual,1-room / 2-room,108.3
+2014,Annual,3-room,748.2
+2014,Annual,4-room,1675.8
+2014,Annual,5-room and Executive,1593.2
+2014,Annual,Private Housing,2787.2
+2014,Annual,Private Apartments and Condominiums,1742.7
+2014,Annual,Landed Properties,1044.4
+2014,Annual,Others,11.7
+2015,1,Overall,525.2
+2015,2,Overall,493.6
+2015,3,Overall,513.9
+2015,4,Overall,594.2
+2015,5,Overall,610.7
+2015,6,Overall,632.3
+2015,7,Overall,647
+2015,8,Overall,656.7
+2015,9,Overall,635.7
+2015,10,Overall,643.6
+2015,11,Overall,645.7
+2015,12,Overall,622.4
+2015,1,Public Housing,314.6
+2015,2,Public Housing,294.9
+2015,3,Public Housing,303
+2015,4,Public Housing,349.8
+2015,5,Public Housing,359.2
+2015,6,Public Housing,374.7
+2015,7,Public Housing,384.5
+2015,8,Public Housing,394.6
+2015,9,Public Housing,380.3
+2015,10,Public Housing,379.3
+2015,11,Public Housing,379
+2015,12,Public Housing,370.3
+2015,1,1-room / 2-room,8.9
+2015,2,1-room / 2-room,8.5
+2015,3,1-room / 2-room,8.5
+2015,4,1-room / 2-room,9.7
+2015,5,1-room / 2-room,10.2
+2015,6,1-room / 2-room,10.4
+2015,7,1-room / 2-room,10.7
+2015,8,1-room / 2-room,11
+2015,9,1-room / 2-room,10.8
+2015,10,1-room / 2-room,10.7
+2015,11,1-room / 2-room,10.7
+2015,12,1-room / 2-room,10.7
+2015,1,3-room,56.4
+2015,2,3-room,53.1
+2015,3,3-room,54.8
+2015,4,3-room,63.4
+2015,5,3-room,65.2
+2015,6,3-room,67.5
+2015,7,3-room,69.4
+2015,8,3-room,70.7
+2015,9,3-room,67.9
+2015,10,3-room,67.7
+2015,11,3-room,68
+2015,12,3-room,66
+2015,1,4-room,128.5
+2015,2,4-room,120.1
+2015,3,4-room,123.6
+2015,4,4-room,142.5
+2015,5,4-room,146.5
+2015,6,4-room,153.1
+2015,7,4-room,157.4
+2015,8,4-room,161.1
+2015,9,4-room,155
+2015,10,4-room,154.9
+2015,11,4-room,154.2
+2015,12,4-room,151.9
+2015,1,5-room and Executive,120.7
+2015,2,5-room and Executive,113.3
+2015,3,5-room and Executive,116.2
+2015,4,5-room and Executive,134.3
+2015,5,5-room and Executive,137.2
+2015,6,5-room and Executive,143.8
+2015,7,5-room and Executive,147.1
+2015,8,5-room and Executive,151.7
+2015,9,5-room and Executive,146.6
+2015,10,5-room and Executive,145.9
+2015,11,5-room and Executive,146.1
+2015,12,5-room and Executive,141.7
+2015,1,Private Housing,209.7
+2015,2,Private Housing,197.8
+2015,3,Private Housing,210.1
+2015,4,Private Housing,243.4
+2015,5,Private Housing,250.6
+2015,6,Private Housing,256.6
+2015,7,Private Housing,261.5
+2015,8,Private Housing,261.3
+2015,9,Private Housing,254.5
+2015,10,Private Housing,263.4
+2015,11,Private Housing,265.7
+2015,12,Private Housing,251.2
+2015,1,Private Apartments and Condominiums,130.7
+2015,2,Private Apartments and Condominiums,122
+2015,3,Private Apartments and Condominiums,131.1
+2015,4,Private Apartments and Condominiums,152.7
+2015,5,Private Apartments and Condominiums,161.4
+2015,6,Private Apartments and Condominiums,163.8
+2015,7,Private Apartments and Condominiums,167.3
+2015,8,Private Apartments and Condominiums,167.1
+2015,9,Private Apartments and Condominiums,162.9
+2015,10,Private Apartments and Condominiums,167.7
+2015,11,Private Apartments and Condominiums,172.7
+2015,12,Private Apartments and Condominiums,160.5
+2015,1,Landed Properties,79
+2015,2,Landed Properties,75.8
+2015,3,Landed Properties,79
+2015,4,Landed Properties,90.7
+2015,5,Landed Properties,89.2
+2015,6,Landed Properties,92.8
+2015,7,Landed Properties,94.2
+2015,8,Landed Properties,94.2
+2015,9,Landed Properties,91.6
+2015,10,Landed Properties,95.7
+2015,11,Landed Properties,93
+2015,12,Landed Properties,90.7
+2015,1,Others,0.9
+2015,2,Others,0.8
+2015,3,Others,0.8
+2015,4,Others,1
+2015,5,Others,0.9
+2015,6,Others,1
+2015,7,Others,1
+2015,8,Others,0.9
+2015,9,Others,0.9
+2015,10,Others,0.9
+2015,11,Others,0.9
+2015,12,Others,0.9
+2015,Annual,Overall,7221
+2015,Annual,Public Housing,4284.2
+2015,Annual,1-room / 2-room,120.8
+2015,Annual,3-room,770.1
+2015,Annual,4-room,1748.8
+2015,Annual,5-room and Executive,1644.6
+2015,Annual,Private Housing,2925.8
+2015,Annual,Private Apartments and Condominiums,1859.9
+2015,Annual,Landed Properties,1065.9
+2015,Annual,Others,10.9
+2016,1,Overall,570
+2016,2,Overall,580.1
+2016,3,Overall,585
+2016,4,Overall,648.3
+2016,5,Overall,688.8
+2016,6,Overall,708.2
+2016,7,Overall,641.9
+2016,8,Overall,646.7
+2016,9,Overall,647.4
+2016,10,Overall,650.1
+2016,11,Overall,644.4
+2016,12,Overall,574.8
+2016,1,Public Housing,336.7
+2016,2,Public Housing,344.5
+2016,3,Public Housing,344.1
+2016,4,Public Housing,379.1
+2016,5,Public Housing,402.7
+2016,6,Public Housing,416.8
+2016,7,Public Housing,382.9
+2016,8,Public Housing,385.2
+2016,9,Public Housing,385.2
+2016,10,Public Housing,382
+2016,11,Public Housing,382.3
+2016,12,Public Housing,338.8
+2016,1,1-room / 2-room,10.2
+2016,2,1-room / 2-room,10
+2016,3,1-room / 2-room,9.7
+2016,4,1-room / 2-room,10.8
+2016,5,1-room / 2-room,11.6
+2016,6,1-room / 2-room,11.9
+2016,7,1-room / 2-room,11.2
+2016,8,1-room / 2-room,11.3
+2016,9,1-room / 2-room,11.2
+2016,10,1-room / 2-room,11.2
+2016,11,1-room / 2-room,11.3
+2016,12,1-room / 2-room,10.4
+2016,1,3-room,61.2
+2016,2,3-room,62.2
+2016,3,3-room,60.9
+2016,4,3-room,68
+2016,5,3-room,72.6
+2016,6,3-room,74.4
+2016,7,3-room,68.2
+2016,8,3-room,69.2
+2016,9,3-room,68.7
+2016,10,3-room,68.2
+2016,11,3-room,67.7
+2016,12,3-room,60.6
+2016,1,4-room,137.9
+2016,2,4-room,141.2
+2016,3,4-room,141.2
+2016,4,4-room,155.3
+2016,5,4-room,164.9
+2016,6,4-room,171.1
+2016,7,4-room,157.6
+2016,8,4-room,158.2
+2016,9,4-room,158.4
+2016,10,4-room,157
+2016,11,4-room,157.2
+2016,12,4-room,139.4
+2016,1,5-room and Executive,127.4
+2016,2,5-room and Executive,131.1
+2016,3,5-room and Executive,132.2
+2016,4,5-room and Executive,145
+2016,5,5-room and Executive,153.6
+2016,6,5-room and Executive,159.3
+2016,7,5-room and Executive,145.9
+2016,8,5-room and Executive,146.5
+2016,9,5-room and Executive,146.9
+2016,10,5-room and Executive,145.6
+2016,11,5-room and Executive,146.1
+2016,12,5-room and Executive,128.4
+2016,1,Private Housing,232.4
+2016,2,Private Housing,234.9
+2016,3,Private Housing,240.1
+2016,4,Private Housing,268.3
+2016,5,Private Housing,285.1
+2016,6,Private Housing,290.4
+2016,7,Private Housing,258.1
+2016,8,Private Housing,260.7
+2016,9,Private Housing,261.4
+2016,10,Private Housing,267.3
+2016,11,Private Housing,261.3
+2016,12,Private Housing,235.3
+2016,1,Private Apartments and Condominiums,148.4
+2016,2,Private Apartments and Condominiums,148.7
+2016,3,Private Apartments and Condominiums,152.9
+2016,4,Private Apartments and Condominiums,172.5
+2016,5,Private Apartments and Condominiums,186.6
+2016,6,Private Apartments and Condominiums,190
+2016,7,Private Apartments and Condominiums,167.9
+2016,8,Private Apartments and Condominiums,167.5
+2016,9,Private Apartments and Condominiums,169.6
+2016,10,Private Apartments and Condominiums,173.9
+2016,11,Private Apartments and Condominiums,170.8
+2016,12,Private Apartments and Condominiums,152
+2016,1,Landed Properties,84
+2016,2,Landed Properties,86.2
+2016,3,Landed Properties,87.2
+2016,4,Landed Properties,95.8
+2016,5,Landed Properties,98.5
+2016,6,Landed Properties,100.4
+2016,7,Landed Properties,90.2
+2016,8,Landed Properties,93.2
+2016,9,Landed Properties,91.8
+2016,10,Landed Properties,93.4
+2016,11,Landed Properties,90.5
+2016,12,Landed Properties,83.2
+2016,1,Others,0.9
+2016,2,Others,0.8
+2016,3,Others,0.8
+2016,4,Others,1
+2016,5,Others,1
+2016,6,Others,1
+2016,7,Others,0.9
+2016,8,Others,0.8
+2016,9,Others,0.8
+2016,10,Others,0.9
+2016,11,Others,0.9
+2016,12,Others,0.7
+2016,Annual,Overall,7585.7
+2016,Annual,Public Housing,4480.3
+2016,Annual,1-room / 2-room,130.8
+2016,Annual,3-room,801.9
+2016,Annual,4-room,1839.4
+2016,Annual,5-room and Executive,1708
+2016,Annual,Private Housing,3095.3
+2016,Annual,Private Apartments and Condominiums,2000.8
+2016,Annual,Landed Properties,1094.4
+2016,Annual,Others,10.5
+2017,1,Overall,566.7
+2017,2,Overall,573.6
+2017,3,Overall,532.6
+2017,4,Overall,583.3
+2017,5,Overall,619.4
+2017,6,Overall,648.6
+2017,7,Overall,697.6
+2017,8,Overall,629.7
+2017,9,Overall,612.6
+2017,10,Overall,621.5
+2017,11,Overall,621.6
+2017,12,Overall,582.6
+2017,1,Public Housing,335.4
+2017,2,Public Housing,337
+2017,3,Public Housing,312.4
+2017,4,Public Housing,341.6
+2017,5,Public Housing,364
+2017,6,Public Housing,376.8
+2017,7,Public Housing,420.9
+2017,8,Public Housing,369.2
+2017,9,Public Housing,358
+2017,10,Public Housing,363.5
+2017,11,Public Housing,368.5
+2017,12,Public Housing,339.8
+2017,1,1-room / 2-room,10.5
+2017,2,1-room / 2-room,10.5
+2017,3,1-room / 2-room,9.6
+2017,4,1-room / 2-room,10.4
+2017,5,1-room / 2-room,11.3
+2017,6,1-room / 2-room,11.4
+2017,7,1-room / 2-room,12.7
+2017,8,1-room / 2-room,11.4
+2017,9,1-room / 2-room,11.1
+2017,10,1-room / 2-room,11.3
+2017,11,1-room / 2-room,11.5
+2017,12,1-room / 2-room,10.9
+2017,1,3-room,60.4
+2017,2,3-room,60
+2017,3,3-room,55.4
+2017,4,3-room,61.2
+2017,5,3-room,65.5
+2017,6,3-room,64.9
+2017,7,3-room,76.3
+2017,8,3-room,65.1
+2017,9,3-room,63.3
+2017,10,3-room,64.7
+2017,11,3-room,64.8
+2017,12,3-room,60.3
+2017,1,4-room,138.7
+2017,2,4-room,139.2
+2017,3,4-room,128.6
+2017,4,4-room,140.7
+2017,5,4-room,150.7
+2017,6,4-room,155.6
+2017,7,4-room,174.4
+2017,8,4-room,152.9
+2017,9,4-room,148.1
+2017,10,4-room,150.1
+2017,11,4-room,152.7
+2017,12,4-room,140.8
+2017,1,5-room and Executive,125.7
+2017,2,5-room and Executive,127.3
+2017,3,5-room and Executive,118.9
+2017,4,5-room and Executive,129.2
+2017,5,5-room and Executive,136.5
+2017,6,5-room and Executive,145
+2017,7,5-room and Executive,157.6
+2017,8,5-room and Executive,139.8
+2017,9,5-room and Executive,135.5
+2017,10,5-room and Executive,137.4
+2017,11,5-room and Executive,139.5
+2017,12,5-room and Executive,127.8
+2017,1,Private Housing,230.5
+2017,2,Private Housing,235.9
+2017,3,Private Housing,219.5
+2017,4,Private Housing,240.9
+2017,5,Private Housing,254.7
+2017,6,Private Housing,270.9
+2017,7,Private Housing,275.9
+2017,8,Private Housing,259.7
+2017,9,Private Housing,253.8
+2017,10,Private Housing,257.3
+2017,11,Private Housing,252.4
+2017,12,Private Housing,242.1
+2017,1,Private Apartments and Condominiums,149
+2017,2,Private Apartments and Condominiums,150.9
+2017,3,Private Apartments and Condominiums,141.6
+2017,4,Private Apartments and Condominiums,156.7
+2017,5,Private Apartments and Condominiums,168.4
+2017,6,Private Apartments and Condominiums,179.9
+2017,7,Private Apartments and Condominiums,182.7
+2017,8,Private Apartments and Condominiums,167.6
+2017,9,Private Apartments and Condominiums,166.8
+2017,10,Private Apartments and Condominiums,168
+2017,11,Private Apartments and Condominiums,167.5
+2017,12,Private Apartments and Condominiums,160.2
+2017,1,Landed Properties,81.6
+2017,2,Landed Properties,85
+2017,3,Landed Properties,78
+2017,4,Landed Properties,84.2
+2017,5,Landed Properties,86.3
+2017,6,Landed Properties,91
+2017,7,Landed Properties,93.2
+2017,8,Landed Properties,92.1
+2017,9,Landed Properties,87
+2017,10,Landed Properties,89.3
+2017,11,Landed Properties,84.8
+2017,12,Landed Properties,81.9
+2017,1,Others,0.8
+2017,2,Others,0.7
+2017,3,Others,0.7
+2017,4,Others,0.8
+2017,5,Others,0.8
+2017,6,Others,0.8
+2017,7,Others,0.9
+2017,8,Others,0.8
+2017,9,Others,0.8
+2017,10,Others,0.8
+2017,11,Others,0.8
+2017,12,Others,0.7
+2017,Annual,Overall,7289.8
+2017,Annual,Public Housing,4287.1
+2017,Annual,1-room / 2-room,132.6
+2017,Annual,3-room,761.9
+2017,Annual,4-room,1772.5
+2017,Annual,5-room and Executive,1620.2
+2017,Annual,Private Housing,2993.6
+2017,Annual,Private Apartments and Condominiums,1959.3
+2017,Annual,Landed Properties,1034.4
+2017,Annual,Others,9.4
+2018,1,Overall,558.2
+2018,2,Overall,521.8
+2018,3,Overall,533.6
+2018,4,Overall,611
+2018,5,Overall,639.2
+2018,6,Overall,676.7
+2018,7,Overall,634.1
+2018,8,Overall,619.3
+2018,9,Overall,631.7
+2018,10,Overall,631.8
+2018,11,Overall,609.7
+2018,12,Overall,564.4
+2018,1,Public Housing,328.3
+2018,2,Public Housing,308.1
+2018,3,Public Housing,308.9
+2018,4,Public Housing,355.3
+2018,5,Public Housing,370.1
+2018,6,Public Housing,395.6
+2018,7,Public Housing,371.9
+2018,8,Public Housing,364.3
+2018,9,Public Housing,367.8
+2018,10,Public Housing,363.7
+2018,11,Public Housing,356.6
+2018,12,Public Housing,330.8
+2018,1,1-room / 2-room,10.6
+2018,2,1-room / 2-room,10.1
+2018,3,1-room / 2-room,9.8
+2018,4,1-room / 2-room,11.1
+2018,5,1-room / 2-room,11.7
+2018,6,1-room / 2-room,12.6
+2018,7,1-room / 2-room,11.9
+2018,8,1-room / 2-room,11.8
+2018,9,1-room / 2-room,11.8
+2018,10,1-room / 2-room,11.6
+2018,11,1-room / 2-room,11.5
+2018,12,1-room / 2-room,11.1
+2018,1,3-room,58.5
+2018,2,3-room,54.9
+2018,3,3-room,54.9
+2018,4,3-room,62.7
+2018,5,3-room,65.6
+2018,6,3-room,70.1
+2018,7,3-room,65.5
+2018,8,3-room,64.5
+2018,9,3-room,65
+2018,10,3-room,64.2
+2018,11,3-room,62.3
+2018,12,3-room,58.9
+2018,1,4-room,136.4
+2018,2,4-room,127.9
+2018,3,4-room,128.5
+2018,4,4-room,147.5
+2018,5,4-room,153.9
+2018,6,4-room,164.2
+2018,7,4-room,154.8
+2018,8,4-room,151.6
+2018,9,4-room,152.9
+2018,10,4-room,151.2
+2018,11,4-room,148.6
+2018,12,4-room,137.6
+2018,1,5-room and Executive,122.8
+2018,2,5-room and Executive,115.3
+2018,3,5-room and Executive,115.8
+2018,4,5-room and Executive,134
+2018,5,5-room and Executive,138.9
+2018,6,5-room and Executive,148.7
+2018,7,5-room and Executive,139.7
+2018,8,5-room and Executive,136.4
+2018,9,5-room and Executive,138.1
+2018,10,5-room and Executive,136.7
+2018,11,5-room and Executive,134.2
+2018,12,5-room and Executive,123.3
+2018,1,Private Housing,229.2
+2018,2,Private Housing,212.7
+2018,3,Private Housing,222.8
+2018,4,Private Housing,253.6
+2018,5,Private Housing,267
+2018,6,Private Housing,278.8
+2018,7,Private Housing,260.1
+2018,8,Private Housing,252.9
+2018,9,Private Housing,261.8
+2018,10,Private Housing,266
+2018,11,Private Housing,251.1
+2018,12,Private Housing,231.8
+2018,1,Private Apartments and Condominiums,150.4
+2018,2,Private Apartments and Condominiums,137.9
+2018,3,Private Apartments and Condominiums,143.3
+2018,4,Private Apartments and Condominiums,166.4
+2018,5,Private Apartments and Condominiums,178.3
+2018,6,Private Apartments and Condominiums,186.9
+2018,7,Private Apartments and Condominiums,173.4
+2018,8,Private Apartments and Condominiums,166.7
+2018,9,Private Apartments and Condominiums,174.6
+2018,10,Private Apartments and Condominiums,176.4
+2018,11,Private Apartments and Condominiums,167
+2018,12,Private Apartments and Condominiums,153.6
+2018,1,Landed Properties,78.8
+2018,2,Landed Properties,74.8
+2018,3,Landed Properties,79.4
+2018,4,Landed Properties,87.2
+2018,5,Landed Properties,88.8
+2018,6,Landed Properties,92
+2018,7,Landed Properties,86.7
+2018,8,Landed Properties,86.1
+2018,9,Landed Properties,87.2
+2018,10,Landed Properties,89.6
+2018,11,Landed Properties,84.1
+2018,12,Landed Properties,78.2
+2018,1,Others,0.7
+2018,2,Others,1
+2018,3,Others,1.9
+2018,4,Others,2.1
+2018,5,Others,2.1
+2018,6,Others,2.2
+2018,7,Others,2.1
+2018,8,Others,2.1
+2018,9,Others,2.1
+2018,10,Others,2.1
+2018,11,Others,2
+2018,12,Others,1.8
+2018,Annual,Overall,7231.5
+2018,Annual,Public Housing,4221.4
+2018,Annual,1-room / 2-room,135.6
+2018,Annual,3-room,747.1
+2018,Annual,4-room,1755.1
+2018,Annual,5-room and Executive,1583.9
+2018,Annual,Private Housing,2987.8
+2018,Annual,Private Apartments and Condominiums,1974.9
+2018,Annual,Landed Properties,1012.9
+2018,Annual,Others,22.2
+2019,1,Overall,591.2
+2019,2,Overall,610.6
+2019,3,Overall,595.2
+2019,4,Overall,650.1
+2019,5,Overall,667.4
+2019,6,Overall,689.3
+2019,7,Overall,644.4
+2019,8,Overall,663.8
+2019,9,Overall,685.1
+2019,10,Overall,661.8
+2019,11,Overall,636.5
+2019,12,Overall,586
+2019,1,Public Housing,343.3
+2019,2,Public Housing,355.9
+2019,3,Public Housing,340.8
+2019,4,Public Housing,374.6
+2019,5,Public Housing,385.8
+2019,6,Public Housing,400.4
+2019,7,Public Housing,379
+2019,8,Public Housing,389.5
+2019,9,Public Housing,397.2
+2019,10,Public Housing,380.1
+2019,11,Public Housing,367.4
+2019,12,Public Housing,340.1
+2019,1,1-room / 2-room,11.5
+2019,2,1-room / 2-room,11.7
+2019,3,1-room / 2-room,11.2
+2019,4,1-room / 2-room,12.3
+2019,5,1-room / 2-room,12.8
+2019,6,1-room / 2-room,13.4
+2019,7,1-room / 2-room,12.8
+2019,8,1-room / 2-room,13.2
+2019,9,1-room / 2-room,13.3
+2019,10,1-room / 2-room,13
+2019,11,1-room / 2-room,12.8
+2019,12,1-room / 2-room,12
+2019,1,3-room,61.1
+2019,2,3-room,62.3
+2019,3,3-room,59.6
+2019,4,3-room,66.2
+2019,5,3-room,68.3
+2019,6,3-room,70.3
+2019,7,3-room,66.4
+2019,8,3-room,68.8
+2019,9,3-room,69.6
+2019,10,3-room,66.6
+2019,11,3-room,64.5
+2019,12,3-room,60
+2019,1,4-room,143.3
+2019,2,4-room,148.5
+2019,3,4-room,141.9
+2019,4,4-room,155.8
+2019,5,4-room,160.7
+2019,6,4-room,167
+2019,7,4-room,158.5
+2019,8,4-room,162.6
+2019,9,4-room,165.6
+2019,10,4-room,158.4
+2019,11,4-room,153.4
+2019,12,4-room,141.8
+2019,1,5-room and Executive,127.4
+2019,2,5-room and Executive,133.4
+2019,3,5-room and Executive,128
+2019,4,5-room and Executive,140.2
+2019,5,5-room and Executive,144
+2019,6,5-room and Executive,149.6
+2019,7,5-room and Executive,141.3
+2019,8,5-room and Executive,145
+2019,9,5-room and Executive,148.6
+2019,10,5-room and Executive,142.1
+2019,11,5-room and Executive,136.7
+2019,12,5-room and Executive,126.2
+2019,1,Private Housing,245.9
+2019,2,Private Housing,252.7
+2019,3,Private Housing,252.3
+2019,4,Private Housing,273.4
+2019,5,Private Housing,279.5
+2019,6,Private Housing,286.7
+2019,7,Private Housing,263.5
+2019,8,Private Housing,272.2
+2019,9,Private Housing,285.8
+2019,10,Private Housing,279.6
+2019,11,Private Housing,267.2
+2019,12,Private Housing,244
+2019,1,Private Apartments and Condominiums,161.2
+2019,2,Private Apartments and Condominiums,165.9
+2019,3,Private Apartments and Condominiums,166.2
+2019,4,Private Apartments and Condominiums,181.8
+2019,5,Private Apartments and Condominiums,188.3
+2019,6,Private Apartments and Condominiums,193.1
+2019,7,Private Apartments and Condominiums,176.4
+2019,8,Private Apartments and Condominiums,181.4
+2019,9,Private Apartments and Condominiums,190.2
+2019,10,Private Apartments and Condominiums,187
+2019,11,Private Apartments and Condominiums,179
+2019,12,Private Apartments and Condominiums,163.4
+2019,1,Landed Properties,84.6
+2019,2,Landed Properties,86.8
+2019,3,Landed Properties,86.2
+2019,4,Landed Properties,91.5
+2019,5,Landed Properties,91.3
+2019,6,Landed Properties,93.6
+2019,7,Landed Properties,87.1
+2019,8,Landed Properties,90.8
+2019,9,Landed Properties,95.5
+2019,10,Landed Properties,92.6
+2019,11,Landed Properties,88.2
+2019,12,Landed Properties,80.6
+2019,1,Others,2
+2019,2,Others,2
+2019,3,Others,2.1
+2019,4,Others,2.1
+2019,5,Others,2.1
+2019,6,Others,2.1
+2019,7,Others,2
+2019,8,Others,2.1
+2019,9,Others,2.1
+2019,10,Others,2.1
+2019,11,Others,1.9
+2019,12,Others,1.9
+2019,Annual,Overall,7681.4
+2019,Annual,Public Housing,4454.1
+2019,Annual,1-room / 2-room,150
+2019,Annual,3-room,783.7
+2019,Annual,4-room,1857.5
+2019,Annual,5-room and Executive,1662.5
+2019,Annual,Private Housing,3202.8
+2019,Annual,Private Apartments and Condominiums,2133.9
+2019,Annual,Landed Properties,1068.8
+2019,Annual,Others,24.5
+2020,1,Overall,563.2
+2020,2,Overall,597.1
+2020,3,Overall,618.3
+2020,4,Overall,667.7
+2020,5,Overall,661.9
+2020,6,Overall,868.1
+2020,7,Overall,885
+2020,8,Overall,714
+2020,9,Overall,678.8
+2020,10,Overall,656.3
+2020,11,Overall,673.8
+2020,12,Overall,660.4
+2020,1,Public Housing,328.2
+2020,2,Public Housing,346.8
+2020,3,Public Housing,354.5
+2020,4,Public Housing,383.3
+2020,5,Public Housing,381.8
+2020,6,Public Housing,501.6
+2020,7,Public Housing,515.1
+2020,8,Public Housing,415.7
+2020,9,Public Housing,396.6
+2020,10,Public Housing,384.2
+2020,11,Public Housing,394.8
+2020,12,Public Housing,383.4
+2020,1,1-room / 2-room,11.6
+2020,2,1-room / 2-room,12.1
+2020,3,1-room / 2-room,12.3
+2020,4,1-room / 2-room,13.3
+2020,5,1-room / 2-room,13.7
+2020,6,1-room / 2-room,17.3
+2020,7,1-room / 2-room,18.1
+2020,8,1-room / 2-room,15.3
+2020,9,1-room / 2-room,14.8
+2020,10,1-room / 2-room,14.4
+2020,11,1-room / 2-room,15.1
+2020,12,1-room / 2-room,14.7
+2020,1,3-room,58.1
+2020,2,3-room,61.2
+2020,3,3-room,62
+2020,4,3-room,66.8
+2020,5,3-room,67.4
+2020,6,3-room,86.8
+2020,7,3-room,87.1
+2020,8,3-room,72.9
+2020,9,3-room,68.7
+2020,10,3-room,66.1
+2020,11,3-room,68.9
+2020,12,3-room,66.5
+2020,1,4-room,137.7
+2020,2,4-room,144.9
+2020,3,4-room,148.1
+2020,4,4-room,160.6
+2020,5,4-room,160.2
+2020,6,4-room,209.2
+2020,7,4-room,215.2
+2020,8,4-room,173.3
+2020,9,4-room,165.7
+2020,10,4-room,160.5
+2020,11,4-room,165.2
+2020,12,4-room,159.9
+2020,1,5-room and Executive,120.8
+2020,2,5-room and Executive,128.6
+2020,3,5-room and Executive,132.1
+2020,4,5-room and Executive,142.6
+2020,5,5-room and Executive,140.6
+2020,6,5-room and Executive,188.2
+2020,7,5-room and Executive,194.8
+2020,8,5-room and Executive,154.2
+2020,9,5-room and Executive,147.4
+2020,10,5-room and Executive,143.2
+2020,11,5-room and Executive,145.7
+2020,12,5-room and Executive,142.3
+2020,1,Private Housing,233.2
+2020,2,Private Housing,248.4
+2020,3,Private Housing,261.9
+2020,4,Private Housing,282.4
+2020,5,Private Housing,278
+2020,6,Private Housing,364.3
+2020,7,Private Housing,367.7
+2020,8,Private Housing,296.4
+2020,9,Private Housing,280.4
+2020,10,Private Housing,270.3
+2020,11,Private Housing,277.1
+2020,12,Private Housing,275.1
+2020,1,Private Apartments and Condominiums,153.4
+2020,2,Private Apartments and Condominiums,162.2
+2020,3,Private Apartments and Condominiums,173.6
+2020,4,Private Apartments and Condominiums,186
+2020,5,Private Apartments and Condominiums,182.5
+2020,6,Private Apartments and Condominiums,251.9
+2020,7,Private Apartments and Condominiums,258.1
+2020,8,Private Apartments and Condominiums,198.4
+2020,9,Private Apartments and Condominiums,186.7
+2020,10,Private Apartments and Condominiums,180.3
+2020,11,Private Apartments and Condominiums,185.6
+2020,12,Private Apartments and Condominiums,185.1
+2020,1,Landed Properties,79.8
+2020,2,Landed Properties,86.2
+2020,3,Landed Properties,88.3
+2020,4,Landed Properties,96.4
+2020,5,Landed Properties,95.5
+2020,6,Landed Properties,112.5
+2020,7,Landed Properties,109.7
+2020,8,Landed Properties,97.9
+2020,9,Landed Properties,93.7
+2020,10,Landed Properties,90
+2020,11,Landed Properties,91.4
+2020,12,Landed Properties,90
+2020,1,Others,1.8
+2020,2,Others,1.8
+2020,3,Others,1.8
+2020,4,Others,2
+2020,5,Others,2.1
+2020,6,Others,2.2
+2020,7,Others,2.1
+2020,8,Others,2
+2020,9,Others,1.8
+2020,10,Others,1.8
+2020,11,Others,1.9
+2020,12,Others,1.8
+2020,Annual,Overall,8244.6
+2020,Annual,Public Housing,4786
+2020,Annual,1-room / 2-room,172.7
+2020,Annual,3-room,832.5
+2020,Annual,4-room,2000.5
+2020,Annual,5-room and Executive,1780.5
+2020,Annual,Private Housing,3435.2
+2020,Annual,Private Apartments and Condominiums,2303.8
+2020,Annual,Landed Properties,1131.4
+2020,Annual,Others,23.1
+2021,1,Overall,620.6
+2021,2,Overall,591.9
+2021,3,Overall,593.8
+2021,4,Overall,670.8
+2021,5,Overall,712.3
+2021,6,Overall,780.4
+2021,7,Overall,751.2
+2021,8,Overall,763.4
+2021,9,Overall,701.7
+2021,10,Overall,684.3
+2021,11,Overall,708.6
+2021,12,Overall,698.6
+2021,1,Public Housing,363.3
+2021,2,Public Housing,346.7
+2021,3,Public Housing,344.3
+2021,4,Public Housing,389.7
+2021,5,Public Housing,411.8
+2021,6,Public Housing,452.3
+2021,7,Public Housing,435.8
+2021,8,Public Housing,443.5
+2021,9,Public Housing,411.9
+2021,10,Public Housing,402.1
+2021,11,Public Housing,413.4
+2021,12,Public Housing,408.9
+2021,1,1-room / 2-room,14.2
+2021,2,1-room / 2-room,13.2
+2021,3,1-room / 2-room,13.1
+2021,4,1-room / 2-room,14.8
+2021,5,1-room / 2-room,15.8
+2021,6,1-room / 2-room,17.3
+2021,7,1-room / 2-room,16.7
+2021,8,1-room / 2-room,17.3
+2021,9,1-room / 2-room,16.2
+2021,10,1-room / 2-room,15.7
+2021,11,1-room / 2-room,16.2
+2021,12,1-room / 2-room,16.1
+2021,1,3-room,62.7
+2021,2,3-room,59.7
+2021,3,3-room,60.5
+2021,4,3-room,68.1
+2021,5,3-room,71.6
+2021,6,3-room,78.2
+2021,7,3-room,74.4
+2021,8,3-room,75.7
+2021,9,3-room,70.7
+2021,10,3-room,69.7
+2021,11,3-room,70.8
+2021,12,3-room,69.7
+2021,1,4-room,151.7
+2021,2,4-room,145.1
+2021,3,4-room,144
+2021,4,4-room,163.1
+2021,5,4-room,172.3
+2021,6,4-room,188.8
+2021,7,4-room,182.1
+2021,8,4-room,185.3
+2021,9,4-room,172.1
+2021,10,4-room,168.2
+2021,11,4-room,172.9
+2021,12,4-room,171
+2021,1,5-room and Executive,134.8
+2021,2,5-room and Executive,128.7
+2021,3,5-room and Executive,126.6
+2021,4,5-room and Executive,143.7
+2021,5,5-room and Executive,152
+2021,6,5-room and Executive,168
+2021,7,5-room and Executive,162.5
+2021,8,5-room and Executive,165.2
+2021,9,5-room and Executive,152.9
+2021,10,5-room and Executive,148.4
+2021,11,5-room and Executive,153.5
+2021,12,5-room and Executive,152.1
+2021,1,Private Housing,255.6
+2021,2,Private Housing,243.5
+2021,3,Private Housing,247.8
+2021,4,Private Housing,279.3
+2021,5,Private Housing,298.6
+2021,6,Private Housing,326.2
+2021,7,Private Housing,313.6
+2021,8,Private Housing,318
+2021,9,Private Housing,288
+2021,10,Private Housing,280.6
+2021,11,Private Housing,293.4
+2021,12,Private Housing,288
+2021,1,Private Apartments and Condominiums,172
+2021,2,Private Apartments and Condominiums,161.1
+2021,3,Private Apartments and Condominiums,163.3
+2021,4,Private Apartments and Condominiums,187.3
+2021,5,Private Apartments and Condominiums,202.3
+2021,6,Private Apartments and Condominiums,221.4
+2021,7,Private Apartments and Condominiums,215.6
+2021,8,Private Apartments and Condominiums,216.5
+2021,9,Private Apartments and Condominiums,194.7
+2021,10,Private Apartments and Condominiums,188.8
+2021,11,Private Apartments and Condominiums,199.1
+2021,12,Private Apartments and Condominiums,196.5
+2021,1,Landed Properties,83.7
+2021,2,Landed Properties,82.4
+2021,3,Landed Properties,84.5
+2021,4,Landed Properties,92
+2021,5,Landed Properties,96.3
+2021,6,Landed Properties,104.8
+2021,7,Landed Properties,98
+2021,8,Landed Properties,101.5
+2021,9,Landed Properties,93.4
+2021,10,Landed Properties,91.7
+2021,11,Landed Properties,94.2
+2021,12,Landed Properties,91.5
+2021,1,Others,1.6
+2021,2,Others,1.7
+2021,3,Others,1.8
+2021,4,Others,1.9
+2021,5,Others,1.9
+2021,6,Others,2
+2021,7,Others,1.8
+2021,8,Others,1.9
+2021,9,Others,1.7
+2021,10,Others,1.7
+2021,11,Others,1.8
+2021,12,Others,1.7
+2021,Annual,Overall,8277.6
+2021,Annual,Public Housing,4823.7
+2021,Annual,1-room / 2-room,186.6
+2021,Annual,3-room,831.8
+2021,Annual,4-room,2016.6
+2021,Annual,5-room and Executive,1788.4
+2021,Annual,Private Housing,3432.6
+2021,Annual,Private Apartments and Condominiums,2318.6
+2021,Annual,Landed Properties,1114
+2021,Annual,Others,21.5
+2022,1,Overall,651.5
+2022,2,Overall,655
+2022,3,Overall,621.4
+2022,4,Overall,668.3
+2022,5,Overall,705.6
+2022,6,Overall,721.7
+2022,1,Public Housing,384.7
+2022,2,Public Housing,384.3
+2022,3,Public Housing,361.9
+2022,4,Public Housing,390.3
+2022,5,Public Housing,407.5
+2022,6,Public Housing,421.3
+2022,1,1-room / 2-room,15.4
+2022,2,1-room / 2-room,15.2
+2022,3,1-room / 2-room,14.3
+2022,4,1-room / 2-room,15.6
+2022,5,1-room / 2-room,16.3
+2022,6,1-room / 2-room,17.1
+2022,1,3-room,66
+2022,2,3-room,65.8
+2022,3,3-room,62.2
+2022,4,3-room,67.4
+2022,5,3-room,69.8
+2022,6,3-room,72.2
+2022,1,4-room,161.6
+2022,2,4-room,160.7
+2022,3,4-room,151.7
+2022,4,4-room,163.5
+2022,5,4-room,170.8
+2022,6,4-room,176.1
+2022,1,5-room and Executive,141.8
+2022,2,5-room and Executive,142.6
+2022,3,5-room and Executive,133.7
+2022,4,5-room and Executive,143.8
+2022,5,5-room and Executive,150.6
+2022,6,5-room and Executive,155.9
+2022,1,Private Housing,265.1
+2022,2,Private Housing,268.9
+2022,3,Private Housing,257.9
+2022,4,Private Housing,276.3
+2022,5,Private Housing,296.2
+2022,6,Private Housing,298.5
+2022,1,Private Apartments and Condominiums,177.8
+2022,2,Private Apartments and Condominiums,179.7
+2022,3,Private Apartments and Condominiums,173.3
+2022,4,Private Apartments and Condominiums,187.8
+2022,5,Private Apartments and Condominiums,201.4
+2022,6,Private Apartments and Condominiums,203.5
+2022,1,Landed Properties,87.3
+2022,2,Landed Properties,89.2
+2022,3,Landed Properties,84.6
+2022,4,Landed Properties,88.5
+2022,5,Landed Properties,94.8
+2022,6,Landed Properties,94.9
+2022,1,Others,1.7
+2022,2,Others,1.7
+2022,3,Others,1.7
+2022,4,Others,1.7
+2022,5,Others,1.9
+2022,6,Others,1.9
+2022,Annual,Overall,4023.5
+2022,Annual,Public Housing,2350
+2022,Annual,1-room / 2-room,93.9
+2022,Annual,3-room,403.4
+2022,Annual,4-room,984.4
+2022,Annual,5-room and Executive,868.4
+2022,Annual,Private Housing,1662.9
+2022,Annual,Private Apartments and Condominiums,1123.5
+2022,Annual,Landed Properties,539.3
+2022,Annual,Others,10.6
+,,,
+Data for 2022 is as at Jun 2022.,,,

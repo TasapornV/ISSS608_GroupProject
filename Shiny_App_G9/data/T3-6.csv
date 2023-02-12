@@ -1,0 +1,166 @@
+year,company,market_share_percent
+2007,SembCorp Gas, 65.1 
+2007,Pavilion Gas, -   
+2007,City-OG Gas Energy Services, -   
+2007,City Gas, 5.9 
+2007,Keppel Gas, -   
+2007,YTL PowerSeraya, -   
+2007,Tuas Power Supply, -   
+2007,Sembcorp Fuels, -   
+2007,Senoko Gas Supply, -   
+2007,Union Gas, -   
+2007,Gas Supply, 29.0 
+2008,SembCorp Gas, 65.2 
+2008,Pavilion Gas, -   
+2008,City-OG Gas Energy Services, -   
+2008,City Gas, 10.5 
+2008,Keppel Gas, -   
+2008,YTL PowerSeraya, -   
+2008,Tuas Power Supply, -   
+2008,Sembcorp Fuels, -   
+2008,Senoko Gas Supply, -   
+2008,Union Gas, -   
+2008,Gas Supply, 24.3 
+2009,SembCorp Gas, 61.2 
+2009,Pavilion Gas, -   
+2009,City-OG Gas Energy Services, -   
+2009,City Gas, 13.3 
+2009,Keppel Gas, -   
+2009,YTL PowerSeraya, -   
+2009,Tuas Power Supply, -   
+2009,Sembcorp Fuels, -   
+2009,Senoko Gas Supply, -   
+2009,Union Gas, -   
+2009,Gas Supply, 25.5 
+2010,SembCorp Gas, 50.7 
+2010,Pavilion Gas, -   
+2010,City-OG Gas Energy Services, -   
+2010,City Gas, 18.6 
+2010,Keppel Gas, -   
+2010,YTL PowerSeraya, -   
+2010,Tuas Power Supply, -   
+2010,Sembcorp Fuels, -   
+2010,Senoko Gas Supply, -   
+2010,Union Gas, -   
+2010,Gas Supply, 30.7 
+2011,SembCorp Gas, 51.2 
+2011,Pavilion Gas, -   
+2011,City-OG Gas Energy Services, -   
+2011,City Gas, 21.1 
+2011,Keppel Gas, -   
+2011,YTL PowerSeraya, -   
+2011,Tuas Power Supply, -   
+2011,Sembcorp Fuels, -   
+2011,Senoko Gas Supply, -   
+2011,Union Gas, -   
+2011,Gas Supply, 27.6 
+2012,SembCorp Gas, 49.3 
+2012,Pavilion Gas, -   
+2012,City-OG Gas Energy Services, -   
+2012,City Gas, 21.7 
+2012,Keppel Gas, -   
+2012,YTL PowerSeraya, -   
+2012,Tuas Power Supply, -   
+2012,Sembcorp Fuels, -   
+2012,Senoko Gas Supply, -   
+2012,Union Gas, -   
+2012,Gas Supply, 29.0 
+2013,SembCorp Gas, 50.1 
+2013,Pavilion Gas, -   
+2013,City-OG Gas Energy Services, 5.5 
+2013,City Gas, 17.0 
+2013,Keppel Gas, -   
+2013,YTL PowerSeraya, -   
+2013,Tuas Power Supply, -   
+2013,Sembcorp Fuels, -   
+2013,Senoko Gas Supply, -   
+2013,Union Gas, -   
+2013,Gas Supply, 27.4 
+2014,SembCorp Gas, 46.2 
+2014,Pavilion Gas, 2.2 
+2014,City-OG Gas Energy Services, 12.6 
+2014,City Gas, 9.2 
+2014,Keppel Gas, -   
+2014,YTL PowerSeraya, -   
+2014,Tuas Power Supply, -   
+2014,Sembcorp Fuels, -   
+2014,Senoko Gas Supply, -   
+2014,Union Gas, -   
+2014,Gas Supply, 29.7 
+2015,SembCorp Gas, 42.8 
+2015,Pavilion Gas, 34.6 
+2015,City-OG Gas Energy Services, 13.5 
+2015,City Gas, 9.0 
+2015,Keppel Gas, 0.0 
+2015,YTL PowerSeraya, -   
+2015,Tuas Power Supply, -   
+2015,Sembcorp Fuels, -   
+2015,Senoko Gas Supply, -   
+2015,Union Gas, -   
+2015,Gas Supply, -   
+2016,SembCorp Gas, 39.4 
+2016,Pavilion Gas, 37.5 
+2016,City-OG Gas Energy Services, 12.3 
+2016,City Gas, 10.2 
+2016,Keppel Gas, 0.5 
+2016,YTL PowerSeraya, 0.2 
+2016,Tuas Power Supply, -   
+2016,Sembcorp Fuels, -   
+2016,Senoko Gas Supply, -   
+2016,Union Gas, -   
+2016,Gas Supply, -   
+2017,SembCorp Gas, 43.5 
+2017,Pavilion Gas, 31.3 
+2017,City-OG Gas Energy Services, 12.5 
+2017,City Gas, 11.2 
+2017,Keppel Gas, 0.8 
+2017,YTL PowerSeraya, 0.6 
+2017,Tuas Power Supply, 0.1 
+2017,Sembcorp Fuels, -   
+2017,Senoko Gas Supply, 0.0 
+2017,Union Gas, 0.0 
+2017,Gas Supply, -   
+2018,SembCorp Gas,41.0
+2018,Pavilion Gas,33.1
+2018,City-OG Gas Energy Services,14.0
+2018,City Gas,8.5
+2018,Keppel Gas,1.7
+2018,YTL PowerSeraya,0.3
+2018,Tuas Power Supply,1.5
+2018,Sembcorp Fuels, -   
+2018,Senoko Gas Supply, -   
+2018,Union Gas, -   
+2018,Gas Supply, -   
+2019,SembCorp Gas,41.1
+2019,Pavilion Gas,34.1
+2019,City-OG Gas Energy Services,12.4
+2019,City Gas,8.5
+2019,Keppel Gas,2.1
+2019,YTL PowerSeraya,0.3
+2019,Tuas Power Supply,0.9
+2019,Sembcorp Fuels,0.7
+2019,Senoko Gas Supply, -   
+2019,Union Gas, -   
+2019,Gas Supply, -   
+2020,SembCorp Gas, 38.3 
+2020,Pavilion Gas, 38.2 
+2020,City-OG Gas Energy Services, 9.7 
+2020,City Gas, 7.8 
+2020,Keppel Gas, 2.2 
+2020,YTL PowerSeraya, -   
+2020,Tuas Power Supply, 0.9 
+2020,Sembcorp Fuels, 2.9 
+2020,Senoko Gas Supply, -   
+2020,Union Gas, 0.0 
+2020,Gas Supply, -   
+2021,SembCorp Gas,38.1
+2021,Pavilion Gas,38.5
+2021,City-OG Gas Energy Services,10.6
+2021,City Energy,5.4
+2021,Keppel Gas,4.6
+2021,YTL PowerSeraya, -   
+2021,Tuas Power Supply,0.7
+2021,Sembcorp Fuels,1.5
+2021,Senoko Gas Supply, -   
+2021,Union Gas,0.6
+2021,Gas Supply, -   

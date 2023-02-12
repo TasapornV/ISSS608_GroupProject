@@ -116,7 +116,7 @@ The objective of the forecasting visualization is to develop a tool that allows 
 
 #### Proposed Visual Design
 
-![](DesignDraft9.png)
+![](images/DesignDraft9.png)
 
 ### Data
 

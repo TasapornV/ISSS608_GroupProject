@@ -1,0 +1,177 @@
+year,sector,sub_sector,ng_consumption_tj
+2009,Industrial-related,Manufacturing,29960.9
+2009,Industrial-related,Construction,132.2
+2009,Industrial-related,Utilities,320.3
+2009,Industrial-related,Other Industrial-related,0.0
+2009,Commerce and Service-related,Wholesale and Retail Trade,116.7
+2009,Commerce and Service-related,Accommodation and Food Services,2060.9
+2009,Commerce and Service-related,Information and Communications,0.0
+2009,Commerce and Service-related,Financial and Insurance Activities,250.3
+2009,Commerce and Service-related,Real Estate Activities,74.8
+2009,Commerce and Service-related,"Professional, Scientific & Technical, Administration & Support Activities",101.9
+2009,Commerce and Service-related,Other Commerce and Service-related,445.8
+2009,Transport-related,Transport-related,574.9
+2009,Households,Households,2262.9
+2009,Others,Others,34.7
+2010,Industrial-related,Manufacturing,40298.5
+2010,Industrial-related,Construction,154.6
+2010,Industrial-related,Utilities,348.4
+2010,Industrial-related,Other Industrial-related,0.0
+2010,Commerce and Service-related,Wholesale and Retail Trade,113.8
+2010,Commerce and Service-related,Accommodation and Food Services,2202.6
+2010,Commerce and Service-related,Information and Communications,0.3
+2010,Commerce and Service-related,Financial and Insurance Activities,288.4
+2010,Commerce and Service-related,Real Estate Activities,77.4
+2010,Commerce and Service-related,"Professional, Scientific & Technical, Administration & Support Activities",98.3
+2010,Commerce and Service-related,Other Commerce and Service-related,497.7
+2010,Transport-related,Transport-related,872.9
+2010,Households,Households,2257.2
+2010,Others,Others,34.1
+2011,Industrial-related,Manufacturing,42180.4
+2011,Commerce and Service-related,Wholesale and Retail Trade,116.6
+2011,Commerce and Service-related,Accommodation and Food Services,2337.9
+2011,Commerce and Service-related,Information and Communications,0.2
+2011,Commerce and Service-related,Financial and Insurance Activities,290.1
+2011,Commerce and Service-related,Other Commerce and Service-related,539.9
+2011,Transport-related,Transport-related,1083.6
+2011,Households,Households,2309.1
+2011,Others,Others,33.1
+2012,Industrial-related,Manufacturing,39986.6
+2012,Industrial-related,Construction,129.2
+2012,Industrial-related,Utilities,329.8
+2012,Commerce and Service-related,Wholesale and Retail Trade,115.2
+2012,Commerce and Service-related,Accommodation and Food Services,2349.2
+2012,Commerce and Service-related,Information and Communications,0.1
+2012,Commerce and Service-related,Financial and Insurance Activities,281.8
+2012,Commerce and Service-related,Real Estate Activities,80.5
+2012,Commerce and Service-related,"Professional, Scientific & Technical, Administration & Support Activities",99.5
+2012,Commerce and Service-related,Other Commerce and Service-related,527.9
+2012,Transport-related,Transport-related,836.8
+2012,Households,Households,2382.1
+2012,Others,Others,32.0
+2013,Industrial-related,Manufacturing,47310.7
+2013,Industrial-related,Construction,286.1
+2013,Industrial-related,Utilities,380.0
+2013,Industrial-related,Other Industrial-related,0.3
+2013,Commerce and Service-related,Wholesale and Retail Trade,170.7
+2013,Commerce and Service-related,Accommodation and Food Services,2379.3
+2013,Commerce and Service-related,Information and Communications,0.4
+2013,Commerce and Service-related,Financial and Insurance Activities,285.4
+2013,Commerce and Service-related,Real Estate Activities,242.6
+2013,Commerce and Service-related,"Professional, Scientific & Technical, Administration & Support Activities",125.7
+2013,Commerce and Service-related,Other Commerce and Service-related,536.4
+2013,Transport-related,Transport-related,759.2
+2013,Households,Households,2409.1
+2013,Others,Others,31.9
+2014,Industrial-related,Manufacturing,49535.0
+2014,Industrial-related,Construction,251.0
+2014,Industrial-related,Utilities,151.1
+2014,Industrial-related,Other Industrial-related,0.4
+2014,Commerce and Service-related,Wholesale and Retail Trade,186.4
+2014,Commerce and Service-related,Accommodation and Food Services,2362.6
+2014,Commerce and Service-related,Information and Communications,0.4
+2014,Commerce and Service-related,Financial and Insurance Activities,277.1
+2014,Commerce and Service-related,Real Estate Activities,69.3
+2014,Commerce and Service-related,"Professional, Scientific & Technical, Administration & Support Activities",121.5
+2014,Commerce and Service-related,Other Commerce and Service-related,553.9
+2014,Transport-related,Transport-related,727.4
+2014,Households,Households,2464.6
+2014,Others,Others,35.0
+2015,Industrial-related,Manufacturing,48926.1
+2015,Industrial-related,Construction,234.3
+2015,Industrial-related,Utilities,78.0
+2015,Industrial-related,Other Industrial-related,1.3
+2015,Commerce and Service-related,Wholesale and Retail Trade,285.2
+2015,Commerce and Service-related,Accommodation and Food Services,2395.1
+2015,Commerce and Service-related,Information and Communications,0.6
+2015,Commerce and Service-related,Financial and Insurance Activities,261.1
+2015,Commerce and Service-related,Real Estate Activities,68.0
+2015,Commerce and Service-related,"Professional, Scientific & Technical, Administration & Support Activities",137.1
+2015,Commerce and Service-related,Other Commerce and Service-related,544.0
+2015,Transport-related,Transport-related,599.6
+2015,Households,Households,2508.0
+2015,Others,Others,82.5
+2016,Industrial-related,Manufacturing,49628.4
+2016,Industrial-related,Construction,256.5
+2016,Industrial-related,Utilities,82.2
+2016,Industrial-related,Other Industrial-related,1.4
+2016,Commerce and Service-related,Wholesale and Retail Trade,306.7
+2016,Commerce and Service-related,Accommodation and Food Services,2462.4
+2016,Commerce and Service-related,Information and Communications,1.5
+2016,Commerce and Service-related,Financial and Insurance Activities,306.9
+2016,Commerce and Service-related,Real Estate Activities,73.5
+2016,Commerce and Service-related,"Professional, Scientific & Technical, Administration & Support Activities",139.6
+2016,Commerce and Service-related,Other Commerce and Service-related,564.8
+2016,Transport-related,Transport-related,468.6
+2016,Households,Households,2547.8
+2016,Others,Others,108.9
+2017,Industrial-related,Manufacturing,53199.1
+2017,Industrial-related,Construction,264.4
+2017,Industrial-related,Utilities,59.2
+2017,Industrial-related,Other Industrial-related,2.3
+2017,Commerce and Service-related,Wholesale and Retail Trade,218.5
+2017,Commerce and Service-related,Accommodation and Food Services,2472.9
+2017,Commerce and Service-related,Information and Communications,1.9
+2017,Commerce and Service-related,Financial and Insurance Activities,193.5
+2017,Commerce and Service-related,Real Estate Activities,84.5
+2017,Commerce and Service-related,"Professional, Scientific & Technical, Administration & Support Activities",117.6
+2017,Commerce and Service-related,Other Commerce and Service-related,618.1
+2017,Transport-related,Transport-related,288.4
+2017,Households,Households,2604.3
+2017,Others,Others,102.0
+2018,Industrial-related,Manufacturing,55000.4
+2018,Industrial-related,Construction,264.7
+2018,Industrial-related,Utilities,61.5
+2018,Industrial-related,Other Industrial-related,0.2
+2018,Commerce and Service-related,Wholesale and Retail Trade,171.1
+2018,Commerce and Service-related,Accommodation and Food Services,2349.3
+2018,Commerce and Service-related,Information and Communications,2.7
+2018,Commerce and Service-related,Financial and Insurance Activities,169.6
+2018,Commerce and Service-related,Real Estate Activities,103.2
+2018,Commerce and Service-related,"Professional, Scientific & Technical, Administration & Support Activities",176.3
+2018,Commerce and Service-related,Other Commerce and Service-related,697.3
+2018,Transport-related,Transport-related,118.5
+2018,Households,Households,2667.6
+2018,Others,Others,161.2
+2019,Industrial-related,Manufacturing,55173.0
+2019,Industrial-related,Construction,234.1
+2019,Industrial-related,Utilities,69.7
+2019,Industrial-related,Other Industrial-related,0.1
+2019,Commerce and Service-related,Wholesale and Retail Trade,208.7
+2019,Commerce and Service-related,Accommodation and Food Services,2367.5
+2019,Commerce and Service-related,Information and Communications,2.6
+2019,Commerce and Service-related,Financial and Insurance Activities,153.1
+2019,Commerce and Service-related,Real Estate Activities,76.3
+2019,Commerce and Service-related,"Professional, Scientific & Technical, Administration & Support Activities",150.3
+2019,Commerce and Service-related,Other Commerce and Service-related,715.8
+2019,Transport-related,Transport-related,114.2
+2019,Households,Households,2649.3
+2019,Others,Others,149.3
+2020,Industrial-related,Manufacturing,61665.3
+2020,Industrial-related,Construction,168.3
+2020,Industrial-related,Utilities,111.5
+2020,Industrial-related,Other Industrial-related,0.0
+2020,Commerce and Service-related,Wholesale and Retail Trade,204.7
+2020,Commerce and Service-related,Accommodation and Food Services,1873.7
+2020,Commerce and Service-related,Information and Communications,1.8
+2020,Commerce and Service-related,Financial and Insurance Activities,422.3
+2020,Commerce and Service-related,Real Estate Activities,62.1
+2020,Commerce and Service-related,"Professional, Scientific & Technical, Administration & Support Activities",137.5
+2020,Commerce and Service-related,Other Commerce and Service-related,544.0
+2020,Transport-related,Transport-related,82.3
+2020,Households,Households,3191.0
+2020,Others,Others,127.0
+2021,Industrial-related,Manufacturing,"64,558.10"
+2021,Industrial-related,Construction,361
+2021,Industrial-related,Utilities,193.3
+2021,Industrial-related,Other Industrial-related,0
+2021,Commerce and Service-related,Wholesale and Retail Trade,426.6
+2021,Commerce and Service-related,Accommodation and Food Services,"1,858.70"
+2021,Commerce and Service-related,Information and Communications,2.7
+2021,Commerce and Service-related,Financial and Insurance Activities,606.9
+2021,Commerce and Service-related,Real Estate Activities,61.7
+2021,Commerce and Service-related,"Professional, Scientific & Technical, Administration & Support Activities",302.7
+2021,Commerce and Service-related,Other Commerce and Service-related,933.2
+2021,Transport-related,Transport-related,130.3
+2021,Households,Households,"3,036.30"
+2021,Others,Others,128.6

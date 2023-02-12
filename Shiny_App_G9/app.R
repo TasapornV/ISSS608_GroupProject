@@ -203,13 +203,13 @@ To address this challenge, we build this RShinny app to provide relevant stakeho
                                          )
                                        )
                               ),
+                              tabPanel("ABOUT", tabName = "about", icon = icon("info"))
                  )
                )
                
 )
 
 server = function(input, output) {
-  
   output$boxplot <- renderPlotly({
     ggplotly(
       consumption %>% 
@@ -225,6 +225,38 @@ server = function(input, output) {
     )
   }
   )
+  
+  
+  # ----------------- line chart ------------------ #
+  
+  observeEvent(input$line, {
+    
+    filterprice <- Price %>%
+      filter(Date >= as.Date(input$slider_time[[1]]),
+             Date <= as.Date(input$slider_time[[2]]))
+    
+    datalong <- melt(filterprice, id = 'Date')
+    datalong$value <- as.numeric(datalong$value)
+    datalong <- datalong %>%
+      filter(variable %in% input$line)
+    
+    output$plot <- renderPlotly({
+      ggplotly(ggplot(datalong, aes(x=Date, y=value, color = variable))+
+                 geom_line(size = 0.5, alpha = .9) +
+                 scale_x_date(date_labels = "%b %d", date_breaks = "1 week") +
+                 labs(title = "Bitcoin Metric") +
+                 theme_minimal(base_size=16) +
+                 theme(axis.title=element_blank(),
+                       plot.title = element_text(size= rel(1)),
+                       plot.background = element_rect(fill = "white"),
+                       panel.background = element_rect(fill="white"),
+                       panel.grid.minor = element_line(colour = "grey50"),
+                       legend.text = element_text(colour="black")),
+               panel.grid.major = element_line(colour = "grey50")
+      )
+    })
+  })
+  
 }
 
 
