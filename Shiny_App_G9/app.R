@@ -10,21 +10,23 @@ library(ggrepel)
 library(plotly)
 library(tidyverse)
 
-## Read data file
-T2.3 <- readRDS(file = "RDS/T2-3.rds")
-T2.6 <- readRDS(file = "RDS/T2-6.rds")
-T3.4 <- readRDS(file = "RDS/T3-4.rds")
-T3.5 <- readRDS(file = "RDS/T3-5.rds")
-T3.6 <- readRDS(file = "RDS/T3-6.rds")
-T3.7 <- readRDS(file = "RDS/T3-7.rds")
-T3.8 <- readRDS(file = "RDS/T3-8.rds")
-T3.9 <- readRDS(file = "RDS/T3-9.rds")
-T5.1 <- readRDS(file = "RDS/T5-1.rds")
-T5.2 <- readRDS(file = "RDS/T5-2.rds")
-T5.3 <- readRDS(file = "RDS/T5-3.rds")
-T5.4 <- readRDS(file = "RDS/T5-4.rds")
-T5.5 <- readRDS(file = "RDS/T5-5.rds")
+## Read compressed data file
+T2.3 <- readRDS(file = "RDS/T2-3.rds") # Peak System Demand
+T2.6 <- readRDS(file = "RDS/T2-6.rds") # Market Share of Electricity Generation
+T3.4 <- readRDS(file = "RDS/T3-4.rds") # Total Household Electricity Consumption by Dwelling Type
+T3.5 <- readRDS(file = "RDS/T3-5.rds") # Average Monthly Household Electricity Consumption by Planning Area & Dwelling Type
+T3.6 <- readRDS(file = "RDS/T3-6.rds") # Market Share for Natural Gas Retail
+T3.7 <- readRDS(file = "RDS/T3-7.rds") # Natural Gas Consumption by Sub-Sector
+T3.8 <- readRDS(file = "RDS/T3-8.rds") # Total Household Town Gas Consumption by Dwelling Type
+T3.9 <- readRDS(file = "RDS/T3-9.rds") # Average Monthly Household Town Gas Consumption by Planning Area & Dwelling Type
+T5.1 <- readRDS(file = "RDS/T5-1.rds") # Electricity and Gas Tariffs
+T5.2 <- readRDS(file = "RDS/T5-2.rds") # Monthly Electricity Tariffs (Low Tension Tariffs)
+T5.3 <- readRDS(file = "RDS/T5-3.rds") # Annual Electricity Tariffs by Components (Low Tension Tariffs)
+T5.4 <- readRDS(file = "RDS/T5-4.rds") # Average Monthly Uniform Singapore Energy Prices (USEP)
+T5.5 <- readRDS(file = "RDS/T5-5.rds") # Monthly Town Gas Tariffs
 
+#testing
+#thest waw
 # wrangling data
 consumption <- T3.5
 consumption <- consumption %>%
@@ -48,6 +50,7 @@ tables <- c("Peak System Demand" = "T2.3",
             "Annual Electricity Tariffs by Components (Low Tension Tariffs)" = "T5.3",
             "Average Monthly Uniform Singapore Energy Prices (USEP)" = "T5.4",
             "Monthly Town Gas Tariffs" = "T5.5")
+type <- c("parametric", "nonparametric", "robust", "bayes")
 
 introtext = "Singapore has progressively moved towards an open electricity market since 2001 
 to ensure a reliable energy supply and promote effective competition in the energy market.
@@ -91,6 +94,7 @@ ui = fluidPage(
                         ),
                         
                         # ====================== Geofacet ====================== #
+                        # T4.3 
                         tabPanel("Geofacet",
                                  fluidPage(
                                    fluidRow(
@@ -103,7 +107,9 @@ ui = fluidPage(
                                                           choices = regions, selected = regions)
                                      )),
                                      
-                                     column(9)
+                                     column(9,
+                                       box(plotOutput("geo", height = 800), width = "100%")
+                                     )
                                    )
                                  )
                         ),
@@ -188,7 +194,12 @@ ui = fluidPage(
                                        
                                        sliderInput("slider_significant", "Significance level (alpha):",min = 0.0001, 
                                                    max = 0.01, 
-                                                   value =  0.001)
+                                                   value =  0.001),
+                                       
+                                       radioButtons("anovatype",
+                                                    label = "Select test type",
+                                                    choices = type,
+                                                    selected = "parametric")
                                      )),
                                      
                                      column(width = 9, plotlyOutput("anova",height=400))
@@ -222,8 +233,8 @@ ui = fluidPage(
     tabPanel("TIME SERIES FORECASTING", tabName = "time_series", icon = icon("chart-line"),
              navbarPage("TIME SERIES FORECASTING",
                         
-                        # ==================== Electricity consumption ==================== #
-                        tabPanel("Electricity consumption",
+                        # ==================== Trend Prediction ==================== #
+                        tabPanel("Trend Prediction",
                                  fluidPage(
                                    fluidRow(
                                      column(3, wellPanel(
@@ -236,10 +247,10 @@ ui = fluidPage(
                                    ) )
                         ),
                         
-                        # ******************** End Electricity consumption ******************** #
+                        # ******************** End Trend Prediction ******************** #
                         
-                        # ======================= Oil consumption ======================= #
-                        tabPanel("Oil consumption",
+                        # ======================= Slope Graph ======================= #
+                        tabPanel("Slope Graph",
                                  fluidPage(
                                    fluidRow(
                                      column(3, wellPanel(
@@ -286,14 +297,68 @@ ui = fluidPage(
     
     # =============================== ABOUT =============================== #    
     
-    tabPanel("ABOUT", tabName = "about", icon = icon("info"))
+    tabPanel("ABOUT", tabName = "about", icon = icon("info")),
     
     # ****************************** END ABOUT ****************************** #    
-    
+    tabPanel(wellPanel(
+      sliderInput("slider_time", "Select date range",min = as.Date("2021-02-24"), 
+                  max = as.Date("2021-04-24"), 
+                  value =  c(as.Date("2021-02-24"),as.Date("2021-03-03") )),
+      
+      dateRangeInput("daterange", "Input date range", 
+                     start = as.Date("2021-02-24"),end = as.Date("2021-03-03") )
+    ))
   )
 )
 
 server = function(input, output, session) {
+  
+  # -------------------- Geofacet ------------------- #
+  
+  # observeEvent(input$tplanning_region,{
+  #   updateSelectInput(session,'tplanning_area',
+  #                     choices = c("All", unique(realist$`Planning Area`[realist$`Planning Region`==input$tplanning_region])))
+  # 
+  # output$geo <- renderPlot({
+  #   pricelist <- realist %>%
+  #     group_by(MonthYear, `Planning Area`, Year, `Property Type`, `Type of Sale`) %>%
+  #     summarise(avgprice = mean(Price, na.rm = TRUE),
+  #               volume = sum(`No. of Units`, na.rm = TRUE),
+  #               medprice = median(Price, na.rm = TRUE))%>%
+  #     ungroup()
+  #   
+  #   pz_price <- left_join(pricelist, full_grid,  
+  #                         by = c("Planning Area" = "name"))
+  #   
+  #   finalprice <- pz_price %>%
+  #     filter(
+  #       Year == input$geoyear,
+  #       `Property Type` == input$geoprop,
+  #       `Type of Sale` == input$geosale
+  #     )
+  #   
+  #   active_grid <- full_grid[full_grid$name %in% unique(finalprice$`Planning Area`),]
+  #   
+  #   switch(input$geovarb,
+  #          "Avg Price" = ggplot(finalprice, aes(x = MonthYear, y = avgprice)),
+  #          "Median Price" = ggplot(finalprice, aes(x = MonthYear, y = medprice)),
+  #          "Volume" = ggplot(finalprice, aes(x = MonthYear, y = volume))) +
+  #     geom_line() +
+  #     labs(x = "Month",
+  #          y = input$geovarb) +
+  #     scale_x_date(date_labels = "%b") +
+  #     theme(axis.text.x = element_text(size = 10, angle = 45),
+  #           strip.text = element_text(size = 10),
+  #           panel.background = element_blank(),
+  #           panel.grid.minor = element_blank(),
+  #           panel.border = element_rect(colour = "black", fill=NA, size=1)) +
+  #     facet_geo(~`Planning Area`, grid = 
+  #                 switch(input$geogrid,
+  #                        "full" = full_grid,
+  #                        "active" = active_grid)
+  #               , label = "name", scale = input$geoaxis)
+  # })
+  # })
   
   # --------------------- Table --------------------- #
   observeEvent((input$SelectTable),{
@@ -315,6 +380,17 @@ server = function(input, output, session) {
                
   )
   
+  # ---------------- ANOVA ------------------- #
+  # observeEvent(input$anovatype, input$SelectTable, {
+  # output$anova <- renderPlotly(
+  #   ggbetweenstats(input$SelectTable,
+  #                  x = "DWELLING_TYPE",
+  #                  y = "consumption_GWh",
+  #                  type = input$anovatype
+  #   )
+  # )
+  # })
+ 
   # ----------------- Box plot ------------------ #
   
   output$boxplot <- renderPlotly({
