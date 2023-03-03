@@ -2,9 +2,6 @@ project:
   type: website
 
 website:
-  comments: 
-    utterances: 
-      repo: quarto-dev/quarto-web
   title: "Power Visual"
   page-navigation: true
   favicon: "logo1.png"
