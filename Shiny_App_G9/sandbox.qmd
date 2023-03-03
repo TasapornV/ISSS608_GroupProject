@@ -271,7 +271,7 @@ shinyApp(ui , server )
 
 ### Data tab : data table page
 
-```{r DataTable}
+```{r DataTable, warning=FALSE, message=FALSE}
 #| code-fold : TRUE
 library(shiny)
 library(shinythemes)
@@ -371,19 +371,84 @@ server = function(input, output, session) {
   )
 }
 
-
 shinyApp(ui = ui, server = server)
+```
+
+### Overview tab : geofacet
+
+```{r geofacet, warning=FALSE, message=FALSE}
+library(shiny)
+library(shinythemes)
+library(geofacet)
+
+# Import data 
+geofacet <- T3.5
+geofacet$kwh_per_acc <- as.numeric(geofacet$kwh_per_acc)
+
+# Import the area grid data.
+area_grid <- read_csv("data/areagrid.csv")
+
+geofacet <- geofacet %>%
+  group_by(year, dwelling_type, Description ) %>%
+  summarise(avgprice = mean(kwh_per_acc, na.rm = TRUE),
+            medprice = median(kwh_per_acc, na.rm = TRUE))%>%
+  ungroup()
+
+# merge table with town name
+geofacet_gas_consump <- inner_join(geofacet, area_grid,
+                      by = c("Description" = "name"))
+
+common_grid <- area_grid[area_grid$name %in% unique(geofacet$Description),]
+ggplot(geofacet_gas_consump, aes(x = year, y = avgprice)) +
+  geom_line(aes(color = as.factor(dwelling_type))) +
+  # scale_x_date(date_labels = "%b") +
+  facet_geo(~Description, grid = common_grid) +
+  # labs(title = "Singapore Resale flat price trends") +
+  # scale_y_continuous(breaks = c(250000, 500000, 750000, 1000000, 1250000)) +
+  theme(plot.title = element_text(size=22),
+        axis.text.x = element_text(size = 10, angle = 45),
+        axis.text.y = element_text(size = 10),
+        strip.text = element_text(size = 10),
+        legend.position = "top")
 ```
 
 ```{r skeleton, warning = FALSE, message=FALSE}
 #| code-fold : TRUE
+
 # call library used
 library(shiny)
 library(shinythemes)
+library(geofacet)
 
-## Set up parameter
+# Import data 
+geofacet <- T3.5
 
 
+# Import the area grid data.
+area_grid <- read_csv("data/areagrid.csv")
+
+geofacet <- geofacet %>%
+  group_by(year, dwelling_type) %>%
+  summarise(avgprice = mean(kwh_per_acc, na.rm = TRUE),
+            medprice = median(kwh_per_acc, na.rm = TRUE))%>%
+  ungroup()
+
+# merge table with town name
+geofacet_gas_consump <- inner_join(geofacet, area_grid,
+                      by = c("Description" = "name"))
+
+common_grid <- area_grid[area_grid$name %in% unique(geofacet$Description),]
+ggplot(geofacet_gas_consump, aes(x = year, y = avgprice)) +
+  geom_line(aes(color = as.factor(dwelling_type))) +
+  scale_x_date(date_labels = "%b") +
+  facet_geo(~ Description, grid = common_grid) +
+  labs(title = "Singapore Resale flat price trends") +
+  scale_y_continuous(breaks = c(250000, 500000, 750000, 1000000, 1250000)) +
+  theme(plot.title = element_text(size=22),
+        axis.text.x = element_text(size = 10, angle = 45),
+        axis.text.y = element_text(size = 10),
+        strip.text = element_text(size = 10),
+        legend.position = "top")
 ui = fluidPage(
   theme = shinytheme("slate"),
   headerPanel(title = "Singapore Energy Consumption"),
@@ -410,7 +475,6 @@ ui = fluidPage(
                         tabPanel("Time Series Clustering")
              )
     ),
-    
     # ========================== INFERENTIAL ========================== #     
     
     tabPanel("INFERENTIAL STATISTICS", tabName = "inferential", icon = icon("magnifying-glass-chart"),
@@ -419,7 +483,6 @@ ui = fluidPage(
                         tabPanel("Correlation Analysis")
              )
     ),
-    
     # ========================== TIME SERIES ========================== #     
     
     tabPanel("TIME SERIES FORECASTING", tabName = "time_series", icon = icon("chart-line"),
@@ -460,17 +523,11 @@ consumption <- read_csv("data/T3-5.csv")
 consumption <- consumption %>% 
   mutate(kwh_per_acc = as.numeric(kwh_per_acc)) %>% 
   mutate(year = as.character(year))
-glimpse(consumption)
-```
 
-```{r, warning=FALSE, message=FALSE}
 energycost <- read_csv("data/T5-3.csv")
 energycost <- energycost %>% 
   mutate(year = as.character(year))
-glimpse(energycost)
-```
 
-```{r}
 #merge
 a <- consumption %>% 
   select("year", "kwh_per_acc") %>% 
@@ -480,9 +537,7 @@ a <- consumption %>%
 #b <- b %>% 
 #  data.frame(energycost,a) %>% 
 #  select("year", "kwh_per_acc", "energy_costs_cent_per_kwh")
-```
 
-```{r}
 consumption %>% 
   group_by(year) %>%
   # filter(year == "2022") %>% 
@@ -495,7 +550,7 @@ consumption %>%
   labs(title = "Average consumption per year by Region", y="kwh per acc", fill = "Region")
 ```
 
-```{r}
+```{r ANOVA}
 set.seed(1234)
 
 ggbetweenstats(
@@ -507,7 +562,7 @@ ggbetweenstats(
 )
 ```
 
-```{r, message=FALSE}
+```{r box plot, message=FALSE, warning=FALSE}
 consumption %>%
   mutate(class = fct_reorder(Description, kwh_per_acc, .fun='mean')) %>%
   ggplot( aes(x=reorder(Description, kwh_per_acc), y=kwh_per_acc)) +
@@ -519,22 +574,22 @@ consumption %>%
 ```
 
 ```{r}
-#retailshare <- read_csv("data/T3-1.csv")
-
-#ggplot(data = retailshare, mapping = aes(y=Market_Share_of_Elec_Retail, fill= #Electricity_Retails)) +
-#  theme_minimal() +
+# retailshare <- read_csv("data/T3-1.csv")
+# 
+# ggplot(data = retailshare, mapping = aes(y=Market_Share_of_Elec_Retail, fill= #Electricity_Retails)) +
+#   theme_minimal() +
 #  geom_bar(position = "fill") +
 #  scale_fill_viridis_d(option = "C") 
-  # labs(title = "Market Share of Elec Retail", fill = "Electricity Retails", 
-  #      x = "Count", y = "")
-
-
-# ggplot(data = Resale, mapping = aes(y=town, fill=flat_type)) +
-#   theme_minimal() +
-#   geom_bar(position = "fill") +
-#   scale_fill_viridis_d(option = "C") +
-#   labs(title = "Flat type proportion by town", fill = "Flat type", 
-#        x = "Count", y = "")
+#    labs(title = "Market Share of Elec Retail", fill = "Electricity Retails", 
+#         x = "Count", y = "")
+# 
+# 
+#  ggplot(data = Resale, mapping = aes(y=town, fill=flat_type)) +
+#    theme_minimal() +
+#    geom_bar(position = "fill") +
+#    scale_fill_viridis_d(option = "C") +
+#    labs(title = "Flat type proportion by town", fill = "Flat type", 
+#         x = "Count", y = "")
 ```
 
 ```{r}
@@ -549,6 +604,4 @@ library(geofacet)
 library(treemap)
 library(ggstatsplot)
 library(ggridges)
-
-
 ```
