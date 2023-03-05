@@ -514,7 +514,7 @@ server = function(input, output, session) {
       geom_line(aes(color = as.factor(dwelling_type))) +
       # scale_x_date(date_labels = "%b") +
       facet_geo(~Description, grid = common_grid) +
-      labs(title = "Average Monthly Household Electricity Consumption by Planning Area & Dwelling Type") +
+      labs(title = "SAverage Monthly Household Electricity Consumption by Planning Area & Dwelling Type") +
       # scale_y_continuous(breaks = c(250000, 500000, 750000, 1000000, 1250000)) +
       theme(plot.title = element_text(size=22),
             axis.text.x = element_text(size = 10, angle = 45),

@@ -29,8 +29,8 @@ T5.5 <- readRDS(file = "RDS/T5-5.rds") # Monthly Town Gas Tariffs
 consumption <- T3.5
 consumption <- consumption %>%
   mutate(kwh_per_acc = as.numeric(kwh_per_acc)) %>%
-  mutate(year = as.character(year))
-
+  mutate(year = as.character(year)) %>%
+  mutate('date' = make_date(year=year, month=month))
 
 ## Set up parameter
 years <- c("2022","2021", "2020", "2019", "2018", "2017")
@@ -106,7 +106,7 @@ ui = fluidPage(
                                      )),
                                      
                                      column(9,
-                                       box(plotOutput("geo", height = 800), width = "100%")
+                                       box(plotOutput("geo", height = 400), width = "100%")
                                      )
                                    )
                                  )
@@ -131,7 +131,7 @@ ui = fluidPage(
                                                           selected = c("price", "consumption", "supply"))
                                      )),
                                      
-                                     column(8)
+                                     column(width = 8, plotlyOutput("lineplot",height=400))
                                    )
                                  )
                         ),
@@ -404,6 +404,23 @@ server = function(input, output, session) {
         scale_fill_viridis_d(option = "C") +
         labs(title = "Average consumption per year by Region", y="kwh per acc", fill = "Region")
     )
+  }
+  )
+  
+  # ----------------- Lineplot ------------------ #
+  
+  output$lineplot <- renderPlotly({
+    consumption %>%
+      group_by(date) %>%
+      summarise(avg = mean(kwh_per_acc, na.rm = TRUE)) %>%
+      plot_ly(
+        type="scatter",
+        x=~date,
+        y=~avg,
+        mode="lines") %>%
+      layout(title=list(text="<b>Average Singapore Energy Consumption</b>"),
+             xaxis = list(title="Date"),
+             yaxis = list(title="Average Consumption"))
   }
   )
 }
