@@ -2,8 +2,6 @@
 title: "About our team"
 ---
 
-# **The Team**
-
 -   Khoo Wei Lun
 
 -   Law Shiang Rou

@@ -571,6 +571,24 @@ consumption %>%
 ```
 
 ```{r}
+consumption <- T3.5
+consumption <- consumption %>%
+  mutate(kwh_per_acc = as.numeric(kwh_per_acc)) %>%
+  mutate(year = as.character(year)) %>%
+  mutate('date' = make_date(year=year, month=month))
+
+consumption %>%
+  group_by(date) %>%
+  summarise(avg = mean(kwh_per_acc, na.rm = TRUE)) %>%
+  plot_ly(
+        type="scatter",
+        x=~date,
+        y=~avg,
+        mode="lines")
+```
+
+
+```{r}
 # retailshare <- read_csv("data/T3-1.csv")
 # 
 # ggplot(data = retailshare, mapping = aes(y=Market_Share_of_Elec_Retail, fill= #Electricity_Retails)) +
