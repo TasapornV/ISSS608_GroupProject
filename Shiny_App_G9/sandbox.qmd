@@ -414,58 +414,41 @@ ggplot(geofacet_gas_consump, aes(x = year, y = avgprice)) +
 
 ```{r skeleton, warning = FALSE, message=FALSE}
 #| code-fold : TRUE
-
 # call library used
 library(shiny)
 library(shinythemes)
 library(geofacet)
+library(shinyWidgets)
 
 # Import data 
 geofacet <- T3.5
-
+geofacet$kwh_per_acc <- as.numeric(geofacet$kwh_per_acc)
 
 # Import the area grid data.
 area_grid <- read_csv("data/areagrid.csv")
 
-geofacet <- geofacet %>%
-  group_by(year, dwelling_type) %>%
-  summarise(avgprice = mean(kwh_per_acc, na.rm = TRUE),
-            medprice = median(kwh_per_acc, na.rm = TRUE))%>%
-  ungroup()
-
-# merge table with town name
-geofacet_gas_consump <- inner_join(geofacet, area_grid,
-                      by = c("Description" = "name"))
-
-common_grid <- area_grid[area_grid$name %in% unique(geofacet$Description),]
-ggplot(geofacet_gas_consump, aes(x = year, y = avgprice)) +
-  geom_line(aes(color = as.factor(dwelling_type))) +
-  scale_x_date(date_labels = "%b") +
-  facet_geo(~ Description, grid = common_grid) +
-  labs(title = "Singapore Resale flat price trends") +
-  scale_y_continuous(breaks = c(250000, 500000, 750000, 1000000, 1250000)) +
-  theme(plot.title = element_text(size=22),
-        axis.text.x = element_text(size = 10, angle = 45),
-        axis.text.y = element_text(size = 10),
-        strip.text = element_text(size = 10),
-        legend.position = "top")
 ui = fluidPage(
   theme = shinytheme("slate"),
   headerPanel(title = "Singapore Energy Consumption"),
   
   navlistPanel(
     widths = c(3, 9),
-     
     tabPanel("OVERVIEW",tabName = "overview",icon = icon("chalkboard-user"),
              navbarPage("OVERVIEW", 
                         tabPanel("Introduction"),
                         tabPanel("Boxplot"),
-                        tabPanel("Geofacet"),
+                        tabPanel("Geofacet",
+                                 fluidPage(
+                                   fluidRow(
+                                     column(12,plotOutput("geo", height = 800))
+                                   )
+                                 )
+                        ),
                         tabPanel("Lineplot"),
                         tabPanel("Barchart")
              )
     ),
-      
+    
     # ========================== CLUSTERING ========================== #
     
     tabPanel("CLUSTERING", tabName = "clustering", icon = icon("circle-nodes"),
@@ -475,6 +458,7 @@ ui = fluidPage(
                         tabPanel("Time Series Clustering")
              )
     ),
+    
     # ========================== INFERENTIAL ========================== #     
     
     tabPanel("INFERENTIAL STATISTICS", tabName = "inferential", icon = icon("magnifying-glass-chart"),
@@ -483,6 +467,7 @@ ui = fluidPage(
                         tabPanel("Correlation Analysis")
              )
     ),
+    
     # ========================== TIME SERIES ========================== #     
     
     tabPanel("TIME SERIES FORECASTING", tabName = "time_series", icon = icon("chart-line"),
@@ -513,6 +498,30 @@ ui = fluidPage(
 
 server = function(input, output, session) {
   
+  output$geo <- renderPlot ({
+    geofacet <- geofacet %>%
+      group_by(year, dwelling_type, Description ) %>%
+      summarise(avgprice = mean(kwh_per_acc, na.rm = TRUE),
+                medprice = median(kwh_per_acc, na.rm = TRUE))%>%
+      ungroup()
+    
+    # merge table with town name
+    geofacet_gas_consump <- inner_join(geofacet, area_grid,
+                                       by = c("Description" = "name"))
+    
+    common_grid <- area_grid[area_grid$name %in% unique(geofacet$Description),]
+    ggplot(geofacet_gas_consump, aes(x = year, y = avgprice)) +
+      geom_line(aes(color = as.factor(dwelling_type))) +
+      # scale_x_date(date_labels = "%b") +
+      facet_geo(~Description, grid = common_grid) +
+      labs(title = "Average Monthly Household Electricity Consumption by Planning Area & Dwelling Type") +
+      # scale_y_continuous(breaks = c(250000, 500000, 750000, 1000000, 1250000)) +
+      theme(plot.title = element_text(size=22),
+            axis.text.x = element_text(size = 10, angle = 45),
+            axis.text.y = element_text(size = 10),
+            strip.text = element_text(size = 10),
+            legend.position = "right")
+  })
 }
 
 shinyApp(ui , server )
