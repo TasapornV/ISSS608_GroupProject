@@ -6,6 +6,7 @@ format:
     mainfont: system-ui
     fontsize: medium
     code-block-border-left: "#63B9A0"
+    code-fold: TRUE
     code-overflow: wrap
     highlight-style: solarized
     page-layout: full
@@ -32,7 +33,6 @@ for(p in packages){
 This section of code is used to compress the file so that it will not load too slowly when it is uploaded to the website. I've already built the RDS files in the RDS folder, so you don't need to run this script.
 
 ```{r read data, warning=FALSE, message=FALSE}
-#| code-fold: TRUE
 T2.3 <- read_csv("data/T2-3.csv")
 saveRDS(T2.3, file = "RDS/T2-3.rds")
 
@@ -190,7 +190,6 @@ T5.5 <- readRDS(file = "RDS/T5-5.rds") # Monthly Town Gas Tariffs
 ### Skeleton
 
 ```{r skeleton, warning = FALSE, message=FALSE}
-#| code-fold : TRUE
 # call library used
 library(shiny)
 library(shinythemes)
@@ -272,7 +271,6 @@ shinyApp(ui , server )
 ### Data tab : data table page
 
 ```{r DataTable, warning=FALSE, message=FALSE}
-#| code-fold : TRUE
 library(shiny)
 library(shinythemes)
 
@@ -389,7 +387,7 @@ geofacet$kwh_per_acc <- as.numeric(geofacet$kwh_per_acc)
 area_grid <- read_csv("data/areagrid.csv")
 
 geofacet <- geofacet %>%
-  group_by(year, dwelling_type, Description ) %>%
+  group_by(year, dwelling_type, Description) %>%
   summarise(avgprice = mean(kwh_per_acc, na.rm = TRUE),
             medprice = median(kwh_per_acc, na.rm = TRUE))%>%
   ungroup()
@@ -412,110 +410,109 @@ ggplot(geofacet_gas_consump, aes(x = year, y = avgprice)) +
         legend.position = "top")
 ```
 
-```{r skeleton, warning = FALSE, message=FALSE}
-#| code-fold : TRUE
+```{r warning = FALSE, message=FALSE}
 
-# call library used
-library(shiny)
-library(shinythemes)
-library(geofacet)
-
-# Import data 
-geofacet <- T3.5
-
-
-# Import the area grid data.
-area_grid <- read_csv("data/areagrid.csv")
-
-geofacet <- geofacet %>%
-  group_by(year, dwelling_type) %>%
-  summarise(avgprice = mean(kwh_per_acc, na.rm = TRUE),
-            medprice = median(kwh_per_acc, na.rm = TRUE))%>%
-  ungroup()
+# # call library used
+# library(shiny)
+# library(shinythemes)
+# library(geofacet)
+# 
+# # Import data 
+# geofacet <- T3.5
+# geofacet$kwh_per_acc <- as.numeric(geofacet$kwh_per_acc)
+# 
+# # Import the area grid data.
+# area_grid <- read_csv("data/areagrid.csv")
+# 
+# geofacet <- geofacet %>%
+#   group_by(year, dwelling_type) %>%
+#   summarise(avgprice = mean(kwh_per_acc, na.rm = TRUE),
+#             medprice = median(kwh_per_acc, na.rm = TRUE))%>%
+#   ungroup()
 
 # merge table with town name
-geofacet_gas_consump <- inner_join(geofacet, area_grid,
-                      by = c("Description" = "name"))
+#geofacet_gas_consump <- inner_join(geofacet, area_grid,
+#                      by = c("Description" = "name"))
 
-common_grid <- area_grid[area_grid$name %in% unique(geofacet$Description),]
-ggplot(geofacet_gas_consump, aes(x = year, y = avgprice)) +
-  geom_line(aes(color = as.factor(dwelling_type))) +
-  scale_x_date(date_labels = "%b") +
-  facet_geo(~ Description, grid = common_grid) +
-  labs(title = "Singapore Resale flat price trends") +
-  scale_y_continuous(breaks = c(250000, 500000, 750000, 1000000, 1250000)) +
-  theme(plot.title = element_text(size=22),
-        axis.text.x = element_text(size = 10, angle = 45),
-        axis.text.y = element_text(size = 10),
-        strip.text = element_text(size = 10),
-        legend.position = "top")
-ui = fluidPage(
-  theme = shinytheme("slate"),
-  headerPanel(title = "Singapore Energy Consumption"),
-  
-  navlistPanel(
-    widths = c(3, 9),
-     
-    tabPanel("OVERVIEW",tabName = "overview",icon = icon("chalkboard-user"),
-             navbarPage("OVERVIEW", 
-                        tabPanel("Introduction"),
-                        tabPanel("Boxplot"),
-                        tabPanel("Geofacet"),
-                        tabPanel("Lineplot"),
-                        tabPanel("Barchart")
-             )
-    ),
-      
-    # ========================== CLUSTERING ========================== #
-    
-    tabPanel("CLUSTERING", tabName = "clustering", icon = icon("circle-nodes"),
-             navbarPage("CLUSTERING", 
-                        tabPanel("Hierachical Clustering"),
-                        tabPanel("DTW"),
-                        tabPanel("Time Series Clustering")
-             )
-    ),
-    # ========================== INFERENTIAL ========================== #     
-    
-    tabPanel("INFERENTIAL STATISTICS", tabName = "inferential", icon = icon("magnifying-glass-chart"),
-             navbarPage("INFERENTIAL STATISTICS", 
-                        tabPanel("ANOVA"),
-                        tabPanel("Correlation Analysis")
-             )
-    ),
-    # ========================== TIME SERIES ========================== #     
-    
-    tabPanel("TIME SERIES FORECASTING", tabName = "time_series", icon = icon("chart-line"),
-             navbarPage("TIME SERIES FORECASTING",
-                        tabPanel("Trend Prediction"),
-                        tabPanel("Slope Graph")
-             )
-    ),
-    
-    # =============================== DATA =============================== #     
-    
-    tabPanel("DATA", tabName = "data", icon = icon("table"),
-             navbarPage("DATA" )),
-    # =============================== ABOUT =============================== #    
-    
-    tabPanel("ABOUT", tabName = "about", icon = icon("info")),
-    # ============================== CO.MMON USER INPUT =============================== #    
-    tabPanel(wellPanel(
-      sliderInput("slider_time", "Select date range",min = as.Date("2021-02-24"), 
-                  max = as.Date("2021-04-24"), 
-                  value =  c(as.Date("2021-02-24"),as.Date("2021-03-03") )),
-      
-      dateRangeInput("daterange", "Input date range", 
-                     start = as.Date("2021-02-24"),end = as.Date("2021-03-03") )
-    ))
-  )
-)
-
-server = function(input, output, session) {
-  
-}
-
-shinyApp(ui , server )
+#common_grid <- area_grid[area_grid$name %in% unique(geofacet$Description),]
+#ggplot(geofacet_gas_consump, aes(x = year, y = avgprice)) +
+#  geom_line(aes(color = as.factor(dwelling_type))) +
+#  scale_x_date(date_labels = "%b") +
+#  facet_geo(~ Description, grid = common_grid) +
+#  labs(title = "Singapore Resale flat price trends") +
+#  scale_y_continuous(breaks = c(250000, 500000, 750000, 1000000, 1250000)) +
+#  theme(plot.title = element_text(size=22),
+#        axis.text.x = element_text(size = 10, angle = 45),
+#        axis.text.y = element_text(size = 10),
+#        strip.text = element_text(size = 10),
+#        legend.position = "top")
+#ui = fluidPage(
+#  theme = shinytheme("slate"),
+#  headerPanel(title = "Singapore Energy Consumption"),
+#   
+#   navlistPanel(
+#     widths = c(3, 9),
+#      
+#     tabPanel("OVERVIEW",tabName = "overview",icon = icon("chalkboard-user"),
+#              navbarPage("OVERVIEW", 
+#                         tabPanel("Introduction"),
+#                         tabPanel("Boxplot"),
+#                         tabPanel("Geofacet"),
+#                         tabPanel("Lineplot"),
+#                         tabPanel("Barchart")
+#              )
+#     ),
+#       
+#     # ========================== CLUSTERING ========================== #
+#     
+#     tabPanel("CLUSTERING", tabName = "clustering", icon = icon("circle-nodes"),
+#              navbarPage("CLUSTERING", 
+#                         tabPanel("Hierachical Clustering"),
+#                         tabPanel("DTW"),
+#                         tabPanel("Time Series Clustering")
+#              )
+#     ),
+#     # ========================== INFERENTIAL ========================== #     
+#     
+#     tabPanel("INFERENTIAL STATISTICS", tabName = "inferential", icon = icon("magnifying-glass-chart"),
+#              navbarPage("INFERENTIAL STATISTICS", 
+#                         tabPanel("ANOVA"),
+#                         tabPanel("Correlation Analysis")
+#              )
+#     ),
+#     # ========================== TIME SERIES ========================== #     
+#     
+#     tabPanel("TIME SERIES FORECASTING", tabName = "time_series", icon = icon("chart-line"),
+#              navbarPage("TIME SERIES FORECASTING",
+#                         tabPanel("Trend Prediction"),
+#                         tabPanel("Slope Graph")
+#              )
+#     ),
+#     
+#     # =============================== DATA =============================== #     
+#     
+#     tabPanel("DATA", tabName = "data", icon = icon("table"),
+#              navbarPage("DATA" )),
+#     # =============================== ABOUT =============================== #    
+#     
+#     tabPanel("ABOUT", tabName = "about", icon = icon("info")),
+#     # ============================== CO.MMON USER INPUT =============================== #    
+#     tabPanel(wellPanel(
+#       sliderInput("slider_time", "Select date range",min = as.Date("2021-02-24"), 
+#                   max = as.Date("2021-04-24"), 
+#                   value =  c(as.Date("2021-02-24"),as.Date("2021-03-03") )),
+#       
+#       dateRangeInput("daterange", "Input date range", 
+#                      start = as.Date("2021-02-24"),end = as.Date("2021-03-03") )
+#     ))
+#   )
+# )
+# 
+# server = function(input, output, session) {
+#   
+# }
+# 
+# shinyApp(ui , server )
 ```
 
 ```{r, warning=FALSE, message=FALSE}
