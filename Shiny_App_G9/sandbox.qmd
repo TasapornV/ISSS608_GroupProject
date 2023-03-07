@@ -412,7 +412,7 @@ ggplot(geofacet_gas_consump, aes(x = year, y = avgprice)) +
         legend.position = "top")
 ```
 
-```{r skeleton, warning = FALSE, message=FALSE}
+```{r geofacetshiny, warning = FALSE, message=FALSE}
 #| code-fold : TRUE
 # call library used
 library(shiny)
@@ -514,13 +514,139 @@ server = function(input, output, session) {
       geom_line(aes(color = as.factor(dwelling_type))) +
       # scale_x_date(date_labels = "%b") +
       facet_geo(~Description, grid = common_grid) +
-      labs(title = "SAverage Monthly Household Electricity Consumption by Planning Area & Dwelling Type") +
+      labs(title = "Average Monthly Household Electricity Consumption by Planning Area & Dwelling Type") +
       # scale_y_continuous(breaks = c(250000, 500000, 750000, 1000000, 1250000)) +
       theme(plot.title = element_text(size=22),
             axis.text.x = element_text(size = 10, angle = 45),
             axis.text.y = element_text(size = 10),
             strip.text = element_text(size = 10),
             legend.position = "right")
+  })
+}
+
+shinyApp(ui , server )
+```
+
+### Time Series Forecasting
+
+```{r}
+library(shiny)
+library(shinythemes)
+library(fpp3)
+library(forecast)
+library(zoo)
+library(fabletools)
+
+arima <- T2.3
+arima$Date <- yearmonth(as.yearmon(paste(arima$year, arima$mth), "%Y %m"))
+# 
+#   getDataset <- reactive({
+#     if (input$dataset=="arima")
+#     {
+#       return(arima)
+#     }
+#     else if (input$dataset=="arima")
+#     {
+#       return(arima)
+#     }
+#     else
+#     {
+#       return(arima)
+#     }
+#     
+#   })
+# 
+#   
+#     
+#     getDataset() %>%
+#       model(ETS= ETS(price),
+#             ARIMA = ARIMA(price)) %>%
+#       forecast(h = paste0(input$ahead," years")) %>%
+#       autoplot(getDataset()) +
+#       labs(title = paste0(input$ahead, " year forcasts for price of ", input$dataset),
+#            y="Price",
+#            x="Date") +
+#       theme_light()
+
+# arima %>%
+#         model(ETS= ETS('peak_system_demand_mw'),
+#               ARIMA = ARIMA('peak_system_demand_mw')) %>%
+#         forecast(h = paste0(input$ahead," years")) %>%
+#         autoplot(arima)
+```
+
+```{r ARIMA, warning = FALSE, message=FALSE}
+#| code-fold : TRUE
+# call library used
+library(shiny)
+library(shinythemes)
+library(fpp3)
+library(forecast)
+library(zoo)
+
+arima <- T2.3
+arima$Date <- yearmonth(as.yearmon(paste(arima$year, arima$mth), "%Y %m"))
+
+## Set up parameter
+
+ui = fluidPage(
+  theme = shinytheme("slate"),
+  headerPanel(title = "Singapore Energy Consumption"),
+  
+  navlistPanel(
+    widths = c(3, 9),
+    # ========================== TIME SERIES ========================== #     
+    
+    tabPanel("TIME SERIES FORECASTING", tabName = "time_series", icon = icon("chart-line"),
+             navbarPage("TIME SERIES FORECASTING",
+                        tabPanel("Trend Prediction",
+                                 fluidPage(
+                                   fluidRow(
+                                     column(3, wellPanel(
+                                       selectInput("dataset", "Dataset:",
+                                                   list("arima" = "arima", 
+                                                        "Bread" = "Bread",
+                                                        "Flour" = "Flour")),
+                                       numericInput("ahead", "Years to Forecast Ahead:", 2),
+                                       submitButton("Update View"))),
+                                     
+                                     column(9, plotOutput("ForecastPlot"))
+                                   )
+                                 ))
+             )
+    )
+  )
+)
+
+server = function(input, output, session) {
+  
+  getDataset <- reactive({
+    if (input$dataset=="arima")
+    {
+      return(arima)
+    }
+    else if (input$dataset=="arima")
+    {
+      return(arima)
+    }
+    else
+    {
+      return(arima)
+    }
+    
+  })
+  
+  output$ForecastPlot <- renderPlot({
+    
+    getDataset() %>%
+      model(ETS= ETS(peak_system_demand_mw),
+            ARIMA = ARIMA(peak_system_demand_mw)) %>%
+      forecast(h = paste0(input$ahead," years")) %>%
+      autoplot(getDataset()) +
+      labs(title = paste0(input$ahead, " year forcasts for price of ", input$dataset),
+           y="Price",
+           x="Date") +
+      theme_light()
   })
 }
 

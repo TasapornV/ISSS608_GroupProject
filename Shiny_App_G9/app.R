@@ -96,17 +96,12 @@ ui = fluidPage(
                         tabPanel("Geofacet",
                                  fluidPage(
                                    fluidRow(
-                                     column(3,wellPanel(
-                                       pickerInput(
-                                         inputId = "GeofacetYear", label = "Select Year", choices = years,
-                                         selected = "2022", options = list(`actions-box` = TRUE), multiple = F),
-                                       
-                                       checkboxGroupInput("GeofacetRegion", label = "Select Region",
-                                                          choices = regions, selected = regions)
-                                     )),
-                                     
-                                     column(9,
-                                       box(plotOutput("geo", height = 400), width = "100%")
+                                     column(12,
+                                            fluidPage(
+                                              fluidRow(
+                                                column(12,plotOutput("geo", height = 800))
+                                              )
+                                            )
                                      )
                                    )
                                  )
@@ -313,49 +308,29 @@ server = function(input, output, session) {
   
   # -------------------- Geofacet ------------------- #
   
-  observeEvent(input$tplanning_region,{
-    updateSelectInput(session,'tplanning_area',
-                      choices = c("All", unique(realist$`Planning Area`[realist$`Planning Region`==input$tplanning_region])))
-
-  output$geo <- renderPlot({
-    pricelist <- realist %>%
-      group_by(MonthYear, `Planning Area`, Year, `Property Type`, `Type of Sale`) %>%
-      summarise(avgprice = mean(Price, na.rm = TRUE),
-                volume = sum(`No. of Units`, na.rm = TRUE),
-                medprice = median(Price, na.rm = TRUE))%>%
+  output$geo <- renderPlot ({
+    geofacet <- geofacet %>%
+      group_by(year, dwelling_type, Description ) %>%
+      summarise(avgprice = mean(kwh_per_acc, na.rm = TRUE),
+                medprice = median(kwh_per_acc, na.rm = TRUE))%>%
       ungroup()
-
-    pz_price <- left_join(pricelist, full_grid,
-                          by = c("Planning Area" = "name"))
-
-    finalprice <- pz_price %>%
-      filter(
-        Year == input$geoyear,
-        `Property Type` == input$geoprop,
-        `Type of Sale` == input$geosale
-      )
-
-    active_grid <- full_grid[full_grid$name %in% unique(finalprice$`Planning Area`),]
-
-    switch(input$geovarb,
-           "Avg Price" = ggplot(finalprice, aes(x = MonthYear, y = avgprice)),
-           "Median Price" = ggplot(finalprice, aes(x = MonthYear, y = medprice)),
-           "Volume" = ggplot(finalprice, aes(x = MonthYear, y = volume))) +
-      geom_line() +
-      labs(x = "Month",
-           y = input$geovarb) +
-      scale_x_date(date_labels = "%b") +
-      theme(axis.text.x = element_text(size = 10, angle = 45),
+    
+    # merge table with town name
+    geofacet_gas_consump <- inner_join(geofacet, area_grid,
+                                       by = c("Description" = "name"))
+    
+    common_grid <- area_grid[area_grid$name %in% unique(geofacet$Description),]
+    ggplot(geofacet_gas_consump, aes(x = year, y = avgprice)) +
+      geom_line(aes(color = as.factor(dwelling_type))) +
+      # scale_x_date(date_labels = "%b") +
+      facet_geo(~Description, grid = common_grid) +
+      labs(title = "SAverage Monthly Household Electricity Consumption by Planning Area & Dwelling Type") +
+      # scale_y_continuous(breaks = c(250000, 500000, 750000, 1000000, 1250000)) +
+      theme(plot.title = element_text(size=22),
+            axis.text.x = element_text(size = 10, angle = 45),
+            axis.text.y = element_text(size = 10),
             strip.text = element_text(size = 10),
-            panel.background = element_blank(),
-            panel.grid.minor = element_blank(),
-            panel.border = element_rect(colour = "black", fill=NA, size=1)) +
-      facet_geo(~`Planning Area`, grid =
-                  switch(input$geogrid,
-                         "full" = full_grid,
-                         "active" = active_grid)
-                , label = "name", scale = input$geoaxis)
-  })
+            legend.position = "right")
   })
   
   # --------------------- Table --------------------- #
