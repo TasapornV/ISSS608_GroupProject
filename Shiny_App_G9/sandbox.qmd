@@ -171,18 +171,18 @@ knitr::kable(head(T5.5, 5))
 ```{r}
 ## Read compressed data file
 T2.3 <- readRDS(file = "RDS/T2-3.rds") # Peak System Demand
-T2.6 <- readRDS(file = "RDS/T2-6.rds") # Market Share of Electricity Generation
+#T2.6 <- readRDS(file = "RDS/T2-6.rds") # Market Share of Electricity Generation
 T3.4 <- readRDS(file = "RDS/T3-4.rds") # Total Household Electricity Consumption by Dwelling Type
 T3.5 <- readRDS(file = "RDS/T3-5.rds") # Average Monthly Household Electricity Consumption by Planning Area & Dwelling Type
-T3.6 <- readRDS(file = "RDS/T3-6.rds") # Market Share for Natural Gas Retail
-T3.7 <- readRDS(file = "RDS/T3-7.rds") # Natural Gas Consumption by Sub-Sector
-T3.8 <- readRDS(file = "RDS/T3-8.rds") # Total Household Town Gas Consumption by Dwelling Type
-T3.9 <- readRDS(file = "RDS/T3-9.rds") # Average Monthly Household Town Gas Consumption by Planning Area & Dwelling Type
-T5.1 <- readRDS(file = "RDS/T5-1.rds") # Electricity and Gas Tariffs
-T5.2 <- readRDS(file = "RDS/T5-2.rds") # Monthly Electricity Tariffs (Low Tension Tariffs)
-T5.3 <- readRDS(file = "RDS/T5-3.rds") # Annual Electricity Tariffs by Components (Low Tension Tariffs)
-T5.4 <- readRDS(file = "RDS/T5-4.rds") # Average Monthly Uniform Singapore Energy Prices (USEP)
-T5.5 <- readRDS(file = "RDS/T5-5.rds") # Monthly Town Gas Tariffs
+#T3.6 <- readRDS(file = "RDS/T3-6.rds") # Market Share for Natural Gas Retail
+#T3.7 <- readRDS(file = "RDS/T3-7.rds") # Natural Gas Consumption by Sub-Sector
+#T3.8 <- readRDS(file = "RDS/T3-8.rds") # Total Household Town Gas Consumption by Dwelling Type
+#T3.9 <- readRDS(file = "RDS/T3-9.rds") # Average Monthly Household Town Gas Consumption by Planning Area & Dwelling Type
+#T5.1 <- readRDS(file = "RDS/T5-1.rds") # Electricity and Gas Tariffs
+#T5.2 <- readRDS(file = "RDS/T5-2.rds") # Monthly Electricity Tariffs (Low Tension Tariffs)
+#T5.3 <- readRDS(file = "RDS/T5-3.rds") # Annual Electricity Tariffs by Components (Low Tension Tariffs)
+#T5.4 <- readRDS(file = "RDS/T5-4.rds") # Average Monthly Uniform Singapore Energy Prices (USEP)
+#T5.5 <- readRDS(file = "RDS/T5-5.rds") # Monthly Town Gas Tariffs
 ```
 
 ## Shiny
