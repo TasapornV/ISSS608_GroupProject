@@ -238,6 +238,7 @@ ui = fluidPage(
                                             numericInput("arima_d", "input order of differencing", value=1),
                                             numericInput("arima_d2", "input order of seasonal differencing", value=2),
                                             checkboxInput("arima_d3", "allow drift", value = FALSE),
+                                            sliderInput("year", "Select year", min = 2005, max = 2022, step=1, round=TRUE, value = 2022),
                                             verbatimTextOutput("arimatext")),
                                      column(width = 7, plotOutput("arima",height=350)),
                                      column(width = 12, plotOutput("arima_plot",height=400))
@@ -407,7 +408,7 @@ arima <- T2.3
     arima$Date <- yearmonth(as.yearmon(paste(arima$year, arima$mth), "%Y %m"))
     arima_ts <- ts(data=arima$peak_system_demand_mw)
 
-observeEvent(c(input$arima_d,input$arima_d2, input$arima_d3), {
+observeEvent(c(input$arima_d,input$arima_d2, input$arima_d3, input$year), {
   output$arima <- renderPlot({
     arima_arima = auto.arima(arima_ts, d = input$arima_d, D = input$arima_d2, allowdrift = input$arima_d3)
     plot(forecast(arima_arima))
@@ -418,6 +419,7 @@ observeEvent(c(input$arima_d,input$arima_d2, input$arima_d3), {
 
 arima_tsbl  = as_tsibble(arima)
 full_arima = arima_tsbl %>%
+  filter(year==input$year) %>% 
   fill_gaps() %>% 
   tidyr::fill(peak_system_demand_mw, .direction = "down")
 

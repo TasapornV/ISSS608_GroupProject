@@ -688,9 +688,10 @@ plot(forecast(arima_arima))
 
 ```
 
-```{r, warning = FALSE}
+```{r, warning = FALSE, message=FALSE}
 arima_tsbl  = as_tsibble(arima)
 full_arima = arima_tsbl %>%
+  # filter(year==2017) %>% 
   fill_gaps() %>% 
   tidyr::fill(peak_system_demand_mw, .direction = "down")
 
