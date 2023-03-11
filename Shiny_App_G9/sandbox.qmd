@@ -530,6 +530,27 @@ shinyApp(ui , server )
 ### Time Series Forecasting
 
 ```{r}
+packages = c('tidyverse','tidyquant','tsibbledata','tsibble','feasts'
+             ,'stats','lubridate','data.table','rmarkdown','knitr','nycflights13')
+for (p in packages) {
+  if(!require(p,character.only = T)){
+    install.packages(p)
+  }
+  library(p,character.only = T)
+}
+```
+
+```{r}
+paged_table(arima)
+```
+
+```{r}
+arima_tsbl = as_tsibble(arima)
+
+head(arima_tsbl)
+```
+
+```{r}
 library(shiny)
 library(shinythemes)
 library(fpp3)
@@ -539,6 +560,18 @@ library(fabletools)
 
 arima <- T2.3
 arima$Date <- yearmonth(as.yearmon(paste(arima$year, arima$mth), "%Y %m"))
+a <-ETS(peak_system_demand_mw)
+a <- model(ETS(peak_system_demand_mw))
+a <- model(.arima$peak_system_demand_mw)
+arima$peak_system_demand_mw
+arima %>%
+  model(ETS(peak_system_demand_mw)) %>%
+  forecast(h = paste0(input$ahead," years")) %>%
+  autoplot(getDataset()) +
+  labs(title = paste0(input$ahead, " year forcasts for price of ", input$dataset),
+       y="Price",
+       x="Date") +
+  theme_light()
 # 
 #   getDataset <- reactive({
 #     if (input$dataset=="arima")
