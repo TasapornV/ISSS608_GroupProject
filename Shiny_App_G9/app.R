@@ -234,8 +234,10 @@ ui = fluidPage(
                         tabPanel("Trend Prediction",
                                  fluidPage(
                                    fluidRow(
+                                     column(width = 5, 
+                                            numericInput("arima_d", "input D", value=2),
+                                            verbatimTextOutput("arimatext")),
                                      column(width = 7, plotOutput("arima",height=400)),
-                                     column(width = 5, verbatimTextOutput("arimatext")),
                                      column(width = 12, plotOutput("arima_plot",height=400))
                                    ) )
                         ),
@@ -402,9 +404,10 @@ server = function(input, output, session) {
 arima <- T2.3
     arima$Date <- yearmonth(as.yearmon(paste(arima$year, arima$mth), "%Y %m"))
     arima_ts <- ts(data=arima$peak_system_demand_mw)
-    
+
+observeEvent(input$arima_d,{
   output$arima <- renderPlot({
-    arima_arima = auto.arima(arima_ts)
+    arima_arima = auto.arima(arima_ts, d = input$arima_d)
     plot(forecast(arima_arima))
   })
   output$arimatext <- renderPrint(arima_arima)
@@ -421,6 +424,7 @@ output$arima_plot <- renderPlot({
   full_arima %>%
     gg_tsdisplay(difference(peak_system_demand_mw), plot_type='partial')
   })
+})
 }
 
 shinyApp(ui = ui, server = server)
