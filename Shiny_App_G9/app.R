@@ -112,21 +112,7 @@ ui = fluidPage(
                         tabPanel("Lineplot",
                                  fluidPage(
                                    fluidRow(
-                                     column(4,wellPanel(
-                                       sliderInput("slider_time", "Select date range",min = as.Date("2021-02-24"), 
-                                                   max = as.Date("2021-04-24"), 
-                                                   value =  c(as.Date("2021-02-24"),as.Date("2021-03-03") )),
-                                       
-                                       dateRangeInput("daterange", "Input date range", 
-                                                      start = as.Date("2021-02-24"),end = as.Date("2021-03-03") ),
-                                       
-                                       checkboxGroupInput("LineVariable",
-                                                          label = "Select Variables",
-                                                          choices = c("price", "consumption", "supply"),
-                                                          selected = c("price", "consumption", "supply"))
-                                     )),
-                                     
-                                     column(width = 8, plotlyOutput("lineplot",height=400))
+                                     column(width = 12, plotlyOutput("lineplot",height=400))
                                    )
                                  )
                         ),
