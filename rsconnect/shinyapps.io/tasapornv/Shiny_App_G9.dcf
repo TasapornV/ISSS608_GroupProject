@@ -1,0 +1,31 @@
+name: Shiny_App_G9
+title:
+username:
+account: tasapornv
+server: shinyapps.io
+hostUrl: https://api.shinyapps.io/v1
+appId: 8289619
+bundleId: 6944945
+url: https://tasapornv.shinyapps.io/Shiny_App_G9/
+when: 1678523259.82357
+lastSyncTime: 1678523259.82358
+quarto_version: 1.2.313
+quarto_engines: markdown
+asMultiple: FALSE
+asStatic: FALSE
+
+name: Shiny_App_G9
+title:
+username:
+account: tasapornv
+server: shinyapps.io
+hostUrl: https://api.shinyapps.io/v1
+appId: 8289619
+bundleId: 6944945
+url: https://tasapornv.shinyapps.io/Shiny_App_G9/
+when: 1678523259.82357
+lastSyncTime: 1678523259.82358
+quarto_version: 1.2.313
+quarto_engines: knitr
+asMultiple: FALSE
+asStatic: FALSE
