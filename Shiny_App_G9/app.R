@@ -255,11 +255,7 @@ ui = fluidPage(
                         tabPanel("data table",
                                  fluidPage(
                                    fluidRow(
-                                     column(4,wellPanel(
-                                       selectizeInput('SelectColumn', "Select Column", choices = c("A","B","C") ,multiple = TRUE)
-                                     ) ),
-                                     
-                                     column(8, wellPanel(
+                                       column(8, wellPanel(
                                        radioButtons("SelectTable",
                                                     label = "Select Data",
                                                     choices = tables,
@@ -296,6 +292,10 @@ server = function(input, output, session) {
   
   output$geo <- renderPlot ({
     geofacet <- geofacet %>%
+      filter(month != "Annual" & 
+               year > 2017 & 
+               dwelling_type != "Overall" &
+               !str_detect(Description,"Region|Pioneer|Overall")) %>% 
       group_by(year, dwelling_type, Description ) %>%
       summarise(avgprice = mean(kwh_per_acc, na.rm = TRUE),
                 medprice = median(kwh_per_acc, na.rm = TRUE))%>%
