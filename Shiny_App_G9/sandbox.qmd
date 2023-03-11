@@ -551,6 +551,132 @@ head(arima_tsbl)
 ```
 
 ```{r}
+full_arima = arima_tsbl %>%
+  fill_gaps() %>% 
+  # group_by_key() %>% 
+  tidyr::fill(peak_system_demand_mw, .direction = "down")
+
+head(full_arima)
+```
+
+```{r}
+full_arima_mth_agg = full_arima %>%
+  # index_by(Date = ~ Date(.)) %>% 
+  summarise(
+    avg_demand = mean(peak_system_demand_mw, na.rm = TRUE)
+  )
+
+head(full_arima_mth_agg)
+```
+
+Seasonal plot
+
+```{r}
+full_arima %>%
+   gg_season(peak_system_demand_mw)+
+  labs(title = "",
+       subtitle = "",
+       y = "peak_system_demand_mw")
+```
+
+```{r}
+full_arima_2019 = full_arima %>%
+  filter(year == 2019) %>%
+  mutate(quarter= case_when(
+      mth >= 1 & mth <= 3 ~ 'Q1'
+      , mth >= 4 & mth <= 6 ~ 'Q2'
+      , mth >= 7 & mth <= 9 ~ 'Q3'
+      , mth >= 10 & mth <= 12 ~ 'Q4')) %>%
+    select(year, mth, peak_system_demand_mw, Date) 
+
+full_arima_2019 %>%
+   gg_lag(peak_system_demand_mw, geom = "point")+
+   labs(title = "Lag plot of the time plot of the humidity level of hourly meterological data",
+       y = "Humidity level")
+```
+
+```{r}
+full_arima_acf=full_arima_2019 %>% ACF(peak_system_demand_mw, lag_max = 36)
+
+head(full_arima_acf)
+```
+
+```{r}
+full_arima_2019 %>%
+  ACF(peak_system_demand_mw) %>%
+  autoplot() + labs(title="")
+```
+
+```{r}
+full_arima_stl=full_arima %>% 
+  summarise(peak_system_demand_mw = sum(peak_system_demand_mw)) %>% 
+  model(STL(peak_system_demand_mw ~ season(window = 5))) %>% 
+  components()
+
+head(full_arima_stl)
+```
+
+```{r}
+full_arima_stl %>% 
+  summarise(peak_system_demand_mw = sum(peak_system_demand_mw)) %>% 
+  model(STL(peak_system_demand_mw ~ season(window = 5))) %>% 
+  components() %>%
+  autoplot()+
+  labs(title = "",
+       y = "peak_system_demand_mw")
+```
+
+### Timetk
+
+```{r}
+packages = c('dplyr','tidyquant','tidyverse','tsibble','feasts','forecast','fable'
+             ,'tsibbletalk','tidymodels','earth'
+             ,'stats','lubridate','data.table','ggplot2','plotly'
+             ,'rmarkdown','knitr','devtools','tseries')
+for (p in packages) {
+  if(!require(p,character.only = T)){
+    install.packages(p)
+  }
+  library(p,character.only = T)
+}
+```
+
+```{r}
+
+
+arima %>%
+  ggplot(aes(x = Date, y = peak_system_demand_mw)) +
+  geom_line(size = 0.5)+
+  labs(title = "") +
+  theme(text = element_text(color = "#444444", family = 'Helvetica Neue')
+        ,plot.title = element_text(size = 35, color = '#333333')
+        ,axis.title = element_text(size = 14, color = '#333333')
+        ,axis.title.y = element_text(angle = 0, vjust = .5)
+        ) +
+    theme_tq() + 
+    scale_color_tq()
+```
+
+```{r}
+arima_ts <- ts(data=arima$peak_system_demand_mw)
+plot.ts(arima_ts, plot.type=('single'))                   
+```
+
+```{r}
+arima_ds = diff(arima_ts, differences = 2)
+plot(arima_ds) 
+```
+
+```{r}
+arima_arima = auto.arima(arima_ts)
+arima_arima
+```
+
+```{r}
+plot(forecast(arima_arima))
+```
+
+```{r}
 library(shiny)
 library(shinythemes)
 library(fpp3)
