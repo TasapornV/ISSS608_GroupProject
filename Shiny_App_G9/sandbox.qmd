@@ -32,7 +32,6 @@ for(p in packages){
 This section of code is used to compress the file so that it will not load too slowly when it is uploaded to the website. I've already built the RDS files in the RDS folder, so you don't need to run this script.
 
 ```{r read data, warning=FALSE, message=FALSE}
-#| code-fold: TRUE
 T2.3 <- read_csv("data/T2-3.csv")
 saveRDS(T2.3, file = "RDS/T2-3.rds")
 
@@ -190,7 +189,6 @@ T3.5 <- readRDS(file = "RDS/T3-5.rds") # Average Monthly Household Electricity C
 ### Skeleton
 
 ```{r skeleton, warning = FALSE, message=FALSE}
-#| code-fold : TRUE
 # call library used
 library(shiny)
 library(shinythemes)
@@ -272,7 +270,6 @@ shinyApp(ui , server )
 ### Data tab : data table page
 
 ```{r DataTable, warning=FALSE, message=FALSE}
-#| code-fold : TRUE
 library(shiny)
 library(shinythemes)
 
@@ -413,7 +410,7 @@ ggplot(geofacet_gas_consump, aes(x = year, y = avgprice)) +
 ```
 
 ```{r geofacetshiny, warning = FALSE, message=FALSE}
-#| code-fold : TRUE
+
 # call library used
 library(shiny)
 library(shinythemes)
@@ -541,7 +538,7 @@ for (p in packages) {
 ```
 
 ```{r}
-paged_table(arima)
+#paged_table(arima)
 ```
 
 ```{r}
@@ -735,7 +732,7 @@ arima %>%
 ```
 
 ```{r ARIMA, warning = FALSE, message=FALSE}
-#| code-fold : TRUE
+
 # call library used
 library(shiny)
 library(shinythemes)
@@ -887,10 +884,10 @@ consumption %>%
 ```
 
 ```{r}
-library(shiny)
-library(shinydashboard)
-library(shinythemes)
-library(shinyWidgets)
+#library(shiny)
+#library(shinydashboard)
+#library(shinythemes)
+#library(shinyWidgets)
 library(RColorBrewer)
 library(tidyverse)
 library(lubridate)
@@ -899,3 +896,59 @@ library(treemap)
 library(ggstatsplot)
 library(ggridges)
 ```
+
+```{r}
+# Clustering
+# Filter the required data for clustering
+
+# remove month = "Annual"
+# remove dewlling_type/description = Overall
+# year 2018 and onwards
+# exclude region in description
+# Exclude Pioneer as data incomplete
+
+clus_data <- T3.5 %>% 
+  filter(month != "Annual" & 
+           year > 2017 & 
+           dwelling_type != "Overall" &
+           !str_detect(Description,"Region|Pioneer|Overall"))
+
+# transform dataset
+
+# convert kwh into numbers
+clus_data$kwh_per_acc <- as.numeric(clus_data$kwh_per_acc)
+# join month and year into a date
+clus_data$date <- parse_date_time(paste(clus_data$year, clus_data$month), orders=c("%Y %m")) 
+
+# drop month and year column
+clus_data <- subset(clus_data, select=-c(month, year, Region)) %>%
+  arrange(date)
+
+# pivot wider
+clus <- clus_data %>%
+  pivot_wider(names_from=date, values_from=kwh_per_acc) 
+
+# omit na
+clus <- na.omit(clus)
+clus %>% relocate(Description, .before = dwelling_type)
+```
+
+```{r}
+# Clustering
+library(dtwclust)
+
+
+# dendextend
+# tsclust
+```
+
+```{r}
+topdrinks_matrix <- data.matrix(topdrinks_n)
+
+topdrinks_d <- dist(normalize(topdrinks_matrix[c(1:12)]), method = "euclidean")
+
+topdrinks_clust <- hclust(topdrinks_d, method = "average")
+topnum_k <- find_k(topdrinks_clust)
+plot(topnum_k)
+```
+
