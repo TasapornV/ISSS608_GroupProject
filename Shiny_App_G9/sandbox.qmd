@@ -558,9 +558,9 @@ head(arima_tsbl)
 ```
 
 ```{r}
+arima_tsbl  = as_tsibble(arima)
 full_arima = arima_tsbl %>%
   fill_gaps() %>% 
-  # group_by_key() %>% 
   tidyr::fill(peak_system_demand_mw, .direction = "down")
 
 head(full_arima)
@@ -689,6 +689,11 @@ plot(forecast(arima_arima))
 ```
 
 ```{r, warning = FALSE}
+arima_tsbl  = as_tsibble(arima)
+full_arima = arima_tsbl %>%
+  fill_gaps() %>% 
+  tidyr::fill(peak_system_demand_mw, .direction = "down")
+
 full_arima %>%
   gg_tsdisplay(difference(peak_system_demand_mw), plot_type='partial')
 ```

@@ -1,16 +1,6 @@
-library(shiny)
-library(ggplot2)
-library(shinythemes)
-library(shinydashboard)
-library(shinyWidgets)
-library(ggstatsplot)
-library(psych)
-library(lubridate)
-library(ggrepel)
-# library(plotly)
-# library(tidyverse)
-packages = c('dplyr','tidyquant','tidyverse','tsibble','feasts','forecast','fable'
-             ,'tsibbletalk','tidymodels','earth'
+
+packages = c('shiny', 'shinythemes', 'shinydashboard', 'shinyWidgets', 'shinyWidgets', 'dplyr','tidyquant','tidyverse','tsibble','feasts','forecast','fable'
+             ,'tsibbletalk','tidymodels','earth', 'ggrepel', 'ggstatsplot', 'psych'
              ,'stats','lubridate','data.table','ggplot2','plotly'
              ,'rmarkdown','knitr','devtools','tseries')
 for (p in packages) {
@@ -227,8 +217,9 @@ ui = fluidPage(
                         tabPanel("Trend Prediction",
                                  fluidPage(
                                    fluidRow(
-                                     column(width = 12, plotOutput("arima",height=400)),
-                                     column(width = 12, verbatimTextOutput("arimatext"))
+                                     column(width = 7, plotOutput("arima",height=400)),
+                                     column(width = 5, verbatimTextOutput("arimatext")),
+                                     column(width = 12, plotOutput("arima_plot",height=400))
                                    ) )
                         ),
                         
@@ -400,7 +391,19 @@ arima <- T2.3
     plot(forecast(arima_arima))
   })
   output$arimatext <- renderPrint(arima_arima)
-}
 
+
+
+arima_tsbl  = as_tsibble(arima)
+full_arima = arima_tsbl %>%
+  fill_gaps() %>% 
+  tidyr::fill(peak_system_demand_mw, .direction = "down")
+
+
+output$arima_plot <- renderPlot({
+  full_arima %>%
+    gg_tsdisplay(difference(peak_system_demand_mw), plot_type='partial')
+  })
+}
 
 shinyApp(ui = ui, server = server)
