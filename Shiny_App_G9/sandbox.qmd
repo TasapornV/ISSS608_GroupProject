@@ -552,10 +552,9 @@ paged_table(arima3)
 
 ```{r}
 arima_tsbl  = as_tsibble(arima)
-#arima2_tsbl = as_tsibble(arima2)
 
 head(arima_tsbl)
-#head(arima2_tsbl)
+
 ```
 
 ```{r}
@@ -804,11 +803,11 @@ library(dtwclust)
 ```
 
 ```{r}
-topdrinks_matrix <- data.matrix(topdrinks_n)
-
-topdrinks_d <- dist(normalize(topdrinks_matrix[c(1:12)]), method = "euclidean")
-
-topdrinks_clust <- hclust(topdrinks_d, method = "average")
-topnum_k <- find_k(topdrinks_clust)
-plot(topnum_k)
+# topdrinks_matrix <- data.matrix(topdrinks_n)
+# 
+# topdrinks_d <- dist(normalize(topdrinks_matrix[c(1:12)]), method = "euclidean")
+# 
+# topdrinks_clust <- hclust(topdrinks_d, method = "average")
+# topnum_k <- find_k(topdrinks_clust)
+# plot(topnum_k)
 ```
