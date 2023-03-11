@@ -526,9 +526,9 @@ shinyApp(ui , server )
 
 ### Time Series Forecasting
 
-```{r}
+```{r timeseries_library}
 packages = c('tidyverse','tidyquant','tsibbledata','tsibble','feasts'
-             ,'stats','lubridate','data.table','rmarkdown','knitr','nycflights13')
+             ,'stats','lubridate','data.table','rmarkdown','knitr')
 for (p in packages) {
   if(!require(p,character.only = T)){
     install.packages(p)
@@ -537,14 +537,25 @@ for (p in packages) {
 }
 ```
 
-```{r}
-#paged_table(arima)
+```{r timeseries_data, warning=FALSE, message=FALSE}
+arima <- T2.3
+arima$Date <- yearmonth(as.yearmon(paste(arima$year, arima$mth), "%Y %m"))
+arima2 <- T3.4
+arima2$Date <- yearmonth(as.yearmon(paste(arima2$year, arima2$month), "%Y %m"))
+arima3 <- T3.5 
+arima3$Date <- yearmonth(as.yearmon(paste(arima3$year, arima3$month), "%Y %m"))
+
+paged_table(arima)
+paged_table(arima2)
+paged_table(arima3)
 ```
 
 ```{r}
-arima_tsbl = as_tsibble(arima)
+arima_tsbl  = as_tsibble(arima)
+#arima2_tsbl = as_tsibble(arima2)
 
 head(arima_tsbl)
+#head(arima2_tsbl)
 ```
 
 ```{r}
@@ -673,13 +684,9 @@ arima_arima
 plot(forecast(arima_arima))
 ```
 
-```{r}
+```{r, warning = FALSE}
 full_arima %>%
   gg_tsdisplay(difference(peak_system_demand_mw), plot_type='partial')
-```
-
-```{r}
-
 ```
 
 ```{r, warning=FALSE, message=FALSE}
