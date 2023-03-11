@@ -682,7 +682,7 @@ plot(forecast(arima_arima))
  arima <- T2.3
   arima$Date <- yearmonth(as.yearmon(paste(arima$year, arima$mth), "%Y %m"))
   arima_ts <- ts(data=arima$peak_system_demand_mw)
-  arima_arima = auto.arima(arima_ts, d =1, seasonal = FALSE, trace=TRUE)
+  arima_arima = auto.arima(arima_ts, d =2, D =1, seasonal = FALSE, trace=TRUE)
 
   plot(forecast(arima_arima))
 

@@ -235,7 +235,8 @@ ui = fluidPage(
                                  fluidPage(
                                    fluidRow(
                                      column(width = 5, 
-                                            numericInput("arima_d", "input D", value=2),
+                                            numericInput("arima_d", "input order of differencing", value=1),
+                                            numericInput("arima_d2", "input order of seasonal differencing", value=2),
                                             verbatimTextOutput("arimatext")),
                                      column(width = 7, plotOutput("arima",height=400)),
                                      column(width = 12, plotOutput("arima_plot",height=400))
@@ -405,9 +406,9 @@ arima <- T2.3
     arima$Date <- yearmonth(as.yearmon(paste(arima$year, arima$mth), "%Y %m"))
     arima_ts <- ts(data=arima$peak_system_demand_mw)
 
-observeEvent(input$arima_d,{
+observeEvent(c(input$arima_d,input$arima_d2), {
   output$arima <- renderPlot({
-    arima_arima = auto.arima(arima_ts, d = input$arima_d)
+    arima_arima = auto.arima(arima_ts, d = input$arima_d, D = input$arima_d2)
     plot(forecast(arima_arima))
   })
   output$arimatext <- renderPrint(arima_arima)
