@@ -237,8 +237,9 @@ ui = fluidPage(
                                      column(width = 5, 
                                             numericInput("arima_d", "input order of differencing", value=1),
                                             numericInput("arima_d2", "input order of seasonal differencing", value=2),
+                                            checkboxInput("arima_d3", "allow drift", value = FALSE),
                                             verbatimTextOutput("arimatext")),
-                                     column(width = 7, plotOutput("arima",height=400)),
+                                     column(width = 7, plotOutput("arima",height=350)),
                                      column(width = 12, plotOutput("arima_plot",height=400))
                                    ) )
                         ),
@@ -255,7 +256,7 @@ ui = fluidPage(
                                                    options = list(`actions-box` = TRUE), multiple = F)
                                      )),
                                      
-                                     column(width = 9, plotOutput("oilconsump",height=400))
+                                     column(width = 9, plotOutput("oilconsump",height=200))
                                    ) )
                         )
                         
@@ -406,9 +407,9 @@ arima <- T2.3
     arima$Date <- yearmonth(as.yearmon(paste(arima$year, arima$mth), "%Y %m"))
     arima_ts <- ts(data=arima$peak_system_demand_mw)
 
-observeEvent(c(input$arima_d,input$arima_d2), {
+observeEvent(c(input$arima_d,input$arima_d2, input$arima_d3), {
   output$arima <- renderPlot({
-    arima_arima = auto.arima(arima_ts, d = input$arima_d, D = input$arima_d2)
+    arima_arima = auto.arima(arima_ts, d = input$arima_d, D = input$arima_d2, allowdrift = input$arima_d3)
     plot(forecast(arima_arima))
   })
   output$arimatext <- renderPrint(arima_arima)
