@@ -649,8 +649,6 @@ for (p in packages) {
 ```
 
 ```{r}
-
-
 arima %>%
   ggplot(aes(x = Date, y = peak_system_demand_mw)) +
   geom_line(size = 0.5)+
@@ -671,16 +669,23 @@ plot.ts(arima_ts, plot.type=('single'))
 
 ```{r}
 arima_ds = diff(arima_ts, differences = 2)
-plot(arima_ds) 
+ggplotly(plot(arima_ds))
 ```
 
 ```{r}
 arima_arima = auto.arima(arima_ts)
 arima_arima
+plot(forecast(arima_arima))
 ```
 
 ```{r}
-plot(forecast(arima_arima))
+ arima <- T2.3
+  arima$Date <- yearmonth(as.yearmon(paste(arima$year, arima$mth), "%Y %m"))
+  arima_ts <- ts(data=arima$peak_system_demand_mw)
+  arima_arima = auto.arima(arima_ts)
+
+  plot(forecast(arima_arima))
+
 ```
 
 ```{r, warning = FALSE}

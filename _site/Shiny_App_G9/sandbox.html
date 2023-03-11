@@ -1742,7 +1742,7 @@ Attaching package: 'fable'</code></pre>
 ✖ yardstick::spec()       masks readr::spec()
 ✖ recipes::step()         masks stats::step()
 ✖ data.table::transpose() masks purrr::transpose()
-• Use tidymodels_prefer() to resolve common conflicts.</code></pre>
+• Use suppressPackageStartupMessages() to eliminate package startup messages</code></pre>
 </div>
 <div class="cell-output cell-output-stderr">
 <pre><code>Loading required package: earth</code></pre>
@@ -1850,12 +1850,13 @@ s.e.  0.0737   0.0728   0.0270   1.2458
 sigma^2 = 14226:  log likelihood = -1294.36
 AIC=2598.72   AICc=2599.01   BIC=2615.43</code></pre>
 </div>
-</div>
-<div class="cell">
 <div class="sourceCode cell-code" id="cb91"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb91-1"><a href="#cb91-1" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(<span class="fu">forecast</span>(arima_arima))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
-<p><img src="sandbox_files/figure-html/unnamed-chunk-16-1.png" class="img-fluid" width="672"></p>
+<p><img src="sandbox_files/figure-html/unnamed-chunk-15-1.png" class="img-fluid" width="672"></p>
 </div>
+</div>
+<div class="cell">
+
 </div>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb92"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb92-1"><a href="#cb92-1" aria-hidden="true" tabindex="-1"></a>full_arima <span class="sc">%&gt;%</span></span>

@@ -7,8 +7,19 @@ library(ggstatsplot)
 library(psych)
 library(lubridate)
 library(ggrepel)
-library(plotly)
-library(tidyverse)
+# library(plotly)
+# library(tidyverse)
+packages = c('dplyr','tidyquant','tidyverse','tsibble','feasts','forecast','fable'
+             ,'tsibbletalk','tidymodels','earth'
+             ,'stats','lubridate','data.table','ggplot2','plotly'
+             ,'rmarkdown','knitr','devtools','tseries')
+for (p in packages) {
+  if(!require(p,character.only = T)){
+    install.packages(p)
+  }
+  library(p,character.only = T)
+}
+
 
 ## Read compressed data file
 T2.3 <- readRDS(file = "RDS/T2-3.rds") # Peak System Demand
@@ -216,13 +227,8 @@ ui = fluidPage(
                         tabPanel("Trend Prediction",
                                  fluidPage(
                                    fluidRow(
-                                     column(3, wellPanel(
-                                       pickerInput(inputId = "BoxYear", label = "Select Year", 
-                                                   choices = years, selected = "2022", 
-                                                   options = list(`actions-box` = TRUE), multiple = F)
-                                     )),
-                                     
-                                     column(width = 9, plotlyOutput("time",height=400))
+                                     column(width = 12, plotOutput("arima",height=400)),
+                                     column(width = 12, verbatimTextOutput("arimatext"))
                                    ) )
                         ),
                         
@@ -238,7 +244,7 @@ ui = fluidPage(
                                                    options = list(`actions-box` = TRUE), multiple = F)
                                      )),
                                      
-                                     column(width = 9, plotlyOutput("oilconsump",height=400))
+                                     column(width = 9, plotOutput("oilconsump",height=400))
                                    ) )
                         )
                         
@@ -310,8 +316,7 @@ server = function(input, output, session) {
       geom_line(aes(color = as.factor(dwelling_type))) +
       # scale_x_date(date_labels = "%b") +
       facet_geo(~Description, grid = common_grid) +
-      labs(title = "SAverage Monthly Household Electricity Consumption by Planning Area & Dwelling Type") +
-      # scale_y_continuous(breaks = c(250000, 500000, 750000, 1000000, 1250000)) +
+      labs(title = "Average Monthly Household Electricity Consumption by Planning Area & Dwelling Type") +
       theme(plot.title = element_text(size=22),
             axis.text.x = element_text(size = 10, angle = 45),
             axis.text.y = element_text(size = 10),
@@ -321,7 +326,7 @@ server = function(input, output, session) {
   
   # --------------------- Table --------------------- #
   observeEvent((input$SelectTable),{
-                if(input$SelectTable == "T2.3") {tabletext <- T2.3}
+               if(input$SelectTable == "T2.3") {tabletext <- T2.3}
                if(input$SelectTable == "T2.6")  {tabletext <- T2.6}
                if(input$SelectTable == "T3.4")  {tabletext <- T3.4}
                if(input$SelectTable == "T3.5")  {tabletext <- T3.5}
@@ -384,6 +389,17 @@ server = function(input, output, session) {
              yaxis = list(title="Average Consumption"))
   }
   )
+  
+  # ------------------ ARIMA -------------------- #
+arima <- T2.3
+    arima$Date <- yearmonth(as.yearmon(paste(arima$year, arima$mth), "%Y %m"))
+    arima_ts <- ts(data=arima$peak_system_demand_mw)
+    
+  output$arima <- renderPlot({
+    arima_arima = auto.arima(arima_ts)
+    plot(forecast(arima_arima))
+  })
+  output$arimatext <- renderPrint(arima_arima)
 }
 
 
