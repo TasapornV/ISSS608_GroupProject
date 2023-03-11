@@ -1,14 +1,31 @@
+library(shiny)
+library(shinythemes)
+library(shinydashboard)
+library(shinyWidgets)
 
-packages = c('shiny', 'shinythemes', 'shinydashboard', 'shinyWidgets', 'shinyWidgets', 'dplyr','tidyquant','tidyverse','tsibble','feasts','forecast','fable'
-             ,'tsibbletalk','tidymodels','earth', 'ggrepel', 'ggstatsplot', 'psych'
-             ,'stats','lubridate','data.table','ggplot2','plotly'
-             ,'rmarkdown','knitr','devtools','tseries')
-for (p in packages) {
-  if(!require(p,character.only = T)){
-    install.packages(p)
-  }
-  library(p,character.only = T)
-}
+library(dplyr)
+library(tidyverse)
+library(tidymodels)
+library(tidyquant)
+library(lubridate)
+library(tsibble)
+library(tsibbletalk)
+library(data.table)
+library(knitr)
+library(psych)
+library(earth)
+library(stats)
+
+library(ggrepel)
+library(ggstatsplot)
+library(ggplot2)
+library(plotly)
+
+library(tseries)
+library(feasts)
+library(fable)
+library(forecast)
+library(devtools)
 
 
 ## Read compressed data file
