@@ -674,6 +674,11 @@ plot(forecast(arima_arima))
 ```
 
 ```{r}
+full_arima %>%
+  gg_tsdisplay(difference(peak_system_demand_mw), plot_type='partial')
+```
+
+```{r}
 library(shiny)
 library(shinythemes)
 library(fpp3)
@@ -765,7 +770,6 @@ ui = fluidPage(
                                                         "Flour" = "Flour")),
                                        numericInput("ahead", "Years to Forecast Ahead:", 2),
                                        submitButton("Update View"))),
-                                     
                                      column(9, plotOutput("ForecastPlot"))
                                    )
                                  ))
@@ -951,4 +955,3 @@ topdrinks_clust <- hclust(topdrinks_d, method = "average")
 topnum_k <- find_k(topdrinks_clust)
 plot(topnum_k)
 ```
-
