@@ -18,7 +18,7 @@ format:
 ## Install and launching R packages
 
 ```{r init, results='hide', message=FALSE}
-packages = c('tidyverse', 'ggstatsplot', 'psych', 'lubridate', 'ggrepel', 'plotly')
+packages = c('tidyverse', 'ggstatsplot', 'psych', 'lubridate', 'ggrepel', 'plotly', "tidyr", "readr")
 for(p in packages){
   if(!require(p,character.only = T)){
     install.packages(p)
@@ -32,11 +32,12 @@ for(p in packages){
 This section of code is used to compress the file so that it will not load too slowly when it is uploaded to the website. I've already built the RDS files in the RDS folder, so you don't need to run this script.
 
 ```{r read data, warning=FALSE, message=FALSE}
-T2.3 <- read_csv("data/T2-3.csv")
-saveRDS(T2.3, file = "RDS/T2-3.rds")
+library(readr)
+#T2.3 <- read_csv("data/T2-3.csv")
+#saveRDS(T2.3, file = "RDS/T2-3.rds")
 
-T2.6 <- read_csv("data/T2-6.csv")
-saveRDS(T2.6, file = "RDS/T2-6.rds")
+#T2.6 <- read_csv("data/T2-6.csv")
+#saveRDS(T2.6, file = "RDS/T2-6.rds")
 
 T3.4 <- read_csv("data/T3-4.csv")
 saveRDS(T3.4, file = "RDS/T3-4.rds")
@@ -56,20 +57,20 @@ saveRDS(T3.8, file = "RDS/T3-8.rds")
 T3.9 <- read_csv("data/T3-9.csv")
 saveRDS(T3.9, file = "RDS/T3-9.rds")
 
-T5.1 <- read_csv("data/T5-1.csv")
-saveRDS(T5.1, file = "RDS/T5-1.rds")
+# T5.1 <- read_csv("data/T5-1.csv")
+# saveRDS(T5.1, file = "RDS/T5-1.rds")
+# 
+# T5.2 <- read_csv("data/T5-2.csv")
+# saveRDS(T5.2, file = "RDS/T5-2.rds")
 
-T5.2 <- read_csv("data/T5-2.csv")
-saveRDS(T5.2, file = "RDS/T5-2.rds")
+#T5.3 <- read_csv("data/T5-3.csv")
+#saveRDS(T5.3, file = "RDS/T5-3.rds")
 
-T5.3 <- read_csv("data/T5-3.csv")
-saveRDS(T5.3, file = "RDS/T5-3.rds")
-
-T5.4 <- read_csv("data/T5-4.csv")
-saveRDS(T5.4, file = "RDS/T5-4.rds")
-
-T5.5 <- read_csv("data/T5-5.csv")
-saveRDS(T5.4, file = "RDS/T5-5.rds")
+# T5.4 <- read_csv("data/T5-4.csv")
+# saveRDS(T5.4, file = "RDS/T5-4.rds")
+# 
+# T5.5 <- read_csv("data/T5-5.csv")
+# saveRDS(T5.4, file = "RDS/T5-5.rds")
 ```
 
 ### Data table
@@ -768,15 +769,15 @@ library(ggstatsplot)
 library(ggridges)
 ```
 
+# Clustering - data preparation
 ```{r}
-# Clustering
 # Filter the required data for clustering
 
 # remove month = "Annual"
 # remove dewlling_type/description = Overall
-# year 2018 and onwards
-# exclude region in description
-# Exclude Pioneer as data incomplete
+# year 2018 and onwards due to missing data
+# exclude "%region" in description
+# Exclude Pioneer as data is incomplete
 
 clus_data <- T3.5 %>% 
   filter(month != "Annual" & 
@@ -801,27 +802,192 @@ clus <- clus_data %>%
 
 # omit na
 clus <- na.omit(clus)
-clus %>% relocate(Description, .before = dwelling_type)
+clus <- clus %>% relocate(Description, .before = dwelling_type)
 ```
-
+### Hierarchical Clustering - calculate distance
 ```{r}
 # Clustering
-library(dtwclust)
+library(cluster)
+library(dendextend)
 
+# Convert to factor
+clus$Description <- factor(clus$Description)
+clus$dwelling_type <- factor(clus$dwelling_type)
 
-# dendextend
-# tsclust
+# calculate distance - can only use "gower" because data has categorical variable
+clus_dist <- daisy(clus, metric="gower")
+```
+
+### Hierarchical Clustering - Agglomerative
+```{r}
+# hierarchical clustering using various methods
+# (ward.D, ward.D2, single, complete, average, mcquitty, median, centroid)
+
+# complete
+hc <- hclust(clus_dist, method = "complete")
+
+# Dendogram - k is for user to calibrate
+plot(hc, label = FALSE, main = "Agglomerative, complete method")
+rect.hclust(hc, k=6, border="gold3")
+```
+```{r}
+dendro <- as.dendrogram(hc)
+dendro.col <- dendro %>%
+  set("branches_k_color", k = 6, value =   c("grey20","darkslategray4", "darkslategray3", "gold3", "darkcyan", "cyan3")) %>%
+  set("branches_lwd", 0.6) %>%
+  set("labels_colors", 
+      value = c("darkslategray")) %>% 
+  set("labels_cex", 0.5)
+ggd1 <- as.ggdend(dendro.col)
+ggplot(ggd1, theme = theme_minimal()) +
+  labs(x = "Num. observations", y = "Height", title = "Dendrogram, k = 6")
+
 ```
 
 ```{r}
-# topdrinks_matrix <- data.matrix(topdrinks_n)
-# 
-# topdrinks_d <- dist(normalize(topdrinks_matrix[c(1:12)]), method = "euclidean")
-# 
-# topdrinks_clust <- hclust(topdrinks_d, method = "average")
-# topnum_k <- find_k(topdrinks_clust)
-# plot(topnum_k)
+# function to create table for clustering stats
+# Cluster stats comes out as list while it is more convenient to look at it as a table
+# This code below will produce a dataframe with observations in columns and variables in row
+# Not quite tidy data, which will require a tweak for plotting, but I prefer this view as an output here as I find it more comprehensive 
+library(fpc)
+cstats.table <- function(dist, tree, k) {
+clust.assess <- c("cluster.number","n","within.cluster.ss","average.within","average.between",
+                  "wb.ratio","dunn2","avg.silwidth")
+clust.size <- c("cluster.size")
+stats.names <- c()
+row.clust <- c()
+output.stats <- matrix(ncol = k, nrow = length(clust.assess))
+cluster.sizes <- matrix(ncol = k, nrow = k)
+for(i in c(1:k)){
+  row.clust[i] <- paste("Cluster-", i, " size")
+}
+for(i in c(2:k)){
+  stats.names[i] <- paste("Test", i-1)
+  
+  for(j in seq_along(clust.assess)){
+    output.stats[j, i] <- unlist(cluster.stats(d = dist, clustering = cutree(tree, k = i))[clust.assess])[j]
+    
+  }
+  
+  for(d in 1:k) {
+    cluster.sizes[d, i] <- unlist(cluster.stats(d = dist, clustering = cutree(tree, k = i))[clust.size])[d]
+    dim(cluster.sizes[d, i]) <- c(length(cluster.sizes[i]), 1)
+    cluster.sizes[d, i]
+    
+  }
+}
+output.stats.df <- data.frame(output.stats)
+cluster.sizes <- data.frame(cluster.sizes)
+cluster.sizes[is.na(cluster.sizes)] <- 0
+rows.all <- c(clust.assess, row.clust)
+# rownames(output.stats.df) <- clust.assess
+output <- rbind(output.stats.df, cluster.sizes)[ ,-1]
+colnames(output) <- stats.names[2:k]
+rownames(output) <- rows.all
+is.num <- sapply(output, is.numeric)
+output[is.num] <- lapply(output[is.num], round, 2)
+output
+}
 ```
+
+```{r}
+# find optimal k - elbow method
+ggplot(data = data.frame(t(cstats.table(clus_dist, hc, 15))), 
+  aes(x=cluster.number, y=within.cluster.ss)) + 
+  geom_point()+
+  geom_line()+
+  ggtitle("Agglomerative (complete) - Elbow") +
+  labs(x = "Num.of clusters", y = "Within clusters sum of squares (SS)") +
+  theme(plot.title = element_text(hjust = 0.5))
+```
+
+```{r}
+# find optimal k - Silhouette
+num_k <- find_k(hc)
+plot(num_k)
+```
+
+```{r}
+# hierarchical clustering using various methods - average
+hc <- hclust(clus_dist, method = "average")
+
+# Dendogram
+plot(hc, label = FALSE, main = "Agglomerative, average method")
+rect.hclust(hc, k=5, border="gold3")
+```
+```{r}
+# hierarchical clustering using various methods - centroid
+hc <- hclust(clus_dist, method = "centroid")
+
+# find k
+num_k <- find_k(hc)
+plot(num_k)
+
+# Dendogram
+plot(hc, label = FALSE, main = "Agglomerative, centroid method")
+rect.hclust(hc, k=3, border="blue")
+```
+
+### Hierarchical Clustering - Divisive 
+```{r}
+divisive.clust <- diana(as.matrix(clus_dist), 
+                  diss = TRUE, keep.diss = TRUE)
+plot(divisive.clust, label=FALSE, main = "Divisive Clustering")
+
+# k is for user to calibrate
+rect.hclust(divisive.clust, k=6, border="gold3")
+```
+
+```{r}
+# Find optimal k - elbow method
+ggplot(data = data.frame(t(cstats.table(clus_dist, divisive.clust, 15))), 
+  aes(x=cluster.number, y=within.cluster.ss)) + 
+  geom_point()+
+  geom_line()+
+  ggtitle("Divisive clustering - elbow") +
+  labs(x = "Num.of clusters", y = "Within clusters sum of squares (SS)") +
+  theme(plot.title = element_text(hjust = 0.5))
+```
+```{r}
+## choose the number of k and add to dataframe
+num_clus <- cutree(divisive.clust, k=6)
+clus_hc <- cbind(clus, cluster = as.factor(num_clus))
+```
+
+# Choropleth map
+```{r}
+library(sf)
+# reading the map file
+mpsz <- st_read(dsn = 'master-plan-2014-subzone-boundary-web-shp',
+                layer = 'MP14_SUBZONE_WEB_PL',
+                crs = 3414) 
+
+singapore <- st_transform(mpsz, 4326)
+```
+
+```{r}
+library(tmap)
+# change Description to upper case
+clus_hc$Description <- toupper(clus_hc$Description)
+
+# Preparing the choropleth map
+mpsz_clus <- left_join(singapore, clus_hc, by = c("PLN_AREA_N" = "Description"))
+tmap_mode("view")
+tm_shape(mpsz_clus)+
+  tmap_options(check.and.fix = TRUE)+
+  tm_fill("cluster", id=paste("PLN_AREA_N"),
+          style = "pretty",
+          palette = "Blues") +
+  tm_borders(alpha = 0.7)
+```
+
+# K-means
+```{r}
+# library(factoextra)
+# library(NbClust)
+
+```
+
 
 ### Introduction: Peak System Demand
 
