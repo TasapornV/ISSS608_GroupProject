@@ -829,13 +829,106 @@ library(dtwclust)
 library(tidyquant)  # Loads tidyverse, tidquant, financial pkgs, xts/zoo
 
 sysdemand <- T2.3 %>%
-  mutate(monthyear = parse_date_time(paste0(year, "-", mth,"-1"),"ymd"))
+  mutate(date = parse_date_time(paste0(year, "-", mth,"-1"),"ymd")) %>%
+  mutate(monthyear = format(as.Date(date), "%b'%Y"))
+```
 
-sysdemand %>%
-    ggplot(aes(x = monthyear, y = peak_system_demand_mw)) +
-    geom_line() +
-    labs(title = "Monthly Peak System Demand, Jan'05 to Jun'22", 
-         x = "", y = "Demand (MW)") +
-    theme_tq() +
-    theme(legend.position="none")
+```{r}
+#Can provide option to swap between linechart / scatterchart if possible
+p_line <- sysdemand %>%
+  mutate(text = paste(monthyear, 
+                      "<br>System Demand (NW):", peak_system_demand_mw)) %>%
+  ggplot(aes(x = date, y = peak_system_demand_mw)) +
+  geom_line() +
+  geom_point() +
+  labs(title = "Monthly Peak System Demand (MW), Jan'05 to Jun'22",
+       x = "", y = "MW") +
+  theme_tq() +
+#    scale_x_date(expand=c(0,0), date_breaks = "3 month", date_labels = "%b%y") + 
+  theme(legend.position="none")
+
+ggplotly(p_line, tooltip = "text")
+```
+
+```{r}
+#cycleplot
+sysdemand21 <- sysdemand %>%
+  filter(year %in% c(2005:2021))
+
+#Computing year average by months
+hline.data <- sysdemand21 %>%
+  group_by(mth) %>%
+  summarise(avg_demand = mean(peak_system_demand_mw))
+
+#Allow user to choose monthly vs quarterly cycleplot
+p_cycleplot <-
+  ggplot() +
+  geom_line(data = sysdemand21,
+           aes(x=year,y=peak_system_demand_mw, group=mth), colour = "black") +
+  geom_hline(data = hline.data,
+             aes(yintercept=avg_demand),
+             linetype=6, 
+             colour="red", 
+             size=0.5) +
+  facet_grid(~mth) +
+  theme(axis.text.x = element_text(angle=90, vjust=1, hjust=1)) +
+  labs(title = "Cycleplot of Peak System Demand (MW), 2005 to 2021") +
+  xlab("") +
+  ylab("MW")
+
+p_cycleplot
+```
+
+```{r}
+#Allow users to choose apply.quarterly or apply.yearly
+
+# Custom function to return mean, sd, quantiles
+custom_stat <- function(x, na.rm = TRUE, ...) {
+    # x     = numeric vector
+    # na.rm = boolean, whether or not to remove NA's
+    # ...   = additional args passed to quantile
+    c(mean    = mean(x, na.rm = na.rm),
+      stdev   = sd(x, na.rm = na.rm),
+      quantile(x, na.rm = na.rm, ...)) 
+}
+
+# Applying the custom function by quarter
+probs = c(0.25, 0.5, 0.75)
+
+stats_sysdemand <- sysdemand %>%
+  tq_transmute(
+    select     = peak_system_demand_mw,
+    mutate_fun = apply.quarterly, 
+    FUN        = custom_stat,
+    na.rm      = TRUE,
+    probs = probs
+    )
+
+#Plotting 1st & 3rd quartile vs median
+stats_sysdemand %>%
+    ggplot(aes(x = date, y = `50%`)) +
+    # Ribbon
+    geom_ribbon(aes(ymin = `25%`, ymax = `75%`), 
+                color = palette_light()[[1]], fill = palette_light()[[1]], alpha = 0.5) +
+    # Points
+    geom_point() +
+    geom_smooth(method = "loess", se = FALSE) + 
+    # Aesthetics
+    labs(title = "Average Monthly Peak System Demand by Quarter, Jan'05 to Jun'22",
+         x = "", y = "MW",
+         subtitle = "Range of 1st and 3rd quartile to show volatility") +
+    scale_color_tq(theme = "dark") +
+    theme_tq()
+```
+
+```{r}
+#Plotting mean vs std dev
+stats_sysdemand %>%
+    ggplot(aes(x = stdev, y = mean)) +
+    geom_point() +
+    geom_smooth(method = "lm") + 
+    labs(title = "Average Monthly Peak System Demand by Quarter, Jan'05 to Jun'22",
+    subtitle = "Mean vs Standard Deviation") +
+    scale_color_tq() +
+    theme_tq()
 ```
