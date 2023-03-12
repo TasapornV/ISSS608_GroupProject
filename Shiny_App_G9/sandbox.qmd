@@ -822,3 +822,20 @@ library(dtwclust)
 # topnum_k <- find_k(topdrinks_clust)
 # plot(topnum_k)
 ```
+
+### Introduction: Peak System Demand
+
+```{r}
+library(tidyquant)  # Loads tidyverse, tidquant, financial pkgs, xts/zoo
+
+sysdemand <- T2.3 %>%
+  mutate(monthyear = parse_date_time(paste0(year, "-", mth,"-1"),"ymd"))
+
+sysdemand %>%
+    ggplot(aes(x = monthyear, y = peak_system_demand_mw)) +
+    geom_line() +
+    labs(title = "Monthly Peak System Demand, Jan'05 to Jun'22", 
+         x = "", y = "Demand (MW)") +
+    theme_tq() +
+    theme(legend.position="none")
+```
