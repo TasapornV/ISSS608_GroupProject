@@ -135,22 +135,26 @@ ui = fluidPage(
                                  )
                         ),
                         
-                        # ====================== Bar chart ====================== #
+                        # ====================== Peak System Demand ====================== #
                         
-                        tabPanel("Barchart",
+                        tabPanel("Peak System Demand",
                                  fluidPage(
                                    fluidRow(
-                                     column(3,wellPanel(
-                                       radioButtons("BarData",
-                                                    label = "Market Share of",
-                                                    choices = c("Electricity", "Electricity Generation", "Natural Gas"),
-                                                    selected = "Electricity")
-                                     )),
-                                     
-                                     column(9)
+                                     column(12, plotlyOutput("peakdemand"), height = 200),
+                                     column(12, plotlyOutput("cycleplot"), height = 100)
                                    )
                                  )
-                        )
+                        ),
+                        
+                        # ====================== Consumption by Dwelling Type ====================== #
+                        tabPanel("Consumption by Dwelling Type",
+                                 fluidPage(
+                                   fluidRow(
+                                     column(9, plotlyOutput("dwelling")),
+                                     column(12, plotOutput("dwellingstat"))
+                                   )
+                                 ))
+                        
                         # ******************* END Bar chart ******************* #
              )
     ),
@@ -415,8 +419,6 @@ observeEvent(c(input$arima_d,input$arima_d2, input$arima_d3, input$year), {
   })
   output$arimatext <- renderPrint(arima_arima)
 
-
-
 arima_tsbl  = as_tsibble(arima)
 full_arima = arima_tsbl %>%
   filter(year==input$year) %>% 
@@ -429,6 +431,131 @@ output$arima_plot <- renderPlot({
     gg_tsdisplay(difference(peak_system_demand_mw), plot_type='partial')
   })
 })
+
+# ------------- peak system demand ------------- #
+sysdemand <- T2.3 %>%
+  mutate(date = parse_date_time(paste0(year, "-", mth,"-1"),"ymd")) %>%
+  mutate(monthyear = format(as.Date(date), "%b'%Y"))
+
+p_line <- sysdemand %>%
+  mutate(text = paste(monthyear, 
+                      "<br>System Demand (NW):", peak_system_demand_mw)) %>%
+  ggplot(aes(x = date, y = peak_system_demand_mw)) +
+  geom_line() +
+  geom_point() +
+  labs(title = "Monthly Peak System Demand (MW), Jan'05 to Jun'22",
+       x = "", y = "MW") +
+  theme_tq() +
+  #    scale_x_date(expand=c(0,0), date_breaks = "3 month", date_labels = "%b%y") + 
+  theme(legend.position="none")
+
+output$peakdemand <- renderPlotly({
+  ggplotly(p_line, tooltip = "text")
+})
+
+
+# ------------------ cycle plot -------------------- #
+#cycleplot
+sysdemand21 <- sysdemand %>%
+  filter(year %in% c(2005:2021))
+
+#Computing year average by months
+hline.data <- sysdemand21 %>%
+  group_by(mth) %>%
+  summarise(avg_demand = mean(peak_system_demand_mw))
+
+#Allow user to choose monthly vs quarterly cycleplot
+p_cycleplot <-
+  ggplot() +
+  geom_line(data = sysdemand21,
+            aes(x=year,y=peak_system_demand_mw, group=mth), colour = "black") +
+  geom_hline(data = hline.data,
+             aes(yintercept=avg_demand),
+             linetype=6, 
+             colour="red", 
+             size=0.5) +
+  facet_grid(~mth) +
+  theme(axis.text.x = element_text(angle=90, vjust=1, hjust=1)) +
+  labs(title = "Cycleplot of Peak System Demand (MW), 2005 to 2021") +
+  xlab("") +
+  ylab("MW")
+
+output$cycleplot <- renderPlotly({
+  p_cycleplot
+})
+
+# ----------------- consumption by dwelling type ------------------ #
+dwelling <- T3.4 %>%
+  filter(year %in% c(2005:2022)) %>%
+  filter(month %in% c(1:12)) %>%
+  filter(DWELLING_TYPE %in% c('1-room / 2-room','3-room','4-room',
+                              '5-room and Executive',
+                              'Private Apartments and Condominiums',
+                              'Landed Properties', 'Others')) %>%
+  mutate(date = parse_date_time(paste0(year, "-", month,"-1"),"ymd")) %>%
+  mutate(monthyear = format(as.Date(date), "%b'%Y"))
+
+#Add Private vs Public Classification
+dwelling$class <- case_when(
+  dwelling$DWELLING_TYPE %in% c('Private Apartments and Condominiums',
+                                'Landed Properties', 'Others') ~ "Private",
+  dwelling$DWELLING_TYPE %in% c('1-room / 2-room','3-room','4-room',
+                                '5-room and Executive') ~ "Public")
+p_line <- dwelling %>%
+  mutate(text = paste(monthyear, 
+                      "<br>Consumption (GWh):", consumption_GWh)) %>%
+  ggplot(aes(x = date, y = consumption_GWh, colour = DWELLING_TYPE)) +
+  #  facet_wrap(vars(class), ncol = 1) +
+  geom_line() +
+  geom_point() +
+  labs(title = "Monthly Household Electricity Consumption (GWh) by Dwelling Type",
+       x = "", y = "GWh") +
+  theme_tq() +
+  #    scale_x_date(expand=c(0,0), date_breaks = "3 month", date_labels = "%b%y") + 
+  theme(legend.position="bottom")
+
+output$dwelling <- renderPlotly({ggplotly(p_line, tooltip = "text")})
+
+# ------------------------- dwelling stat ------------------------- #
+#Comparison of Median Consumption by Dwelling Type per year
+#Give user choice to choose the year
+givenyear <- 2021
+
+#plotting violin plot by dwelling type for private and public housing
+private <- ggbetweenstats(data = dwelling |> filter(class == "Private", year == givenyear), x = DWELLING_TYPE, y = consumption_GWh,
+                          xlab = "Dwelling Type", ylab = "GWh",
+                          type = "np", pairwise.comparisons = T, pairwise.display = "ns", 
+                          mean.ci = T, p.adjust.method = "fdr",  conf.level = 0.95,
+                          title = "Private",
+                          package = "ggthemes", palette = "Tableau_10") +
+  theme(axis.title.x = element_blank())
+#  + scale_y_continuous(limits = c(0, 1500000))
+
+public <- ggbetweenstats(data = dwelling |> filter(class == "Public", year == givenyear), x = DWELLING_TYPE, y = consumption_GWh,
+                         xlab = "Dwelling Type", ylab = "GWh",
+                         type = "np", pairwise.comparisons = T, pairwise.display = "ns", 
+                         mean.ci = T, p.adjust.method = "fdr",  conf.level = 0.95,
+                         title = "Public",
+                         package = "ggthemes", palette = "Tableau_10") +
+  theme(axis.title.x = element_blank())
+#  + scale_y_continuous(limits = c(0, 1500000))
+
+#combining plots
+combine_plots(
+  list(private, public),
+  plotgrid.args = list(nrow = 5),
+  annotation.args = list(
+    title = "Comparison of Monthly Household Electricity Consumption by Dwelling Type",
+    subtitle = paste0("Year",givenyear),
+    theme = theme(
+      plot.subtitle = element_text(size = 10),
+      plot.title = element_text(size = 12))))
+
+output$dwellingstat <- renderPlot({
+  public
+})
+
+
 }
 
 shinyApp(ui = ui, server = server)

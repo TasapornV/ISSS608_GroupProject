@@ -770,6 +770,7 @@ library(ggridges)
 ```
 
 # Clustering - data preparation
+
 ```{r}
 # Filter the required data for clustering
 
@@ -804,7 +805,9 @@ clus <- clus_data %>%
 clus <- na.omit(clus)
 clus <- clus %>% relocate(Description, .before = dwelling_type)
 ```
+
 ### Hierarchical Clustering - calculate distance
+
 ```{r}
 # Clustering
 library(cluster)
@@ -819,6 +822,7 @@ clus_dist <- daisy(clus, metric="gower")
 ```
 
 ### Hierarchical Clustering - Agglomerative
+
 ```{r}
 # hierarchical clustering using various methods
 # (ward.D, ward.D2, single, complete, average, mcquitty, median, centroid)
@@ -830,6 +834,7 @@ hc <- hclust(clus_dist, method = "complete")
 plot(hc, label = FALSE, main = "Agglomerative, complete method")
 rect.hclust(hc, k=6, border="gold3")
 ```
+
 ```{r}
 dendro <- as.dendrogram(hc)
 dendro.col <- dendro %>%
@@ -915,6 +920,7 @@ hc <- hclust(clus_dist, method = "average")
 plot(hc, label = FALSE, main = "Agglomerative, average method")
 rect.hclust(hc, k=5, border="gold3")
 ```
+
 ```{r}
 # hierarchical clustering using various methods - centroid
 hc <- hclust(clus_dist, method = "centroid")
@@ -928,7 +934,8 @@ plot(hc, label = FALSE, main = "Agglomerative, centroid method")
 rect.hclust(hc, k=3, border="blue")
 ```
 
-### Hierarchical Clustering - Divisive 
+### Hierarchical Clustering - Divisive
+
 ```{r}
 divisive.clust <- diana(as.matrix(clus_dist), 
                   diss = TRUE, keep.diss = TRUE)
@@ -948,6 +955,7 @@ ggplot(data = data.frame(t(cstats.table(clus_dist, divisive.clust, 15))),
   labs(x = "Num.of clusters", y = "Within clusters sum of squares (SS)") +
   theme(plot.title = element_text(hjust = 0.5))
 ```
+
 ```{r}
 ## choose the number of k and add to dataframe
 num_clus <- cutree(divisive.clust, k=6)
@@ -955,6 +963,7 @@ clus_hc <- cbind(clus, cluster = as.factor(num_clus))
 ```
 
 # Choropleth map
+
 ```{r}
 library(sf)
 # reading the map file
@@ -982,12 +991,12 @@ tm_shape(mpsz_clus)+
 ```
 
 # K-means
+
 ```{r}
 # library(factoextra)
 # library(NbClust)
 
 ```
-
 
 ### Introduction: Peak System Demand
 
