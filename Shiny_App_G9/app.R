@@ -173,8 +173,11 @@ ui = fluidPage(
              navbarPage("CLUSTERING", 
                         tabPanel("Hierachical Clustering",
                                  fluidPage(
-                                   
-                                     column(12, plotOutput("dendogram"))
+                                   column(3, wellPanel(
+                                     numericInput("k", "Choose number of cluster", min = 1, max = 10, value = 2)
+                                   )),
+                                   column(9, plotlyOutput("numberk"), height = 100),
+                                   column(12, plotOutput("dendro"))
                                    
                                  )),
                         tabPanel("DTW"),
@@ -602,55 +605,107 @@ server = function(input, output, session) {
   
   # hierarchical clustering using various methods
   # (ward.D, ward.D2, single, complete, average, mcquitty, median, centroid)
-  
+  observeEvent(c(input$k),{
   output$dendro <- renderPlot({
     hc <- hclust(clus_dist, method = "complete")
     dendro <- as.dendrogram(hc)
     dendro.col <- dendro %>%
-      set("branches_k_color", k = 6, value = c("grey20","darkslategray4", "darkslategray3", "gold3", "darkcyan", "cyan3")) %>%
+      set("branches_k_color", k = input$k, value = rainbow(input$k)) %>%
       set("branches_lwd", 0.6) %>%
       set("labels_colors", 
           value = c("darkslategray")) %>% 
       set("labels_cex", 0.5)
     ggd1 <- as.ggdend(dendro.col)
-    dendo <- ggplot(ggd1, theme = theme_minimal()) +
-      labs(x = "Num. observations", y = "Height", title = "Dendrogram, k = 6")
+    ggplot(ggd1, theme = theme_minimal()) +
+      labs(x = "Num. observations", y = "Height", title = "Dendrogram")
     
-    dendo
   })
+  })
+  # function to create table for clustering stats
+  # Cluster stats comes out as list while it is more convenient to look at it as a table
+  # This code below will produce a dataframe with observations in columns and variables in row
+  # Not quite tidy data, which will require a tweak for plotting, but I prefer this view as an output here as I find it more comprehensive 
+  library(fpc)
+  cstats.table <- function(dist, tree, k) {
+    clust.assess <- c("cluster.number","n","within.cluster.ss","average.within","average.between",
+                      "wb.ratio","dunn2","avg.silwidth")
+    clust.size <- c("cluster.size")
+    stats.names <- c()
+    row.clust <- c()
+    output.stats <- matrix(ncol = k, nrow = length(clust.assess))
+    cluster.sizes <- matrix(ncol = k, nrow = k)
+    for(i in c(1:k)){
+      row.clust[i] <- paste("Cluster-", i, " size")
+    }
+    for(i in c(2:k)){
+      stats.names[i] <- paste("Test", i-1)
+      
+      for(j in seq_along(clust.assess)){
+        output.stats[j, i] <- unlist(cluster.stats(d = dist, clustering = cutree(tree, k = i))[clust.assess])[j]
+        
+      }
+      
+      for(d in 1:k) {
+        cluster.sizes[d, i] <- unlist(cluster.stats(d = dist, clustering = cutree(tree, k = i))[clust.size])[d]
+        dim(cluster.sizes[d, i]) <- c(length(cluster.sizes[i]), 1)
+        cluster.sizes[d, i]
+        
+      }
+    }
+    output.stats.df <- data.frame(output.stats)
+    cluster.sizes <- data.frame(cluster.sizes)
+    cluster.sizes[is.na(cluster.sizes)] <- 0
+    rows.all <- c(clust.assess, row.clust)
+    # rownames(output.stats.df) <- clust.assess
+    output <- rbind(output.stats.df, cluster.sizes)[ ,-1]
+    colnames(output) <- stats.names[2:k]
+    rownames(output) <- rows.all
+    is.num <- sapply(output, is.numeric)
+    output[is.num] <- lapply(output[is.num], round, 2)
+    output
+  }
   
+  output$numberk <- renderPlotly({
+    ggplot(data = data.frame(t(cstats.table(clus_dist, hc, 15))), 
+           aes(x=cluster.number, y=within.cluster.ss)) + 
+      geom_point()+
+      geom_line()+
+      ggtitle("Agglomerative (complete) - Elbow") +
+      labs(x = "Num.of clusters", y = "Within clusters sum of squares (SS)") +
+      theme(plot.title = element_text(hjust = 0.5))
+  })
   
   # -------------------------- slope graph --------------------------- #
   observeEvent(c(input$slider_year, input$slope_value),{
-   startyear <- input$slider_year[1]
-  endyear <- input$slider_year[2]
-  
-  cons_yr <- dwelling
-  
-  if (input$slope_value == "sum") {
-    cons_year <- cons_yr %>%
-    group_by(DWELLING_TYPE, year) %>%
-    summarise(mean_cons=round(sum(consumption_GWh),2))}
-  if (input$slope_value == "average") {
-    cons_year <- cons_yr %>%
-      group_by(DWELLING_TYPE, year) %>%
-      summarise(mean_cons=round(mean(consumption_GWh),2))}
-  
-  if (input$slope_value == "median") {
-    cons_year <- cons_yr %>%
-      group_by(DWELLING_TYPE, year) %>%
-      summarise(mean_cons=round(median(consumption_GWh),2))}
-  
-  p_slopegraph <- cons_year %>% 
-    mutate(year = factor(year)) %>%
-    filter(year %in% c(startyear,endyear)) %>%
-    newggslopegraph(year, mean_cons, DWELLING_TYPE)
-  
-  p_slopegraph1 <- p_slopegraph + labs(title = "Monthly Household Electricity Consumption between 2 points of time",
-                                       subtitle = "",
-                                       caption = "Source:Singstat.gov.sg")
-  
-  output$slope <- renderPlot({p_slopegraph1})
+    startyear <- input$slider_year[1]
+    endyear <- input$slider_year[2]
+    
+    cons_yr <- dwelling
+    
+    if (input$slope_value == "sum") {
+      cons_year <- cons_yr %>%
+        group_by(DWELLING_TYPE, year) %>%
+        summarise(mean_cons=round(sum(consumption_GWh),2))}
+    if (input$slope_value == "average") {
+      cons_year <- cons_yr %>%
+        group_by(DWELLING_TYPE, year) %>%
+        summarise(mean_cons=round(mean(consumption_GWh),2))}
+    
+    if (input$slope_value == "median") {
+      cons_year <- cons_yr %>%
+        group_by(DWELLING_TYPE, year) %>%
+        summarise(mean_cons=round(median(consumption_GWh),2))}
+    
+    p_slopegraph <- cons_year %>% 
+      mutate(year = factor(year)) %>%
+      filter(year %in% c(startyear,endyear)) %>%
+      newggslopegraph(year, mean_cons, DWELLING_TYPE)
+    
+    p_slopegraph1 <- p_slopegraph + labs(title = "Monthly Household Electricity Consumption between 2 points of time",
+                                         subtitle = "",
+                                         caption = "Source:Singstat.gov.sg")
+    
+    output$slope <- renderPlot({p_slopegraph1})
   })
   
 }
