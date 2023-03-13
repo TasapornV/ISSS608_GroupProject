@@ -990,11 +990,11 @@ tm_shape(mpsz_clus)+
   tm_borders(alpha = 0.7)
 ```
 
-# K-means
+# Time Series Clsutering (by month)
 
 ```{r}
-# library(factoextra)
-# library(NbClust)
+# dtwclust
+# tsclust
 
 ```
 
