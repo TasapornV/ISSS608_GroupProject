@@ -59,7 +59,6 @@ mpsz <- st_read(dsn = 'master-plan-2014-subzone-boundary-web-shp',
 
 singapore <- st_transform(mpsz, 4326)
 
-
 # wrangling data
 consumption <- T3.5
 consumption <- consumption %>%
@@ -473,7 +472,6 @@ server = function(input, output, session) {
     mutate(date = parse_date_time(paste0(year, "-", mth,"-1"),"ymd")) %>%
     mutate(monthyear = format(as.Date(date), "%b'%Y"))
   
-  
   output$peakdemand <- renderPlotly({
     p_line <- sysdemand %>%
       mutate(text = paste(monthyear, 
@@ -488,7 +486,6 @@ server = function(input, output, session) {
       theme(legend.position="none")
     ggplotly(p_line, tooltip = "text")
   })
-  
   
   # ------------------ cycle plot -------------------- #
   #cycleplot
@@ -624,9 +621,6 @@ server = function(input, output, session) {
   # calculate distance - can only use "gower" because data has categorical variable
   clus_dist <- daisy(clus, metric="gower")
   
-  
-  
-  
   # function to create table for clustering stats
   # Cluster stats comes out as list while it is more convenient to look at it as a table
   # This code below will produce a dataframe with observations in columns and variables in row
@@ -648,9 +642,7 @@ server = function(input, output, session) {
       
       for(j in seq_along(clust.assess)){
         output.stats[j, i] <- unlist(cluster.stats(d = dist, clustering = cutree(tree, k = i))[clust.assess])[j]
-        
       }
-      
       for(d in 1:k) {
         cluster.sizes[d, i] <- unlist(cluster.stats(d = dist, clustering = cutree(tree, k = i))[clust.size])[d]
         dim(cluster.sizes[d, i]) <- c(length(cluster.sizes[i]), 1)
@@ -677,25 +669,25 @@ server = function(input, output, session) {
     title <- if(input$method2 == "agglomerative") {"Agglomerative (complete) - Elbow"} 
     else {"Divisive (complete) - Elbow"}
     
-  output$numberk <- renderPlotly({
-    ggplot(data = data.frame(t(cstats.table(clus_dist, a, 15))), 
-           aes(x=cluster.number, y=within.cluster.ss)) + 
-      geom_point()+
-      geom_line(color = "#FFEEAD") + # add color parameter to change line color
-      ggtitle(title) +
-      labs(x = "Num.of clusters", y = "Within clusters sum of squares") +
-      theme_minimal(base_size=16) +
-      theme(axis.title=element_blank(),
-            plot.title = element_text(size= rel(1), color = "grey50"),
-            plot.background = element_rect(fill = "#3B4045"),
-            panel.background = element_rect(fill="#3B4045"),
-            panel.grid.minor = element_line(colour = "grey50"),
-            legend.text = element_text(colour="grey50"))
-  })
-  
-  # hierarchical clustering using various methods
-  # (ward.D, ward.D2, single, complete, average, mcquitty, median, centroid)
-  
+    output$numberk <- renderPlotly({
+      ggplot(data = data.frame(t(cstats.table(clus_dist, a, 15))), 
+             aes(x=cluster.number, y=within.cluster.ss)) + 
+        geom_point()+
+        geom_line(color = "#FFEEAD") + # add color parameter to change line color
+        ggtitle(title) +
+        labs(x = "Num.of clusters", y = "Within clusters sum of squares") +
+        theme_minimal(base_size=16) +
+        theme(axis.title=element_blank(),
+              plot.title = element_text(size= rel(1), color = "grey50"),
+              plot.background = element_rect(fill = "#3B4045"),
+              panel.background = element_rect(fill="#3B4045"),
+              panel.grid.minor = element_line(colour = "grey50"),
+              legend.text = element_text(colour="grey50"))
+    })
+    
+    # hierarchical clustering using various methods
+    # (ward.D, ward.D2, single, complete, average, mcquitty, median, centroid)
+    
     output$dendro <- renderPlot({
       hc <- hclust(clus_dist, method = input$method)
       dendro <- as.dendrogram(hc)
@@ -724,7 +716,6 @@ server = function(input, output, session) {
     
     num_clus <- cutree(a, k=input$k)
     clus_hc <- cbind(clus, cluster = as.factor(num_clus))
-    
     clus_hc$Description <- toupper(clus_hc$Description)
     
     # Preparing the choropleth map
@@ -739,12 +730,7 @@ server = function(input, output, session) {
         tm_borders(alpha = 0.7)
     )
     
-    
-    
-    
-    })
-  
-  
+  })
   
   # -------------------------- slope graph --------------------------- #
   observeEvent(c(input$slider_year, input$slope_value),{
