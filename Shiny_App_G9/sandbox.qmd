@@ -806,12 +806,52 @@ clus <- na.omit(clus)
 clus <- clus %>% relocate(Description, .before = dwelling_type)
 ```
 
+### Clustering using dendextend & heatmap - Description & dwelling_type
+```{r}
+library(dendextend)
+library(heatmaply)
+row.names(clus) <- paste(clus$Description, clus$dwelling_type)
+clus_matrix <- data.matrix(clus)
+heatmaply(normalize(clus_matrix[,-c(1,2)]),
+          dist_method = "euclidean",
+          hclust_method = "average",
+          Colv=NA,
+          seriate = "none",
+          colors = Blues,
+          k_row = 3,
+          margins = c(NA,200,60,NA),
+          fontsize_row = 5,
+          fontsize_col = 5,
+          main="Hierarchical Clustering")
+```
+
+
+### Clustering using dendextend & heatmap - Aggregated demand at description level
+```{r}
+clus_group1 <- clus[,-c(2)] %>%
+  group_by(Description) %>%
+  summarise_each(list(sum))
+
+row.names(clus_group1) <- clus_group1$Description
+clus_matrix1 <- data.matrix(clus_group1)
+heatmaply(normalize(clus_matrix1[,-c(1,2)]),
+          dist_method = "euclidean",
+          hclust_method = "average",
+          Colv=NA,
+          seriate = "none",
+          colors = Blues,
+          k_row = 3,
+          margins = c(NA,200,60,NA),
+          fontsize_row = 5,
+          fontsize_col = 5,
+          main="Hierarchical Clustering")
+```
+
 ### Hierarchical Clustering - calculate distance
 
 ```{r}
 # Clustering
 library(cluster)
-library(dendextend)
 
 # Convert to factor
 clus$Description <- factor(clus$Description)
@@ -820,6 +860,7 @@ clus$dwelling_type <- factor(clus$dwelling_type)
 # calculate distance - can only use "gower" because data has categorical variable
 clus_dist <- daisy(clus, metric="gower")
 ```
+
 
 ### Hierarchical Clustering - Agglomerative
 
@@ -834,6 +875,8 @@ hc <- hclust(clus_dist, method = "complete")
 plot(hc, label = FALSE, main = "Agglomerative, complete method")
 rect.hclust(hc, k=6, border="gold3")
 ```
+
+
 
 ```{r}
 dendro <- as.dendrogram(hc)
@@ -913,6 +956,7 @@ num_k <- find_k(hc)
 plot(num_k)
 ```
 
+
 ```{r}
 # hierarchical clustering using various methods - average
 hc <- hclust(clus_dist, method = "average")
@@ -962,6 +1006,7 @@ ggplot(data = data.frame(t(cstats.table(clus_dist, divisive.clust, 15))),
 num_clus <- cutree(divisive.clust, k=6)
 clus_hc <- cbind(clus, cluster = as.factor(num_clus))
 ```
+
 
 # Choropleth map
 
