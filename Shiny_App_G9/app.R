@@ -174,8 +174,13 @@ ui = fluidPage(
                         tabPanel("Hierachical Clustering",
                                  fluidPage(
                                    column(3, numericInput("k", "Choose number of cluster", 
-                                                          min = 1, max = 10, value = 2)),
-                                   column(9, plotlyOutput("numberk", height = "200px")),
+                                                          min = 1, max = 10, value = 2),
+                                          radioButtons("method", "Select method", 
+                                                       choices = c("ward.D", "ward.D2", "single", 
+                                                                   "complete", "average", "mcquitty", 
+                                                                   "median", "centroid"),  
+                                                       selected = "complete")),
+                                   column(9, plotlyOutput("numberk", height = "300px")),
                                    column(12, plotOutput("dendro"))
                                    
                                  )),
@@ -604,9 +609,9 @@ server = function(input, output, session) {
   
   # hierarchical clustering using various methods
   # (ward.D, ward.D2, single, complete, average, mcquitty, median, centroid)
-  observeEvent(c(input$k),{
+  observeEvent(c(input$k, input$method),{
   output$dendro <- renderPlot({
-    hc <- hclust(clus_dist, method = "complete")
+    hc <- hclust(clus_dist, method = input$method)
     dendro <- as.dendrogram(hc)
     dendro.col <- dendro %>%
       set("branches_k_color", k = input$k, value = rainbow(input$k)) %>%
@@ -615,8 +620,11 @@ server = function(input, output, session) {
           value = c("darkslategray")) %>% 
       set("labels_cex", 0.5)
     ggd1 <- as.ggdend(dendro.col)
+    title <- if(input$method == "ward.D") {"Dendrogram (Ward's Method)"} 
+            else {paste("Dendrogram (", input$method, " Method)", sep="")}
+    
     ggplot(ggd1, theme = theme_minimal()) +
-      labs(x = "Num. observations", y = "Height", title = "Dendrogram")+
+      labs(x = "Num. observations", y = "Height", title = title)+
       theme_tq_dark(base_size=16) +
       theme(axis.title=element_blank(),
             plot.title = element_text(size= rel(1), color = "grey50"),
@@ -687,23 +695,8 @@ server = function(input, output, session) {
             panel.background = element_rect(fill="#3B4045"),
             panel.grid.minor = element_line(colour = "grey50"),
             legend.text = element_text(colour="grey50"))
-      # theme(plot.title = element_text(hjust = 0.5)) 
   })
   
-  # ggplotly(ggplot(datalong, aes(x=Date, y=value, color = variable))+
-  #            geom_line(size = 0.5, alpha = .9) +
-  #            scale_x_date(date_labels = "%b %d", date_breaks = "1 week") +
-  #            labs(title = "Bitcoin Metric") +
-  #            theme_minimal(base_size=16) +
-  #            theme(axis.title=element_blank(),
-  #                  plot.title = element_text(size= rel(1)),
-  #                  plot.background = element_rect(fill = "white"),
-  #                  panel.background = element_rect(fill="white"),
-  #                  panel.grid.minor = element_line(colour = "grey50"),
-  #                  legend.text = element_text(colour="black")),
-  #          panel.grid.major = element_line(colour = "grey50")
-  # )
-  # 
   # -------------------------- slope graph --------------------------- #
   observeEvent(c(input$slider_year, input$slope_value),{
     startyear <- input$slider_year[1]
