@@ -173,10 +173,9 @@ ui = fluidPage(
              navbarPage("CLUSTERING", 
                         tabPanel("Hierachical Clustering",
                                  fluidPage(
-                                   column(3, wellPanel(
-                                     numericInput("k", "Choose number of cluster", min = 1, max = 10, value = 2)
-                                   )),
-                                   column(9, plotlyOutput("numberk"), height = 100),
+                                   column(3, numericInput("k", "Choose number of cluster", 
+                                                          min = 1, max = 10, value = 2)),
+                                   column(9, plotlyOutput("numberk", height = "200px")),
                                    column(12, plotOutput("dendro"))
                                    
                                  )),
@@ -617,7 +616,16 @@ server = function(input, output, session) {
       set("labels_cex", 0.5)
     ggd1 <- as.ggdend(dendro.col)
     ggplot(ggd1, theme = theme_minimal()) +
-      labs(x = "Num. observations", y = "Height", title = "Dendrogram")
+      labs(x = "Num. observations", y = "Height", title = "Dendrogram")+
+      theme_tq_dark(base_size=16) +
+      theme(axis.title=element_blank(),
+            plot.title = element_text(size= rel(1), color = "grey50"),
+            plot.background = element_rect(fill = "#3B4045"),
+            panel.background = element_rect(fill="#3B4045"),
+            legend.text = element_text(colour="grey50"),
+            panel.grid.major = element_blank(),
+            panel.grid.minor = element_blank()
+            )
     
   })
   })
@@ -671,10 +679,31 @@ server = function(input, output, session) {
       geom_point()+
       geom_line()+
       ggtitle("Agglomerative (complete) - Elbow") +
-      labs(x = "Num.of clusters", y = "Within clusters sum of squares (SS)") +
-      theme(plot.title = element_text(hjust = 0.5))
+      labs(x = "Num.of clusters", y = "Within clusters sum of squares") +
+      theme_minimal(base_size=16) +
+      theme(axis.title=element_blank(),
+            plot.title = element_text(size= rel(1), color = "grey50"),
+            plot.background = element_rect(fill = "#3B4045"),
+            panel.background = element_rect(fill="#3B4045"),
+            panel.grid.minor = element_line(colour = "grey50"),
+            legend.text = element_text(colour="grey50"))
+      # theme(plot.title = element_text(hjust = 0.5)) 
   })
   
+  # ggplotly(ggplot(datalong, aes(x=Date, y=value, color = variable))+
+  #            geom_line(size = 0.5, alpha = .9) +
+  #            scale_x_date(date_labels = "%b %d", date_breaks = "1 week") +
+  #            labs(title = "Bitcoin Metric") +
+  #            theme_minimal(base_size=16) +
+  #            theme(axis.title=element_blank(),
+  #                  plot.title = element_text(size= rel(1)),
+  #                  plot.background = element_rect(fill = "white"),
+  #                  panel.background = element_rect(fill="white"),
+  #                  panel.grid.minor = element_line(colour = "grey50"),
+  #                  legend.text = element_text(colour="black")),
+  #          panel.grid.major = element_line(colour = "grey50")
+  # )
+  # 
   # -------------------------- slope graph --------------------------- #
   observeEvent(c(input$slider_year, input$slope_value),{
     startyear <- input$slider_year[1]

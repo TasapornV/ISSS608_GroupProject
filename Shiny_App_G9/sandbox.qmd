@@ -903,7 +903,8 @@ ggplot(data = data.frame(t(cstats.table(clus_dist, hc, 15))),
   geom_line()+
   ggtitle("Agglomerative (complete) - Elbow") +
   labs(x = "Num.of clusters", y = "Within clusters sum of squares (SS)") +
-  theme(plot.title = element_text(hjust = 0.5))
+  theme(plot.title = element_text(hjust = 0.5))+
+  theme_dark()
 ```
 
 ```{r}
