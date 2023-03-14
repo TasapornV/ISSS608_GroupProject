@@ -34,6 +34,9 @@ library(treemap)
 library(cluster)
 library(dendextend)
 
+library(sf)
+library(tmap)
+
 ## Read compressed data file
 T2.3 <- readRDS(file = "RDS/T2-3.rds") # Peak System Demand
 T2.6 <- readRDS(file = "RDS/T2-6.rds") # Market Share of Electricity Generation
@@ -49,12 +52,21 @@ T5.3 <- readRDS(file = "RDS/T5-3.rds") # Annual Electricity Tariffs by Component
 T5.4 <- readRDS(file = "RDS/T5-4.rds") # Average Monthly Uniform Singapore Energy Prices (USEP)
 T5.5 <- readRDS(file = "RDS/T5-5.rds") # Monthly Town Gas Tariffs
 
+# reading the map file
+mpsz <- st_read(dsn = 'master-plan-2014-subzone-boundary-web-shp',
+                layer = 'MP14_SUBZONE_WEB_PL',
+                crs = 3414) 
+
+singapore <- st_transform(mpsz, 4326)
+
 # wrangling data
 consumption <- T3.5
 consumption <- consumption %>%
   mutate(kwh_per_acc = as.numeric(kwh_per_acc)) %>%
   mutate(year = as.character(year)) %>%
   mutate('date' = make_date(year=year, month=month))
+
+clus_hc$Description <- toupper(clus_hc$Description)
 
 ## Set up parameter
 years <- c("2022","2021", "2020", "2019", "2018", "2017")
@@ -175,13 +187,17 @@ ui = fluidPage(
                                  fluidPage(
                                    column(3, numericInput("k", "Choose number of cluster", 
                                                           min = 1, max = 10, value = 2),
+                                          radioButtons("method2", "Select method",
+                                                       choices = c("agglomerative", "divisive"),
+                                                       selected = "agglomerative"),
                                           radioButtons("method", "Select method", 
                                                        choices = c("ward.D", "ward.D2", "single", 
                                                                    "complete", "average", "mcquitty", 
                                                                    "median", "centroid"),  
                                                        selected = "complete")),
-                                   column(9, plotlyOutput("numberk", height = "300px")),
-                                   column(12, plotOutput("dendro"))
+                                   column(9, plotlyOutput("numberk", height = "350px")),
+                                   column(12, plotOutput("dendro")),
+                                   column(12, tmapOutput("map"))
                                    
                                  )),
                         tabPanel("DTW"),
@@ -260,9 +276,9 @@ ui = fluidPage(
                                             numericInput("arima_d", "input order of differencing", value=1),
                                             numericInput("arima_d2", "input order of seasonal differencing", value=2),
                                             checkboxInput("arima_d3", "allow drift", value = FALSE),
-                                            sliderInput("year", "Select year", min = 2005, max = 2022, step=1, round=TRUE, value = 2022),
+                                            sliderInput("year", "Select year", min = 2005, max = 2022, step=1, round=TRUE, value = c(2005,2022)),
                                             verbatimTextOutput("arimatext")),
-                                     column(width = 7, plotOutput("arima",height=350)),
+                                     column(width = 7, plotOutput("arima",height="500px")),
                                      column(width = 12, plotOutput("arima_plot",height=400))
                                    ) )
                         ),
@@ -456,7 +472,6 @@ server = function(input, output, session) {
     mutate(date = parse_date_time(paste0(year, "-", mth,"-1"),"ymd")) %>%
     mutate(monthyear = format(as.Date(date), "%b'%Y"))
   
-  
   output$peakdemand <- renderPlotly({
     p_line <- sysdemand %>%
       mutate(text = paste(monthyear, 
@@ -471,7 +486,6 @@ server = function(input, output, session) {
       theme(legend.position="none")
     ggplotly(p_line, tooltip = "text")
   })
-  
   
   # ------------------ cycle plot -------------------- #
   #cycleplot
@@ -607,36 +621,6 @@ server = function(input, output, session) {
   # calculate distance - can only use "gower" because data has categorical variable
   clus_dist <- daisy(clus, metric="gower")
   
-  # hierarchical clustering using various methods
-  # (ward.D, ward.D2, single, complete, average, mcquitty, median, centroid)
-  observeEvent(c(input$k, input$method),{
-  output$dendro <- renderPlot({
-    hc <- hclust(clus_dist, method = input$method)
-    dendro <- as.dendrogram(hc)
-    dendro.col <- dendro %>%
-      set("branches_k_color", k = input$k, value = rainbow(input$k)) %>%
-      set("branches_lwd", 0.6) %>%
-      set("labels_colors", 
-          value = c("darkslategray")) %>% 
-      set("labels_cex", 0.5)
-    ggd1 <- as.ggdend(dendro.col)
-    title <- if(input$method == "ward.D") {"Dendrogram (Ward's Method)"} 
-            else {paste("Dendrogram (", input$method, " Method)", sep="")}
-    
-    ggplot(ggd1, theme = theme_minimal()) +
-      labs(x = "Num. observations", y = "Height", title = title)+
-      theme_tq_dark(base_size=16) +
-      theme(axis.title=element_blank(),
-            plot.title = element_text(size= rel(1), color = "grey50"),
-            plot.background = element_rect(fill = "#3B4045"),
-            panel.background = element_rect(fill="#3B4045"),
-            legend.text = element_text(colour="grey50"),
-            panel.grid.major = element_blank(),
-            panel.grid.minor = element_blank()
-            )
-    
-  })
-  })
   # function to create table for clustering stats
   # Cluster stats comes out as list while it is more convenient to look at it as a table
   # This code below will produce a dataframe with observations in columns and variables in row
@@ -658,9 +642,7 @@ server = function(input, output, session) {
       
       for(j in seq_along(clust.assess)){
         output.stats[j, i] <- unlist(cluster.stats(d = dist, clustering = cutree(tree, k = i))[clust.assess])[j]
-        
       }
-      
       for(d in 1:k) {
         cluster.sizes[d, i] <- unlist(cluster.stats(d = dist, clustering = cutree(tree, k = i))[clust.size])[d]
         dim(cluster.sizes[d, i]) <- c(length(cluster.sizes[i]), 1)
@@ -680,21 +662,74 @@ server = function(input, output, session) {
     output[is.num] <- lapply(output[is.num], round, 2)
     output
   }
-  
-  output$numberk <- renderPlotly({
-    ggplot(data = data.frame(t(cstats.table(clus_dist, hc, 15))), 
-           aes(x=cluster.number, y=within.cluster.ss)) + 
-      geom_point()+
-      geom_line()+
-      ggtitle("Agglomerative (complete) - Elbow") +
-      labs(x = "Num.of clusters", y = "Within clusters sum of squares") +
-      theme_minimal(base_size=16) +
-      theme(axis.title=element_blank(),
-            plot.title = element_text(size= rel(1), color = "grey50"),
-            plot.background = element_rect(fill = "#3B4045"),
-            panel.background = element_rect(fill="#3B4045"),
-            panel.grid.minor = element_line(colour = "grey50"),
-            legend.text = element_text(colour="grey50"))
+  observeEvent(c(input$k, input$method, input$method2),{
+    if(input$method2 == "agglomerative") {a <- hc} 
+    if(input$method2 == "divisive") {a <- divisive.clust}
+    
+    title <- if(input$method2 == "agglomerative") {"Agglomerative (complete) - Elbow"} 
+    else {"Divisive (complete) - Elbow"}
+    
+    output$numberk <- renderPlotly({
+      ggplot(data = data.frame(t(cstats.table(clus_dist, a, 15))), 
+             aes(x=cluster.number, y=within.cluster.ss)) + 
+        geom_point()+
+        geom_line(color = "#FFEEAD") + # add color parameter to change line color
+        ggtitle(title) +
+        labs(x = "Num.of clusters", y = "Within clusters sum of squares") +
+        theme_minimal(base_size=16) +
+        theme(axis.title=element_blank(),
+              plot.title = element_text(size= rel(1), color = "grey50"),
+              plot.background = element_rect(fill = "#3B4045"),
+              panel.background = element_rect(fill="#3B4045"),
+              panel.grid.minor = element_line(colour = "grey50"),
+              legend.text = element_text(colour="grey50"))
+    })
+    
+    # hierarchical clustering using various methods
+    # (ward.D, ward.D2, single, complete, average, mcquitty, median, centroid)
+    
+    output$dendro <- renderPlot({
+      hc <- hclust(clus_dist, method = input$method)
+      dendro <- as.dendrogram(hc)
+      dendro.col <- dendro %>%
+        set("branches_k_color", k = input$k, value = rainbow(input$k)) %>%
+        set("branches_lwd", 0.6) %>%
+        set("labels_colors", 
+            value = c("darkslategray")) %>% 
+        set("labels_cex", 0.5)
+      ggd1 <- as.ggdend(dendro.col)
+      title <- if(input$method == "ward.D") {"Dendrogram (Ward's Method)"} 
+      else {paste("Dendrogram (", input$method, " Method)", sep="")}
+      
+      ggplot(ggd1, theme = theme_minimal()) +
+        labs(x = "Num. observations", y = "Height", title = title)+
+        theme_tq_dark(base_size=16) +
+        theme(axis.title=element_blank(),
+              plot.title = element_text(size= rel(1), color = "grey50"),
+              plot.background = element_rect(fill = "#3B4045"),
+              panel.background = element_rect(fill="#3B4045"),
+              legend.text = element_text(colour="grey50"),
+              panel.grid.major = element_blank(),
+              panel.grid.minor = element_blank()
+        )
+    })
+    
+    num_clus <- cutree(a, k=input$k)
+    clus_hc <- cbind(clus, cluster = as.factor(num_clus))
+    clus_hc$Description <- toupper(clus_hc$Description)
+    
+    # Preparing the choropleth map
+    mpsz_clus <- left_join(singapore, clus_hc, by = c("PLN_AREA_N" = "Description"))
+    output$map <- renderTmap(
+      
+      tm_shape(mpsz_clus)+
+        tmap_options(check.and.fix = TRUE)+
+        tm_fill("cluster", id=paste("PLN_AREA_N"),
+                style = "pretty",
+                palette = rainbow(input$k)) +
+        tm_borders(alpha = 0.7)
+    )
+    
   })
   
   # -------------------------- slope graph --------------------------- #
