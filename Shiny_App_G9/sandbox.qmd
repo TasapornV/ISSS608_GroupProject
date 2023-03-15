@@ -823,58 +823,227 @@ library(dtwclust)
 # plot(topnum_k)
 ```
 
-### Introduction: Peak System Demand
+### Introduction: Consumption by Dwelling Type
 
 ```{r}
-sysdemand <- T2.3 %>%
-  mutate(date = parse_date_time(paste0(year, "-", mth,"-1"),"ymd")) %>%
-  mutate(monthyear = format(as.Date(date), "%b'%Y"))
+dwelling <- T3.4 %>%
+  filter(year %in% c(2005:2022)) %>%
+  filter(month %in% c(1:12)) %>%
+  filter(DWELLING_TYPE %in% c('1-room / 2-room','3-room','4-room',
+                              '5-room and Executive',
+                              'Private Apartments and Condominiums',
+                              'Landed Properties', 'Others')) %>%
+  mutate(date = parse_date_time(paste0(year, "-", month,"-1"),"ymd")) %>%
+  mutate(monthyear = format(as.Date(date), "%b %Y"))
+
+#Add Private vs Public Classification
+dwelling$class <- case_when(
+    dwelling$DWELLING_TYPE %in% c('Private Apartments and Condominiums',
+                                 'Landed Properties', 'Others') ~ "Private",
+    dwelling$DWELLING_TYPE %in% c('1-room / 2-room','3-room','4-room',
+                                  '5-room and Executive') ~ "Public")
+```
+
+##New: Animated Bar Plots
+
+```{r}
+bar_dwelling <- dwelling %>%
+  mutate(rank = rank(-consumption_GWh),
+         cons_rel = consumption_GWh/consumption_GWh[rank==1],
+         cons_lbl = paste0(" ",consumption_GWh)) %>%
+  ungroup()
 ```
 
 ```{r}
-#Can provide option to swap between linechart / scatterchart if possible
-p_line <- sysdemand %>%
-  mutate(text = paste(monthyear, 
-                      "<br>System Demand (NW):", peak_system_demand_mw)) %>%
-  ggplot(aes(x = date, y = peak_system_demand_mw)) +
-  geom_line() +
-  geom_point() +
-  labs(title = "Monthly Peak System Demand (MW), Jan'05 to Jun'22",
-       x = "", y = "MW") +
-  theme_tq() +
-#    scale_x_date(expand=c(0,0), date_breaks = "3 month", date_labels = "%b%y") + 
-  theme(legend.position="none")
+#animated bar plot
+library(gganimate)
 
-ggplotly(p_line, tooltip = "text")
+anim <- ggplot(bar_dwelling, aes(rank, group = DWELLING_TYPE, 
+                fill = as.factor(DWELLING_TYPE), color = as.factor(DWELLING_TYPE))) +
+  geom_tile(aes(y = consumption_GWh/2,
+                height = consumption_GWh,
+                width = 0.9), alpha = 0.8, color = NA) +
+  geom_text(aes(y = consumption_GWh, label = paste(" ",DWELLING_TYPE,"\n",cons_lbl)), hjust = 0, color="black") +
+  coord_flip(clip = "off", expand = FALSE) +
+  scale_y_continuous(labels = scales::comma) +
+  scale_x_reverse() +
+  guides(color = FALSE, fill = FALSE) +
+  theme(axis.line=element_blank(),
+        axis.text.y=element_blank(),
+        axis.ticks=element_blank(),
+        axis.title.x=element_blank(),
+        axis.title.y=element_blank(),
+        legend.position="none",
+        panel.background=element_blank(),
+        panel.border=element_blank(),
+        panel.grid.major=element_blank(),
+        panel.grid.minor=element_blank(),
+        panel.grid.major.x = element_line(linewidth=.1, color="grey80" ),
+        panel.grid.minor.x = element_line(linewidth=.1, color="grey80" ),
+        plot.title=element_text(size=20, hjust=0.5, face="bold", colour="black"),
+        plot.subtitle=element_text(size=18, hjust=0.5, face="italic", color="grey"),
+        plot.caption =element_text(size=8, hjust=0.5, face="italic", color="grey"),
+        plot.background=element_blank(),
+       plot.margin = margin(2,2, 2, 2, "cm")) 
+
+animated <- anim +
+  transition_states(Date, transition_length = 6, state_length = 1) + 
+  view_follow(fixed_y = c(0,300)) +
+  ease_aes('cubic-in-out') + 
+  labs(title = "Total Household Electricity Consumption by Dwelling Type: {format(frame_time, '%b%y')}", 
+       x = "Electricity Consumption (GWh)",
+       caption="Source: ema.gov.sg")
+
+animate(animated, 500, fps = 19,  width = 800, height = 600, 
+        renderer = gifski_renderer("gganim.gif"))
 ```
 
 ```{r}
-#cycleplot
-sysdemand21 <- sysdemand %>%
-  filter(year %in% c(2005:2021))
+# cycleplot for each dwelling type
+select_type <- 'Private Apartments and Condominiums'
+
+select_dwelling <- dwelling %>% 
+  filter(DWELLING_TYPE %in% c(select_type)) %>%
+  mutate(year = factor(year, levels = 2005:2022),
+         month = factor(month, levels = 1:12))
 
 #Computing year average by months
-hline.data <- sysdemand21 %>%
-  group_by(mth) %>%
-  summarise(avg_demand = mean(peak_system_demand_mw))
+hline.data <- select_dwelling %>%
+  group_by(month) %>%
+  summarise(avg_cons = mean(consumption_GWh))
 
-#Allow user to choose monthly vs quarterly cycleplot
-p_cycleplot <-
-  ggplot() +
-  geom_line(data = sysdemand21,
-           aes(x=year,y=peak_system_demand_mw, group=mth), colour = "black") +
+#Plotting cycle plot for imports
+ggplot() + 
+  geom_line(data = select_dwelling,
+            aes(x=year,y=consumption_GWh, group=month), colour = "black") +
   geom_hline(data = hline.data,
-             aes(yintercept=avg_demand),
+             aes(yintercept=avg_cons),
              linetype=6, 
              colour="red", 
-             size=0.5) +
-  facet_grid(~mth) +
+             linewidth=0.5) +
+  facet_grid(~month) +
   theme(axis.text.x = element_text(angle=90, vjust=1, hjust=1)) +
-  labs(title = "Cycleplot of Peak System Demand (MW), 2005 to 2021") +
+  labs(title = "Cycleplot for household electricity consumption (GWh), Jan 2020-Jun 2022",
+       subtitle = paste0('Dwelling Type: ',select_type)) +
   xlab("") +
-  ylab("MW")
+  ylab("GWh")
+```
 
-p_cycleplot
+Another consideration for peak system demand is lag plot to check for seasonality.
+
+```{r}
+#load lib
+library(CGPfunctions)
+library(ggdist)
+```
+
+```{r}
+#Display rate of change using Slopegraph
+#User can choose any 2 years for comparison
+startyear <- 2005
+endyear <- 2021
+
+cons_yr <- dwelling
+cons_year <- cons_yr %>%
+  group_by(DWELLING_TYPE, year) %>%
+  summarise(mean_cons=round(mean(consumption_GWh),2))
+
+p_slopegraph <- cons_year %>% 
+  mutate(year = factor(year)) %>%
+  filter(year %in% c(startyear,endyear)) %>%
+  newggslopegraph(year, mean_cons, DWELLING_TYPE)
+
+p_slopegraph1 <- p_slopegraph + labs(title = "Monthly Household Electricity Consumption between 2 years",
+                subtitle = "",
+                caption = "Source:Singstat.gov.sg")
+
+p_slopegraph1
+```
+
+### Introduction: Total Household Electricity Consumption by Town/Region
+
+```{r}
+
+```
+
+```{r}
+#rollPeriod = Number of time scale units (e.g. days, months, years) to average values over.
+
+## Library
+#library(dygraphs)
+#library(xts)          # To make the convertion data-frame / xts format
+#library(tidyverse)
+#library(lubridate)
+ 
+## Since my time is currently a factor, I have to convert it to a date-time format!
+#data$datetime <- ymd_hms(data$datetime)
+
+#dwelling_roller <- 
+
+## Then you can create the xts necessary to use dygraph
+#p_roller <- xts(x = data$count, order.by = data$datetime)
+
+## Finally the plot
+#p <- dygraph(p_roller) %>%
+#  dyOptions(labelsUTC = TRUE, fillGraph=TRUE, fillAlpha=0.1, drawGrid = FALSE, colors="#D8AE5A") %>%
+#  dyRangeSelector() %>%
+#  dyCrosshair(direction = "vertical") %>%
+#  dyHighlight(highlightCircleSize = 5, highlightSeriesBackgroundAlpha = 0.2, hideOnMouseOut = FALSE)  %>%
+#  dyRoller(rollPeriod = 1)
+
+```
+
+### Inferential Analysis
+
+```{r}
+#Confidence Intervals of Median Household consumption
+private_uncert <- ggplot(data = dwelling |> filter(year == givenyear), 
+                      aes(x = DWELLING_TYPE, y = consumption_GWh)) +
+  stat_pointinterval(point_interval = "median_qi",
+                     .width = c(0.95,0.99),
+                     point_color = "red3") +
+  labs(title = "Visualising Confidence Intervals of Median Electricity Consumption",
+       x = "", y = "GWh", subtitle = paste0("Year ", givenyear)) + 
+  theme(axis.text.x = element_text(angle = 45, vjust = 1, hjust=1))
+
+private_uncert
+```
+
+```{r}
+{r}
+#Comparison of Median Consumption by Dwelling Type per year
+#Give user choice to choose the year
+givenyear <- 2021
+
+#plotting violin plot by dwelling type for private and public housing
+private <- ggbetweenstats(data = dwelling |> filter(class == "Private", year == givenyear), x = DWELLING_TYPE, y = consumption_GWh,
+               xlab = "Dwelling Type", ylab = "GWh",
+               type = "np", pairwise.comparisons = T, pairwise.display = "ns", 
+               mean.ci = T, p.adjust.method = "fdr",  conf.level = 0.95,
+               title = "Private",
+               package = "ggthemes", palette = "Tableau_10") +
+  theme(axis.title.x = element_blank())
+#  + scale_y_continuous(limits = c(0, 1500000))
+
+public <- ggbetweenstats(data = dwelling |> filter(class == "Public", year == givenyear), x = DWELLING_TYPE, y = consumption_GWh,
+               xlab = "Dwelling Type", ylab = "GWh",
+               type = "np", pairwise.comparisons = T, pairwise.display = "ns", 
+               mean.ci = T, p.adjust.method = "fdr",  conf.level = 0.95,
+               title = "Public",
+               package = "ggthemes", palette = "Tableau_10") +
+  theme(axis.title.x = element_blank())
+#  + scale_y_continuous(limits = c(0, 1500000))
+
+#combining plots
+combine_plots(
+  list(private, public),
+  plotgrid.args = list(nrow = 5),
+  annotation.args = list(
+    title = "Comparison of Monthly Household Electricity Consumption by Dwelling Type",
+    subtitle = paste0("Year",givenyear),
+    theme = theme(
+      plot.subtitle = element_text(size = 10),
+      plot.title = element_text(size = 12))))
 ```
 
 ```{r}
@@ -929,124 +1098,4 @@ stats_sysdemand %>%
     subtitle = "Mean vs Standard Deviation") +
     scale_color_tq() +
     theme_tq()
-```
-
--   Another consideration for peak system demand is lag plot to check for seasonality.
-
-### Introduction: Consumption by Dwelling Type
-
-```{r}
-dwelling <- T3.4 %>%
-  filter(year %in% c(2005:2022)) %>%
-  filter(month %in% c(1:12)) %>%
-  filter(DWELLING_TYPE %in% c('1-room / 2-room','3-room','4-room',
-                              '5-room and Executive',
-                              'Private Apartments and Condominiums',
-                              'Landed Properties', 'Others')) %>%
-  mutate(date = parse_date_time(paste0(year, "-", month,"-1"),"ymd")) %>%
-  mutate(monthyear = format(as.Date(date), "%b'%Y"))
-
-#Add Private vs Public Classification
-dwelling$class <- case_when(
-    dwelling$DWELLING_TYPE %in% c('Private Apartments and Condominiums',
-                                 'Landed Properties', 'Others') ~ "Private",
-    dwelling$DWELLING_TYPE %in% c('1-room / 2-room','3-room','4-room',
-                                  '5-room and Executive') ~ "Public")
-```
-
-```{r}
-p_line <- dwelling %>%
-  mutate(text = paste(monthyear, 
-                      "<br>Consumption (GWh):", consumption_GWh)) %>%
-  ggplot(aes(x = date, y = consumption_GWh, colour = DWELLING_TYPE)) +
-#  facet_wrap(vars(class), ncol = 1) +
-  geom_line() +
-  geom_point() +
-  labs(title = "Monthly Household Electricity Consumption (GWh) by Dwelling Type, Jan'05 to Jun'22",
-       x = "", y = "GWh") +
-  theme_tq() +
-#    scale_x_date(expand=c(0,0), date_breaks = "3 month", date_labels = "%b%y") + 
-  theme(legend.position="bottom")
-
-ggplotly(p_line, tooltip = "text")
-```
-
-```{r}
-#Comparison of Median Consumption by Dwelling Type per year
-#Give user choice to choose the year
-givenyear <- 2021
-
-#plotting violin plot by dwelling type for private and public housing
-private <- ggbetweenstats(data = dwelling |> filter(class == "Private", year == givenyear), x = DWELLING_TYPE, y = consumption_GWh,
-               xlab = "Dwelling Type", ylab = "GWh",
-               type = "np", pairwise.comparisons = T, pairwise.display = "ns", 
-               mean.ci = T, p.adjust.method = "fdr",  conf.level = 0.95,
-               title = "Private",
-               package = "ggthemes", palette = "Tableau_10") +
-  theme(axis.title.x = element_blank())
-#  + scale_y_continuous(limits = c(0, 1500000))
-
-public <- ggbetweenstats(data = dwelling |> filter(class == "Public", year == givenyear), x = DWELLING_TYPE, y = consumption_GWh,
-               xlab = "Dwelling Type", ylab = "GWh",
-               type = "np", pairwise.comparisons = T, pairwise.display = "ns", 
-               mean.ci = T, p.adjust.method = "fdr",  conf.level = 0.95,
-               title = "Public",
-               package = "ggthemes", palette = "Tableau_10") +
-  theme(axis.title.x = element_blank())
-#  + scale_y_continuous(limits = c(0, 1500000))
-
-#combining plots
-combine_plots(
-  list(private, public),
-  plotgrid.args = list(nrow = 5),
-  annotation.args = list(
-    title = "Comparison of Monthly Household Electricity Consumption by Dwelling Type",
-    subtitle = paste0("Year",givenyear),
-    theme = theme(
-      plot.subtitle = element_text(size = 10),
-      plot.title = element_text(size = 12))))
-
-```
-
-```{r}
-#load lib
-library(CGPfunctions)
-library(ggdist)
-```
-
-```{r}
-#Confidence Intervals of Median Household consumption
-private_uncert <- ggplot(data = dwelling |> filter(year == givenyear), 
-                      aes(x = DWELLING_TYPE, y = consumption_GWh)) +
-  stat_pointinterval(point_interval = "median_qi",
-                     .width = c(0.95,0.99),
-                     point_color = "red3") +
-  labs(title = "Visualising Confidence Intervals of Median Electricity Consumption",
-       x = "", y = "GWh", subtitle = paste0("Year ", givenyear)) + 
-  theme(axis.text.x = element_text(angle = 45, vjust = 1, hjust=1))
-
-private_uncert
-```
-
-```{r}
-#Display rate of change using Slopegraph
-#User can choose any 2 years for comparison
-startyear <- 2005
-endyear <- 2021
-
-cons_yr <- dwelling
-cons_year <- cons_yr %>%
-  group_by(DWELLING_TYPE, year) %>%
-  summarise(mean_cons=round(mean(consumption_GWh),2))
-
-p_slopegraph <- cons_year %>% 
-  mutate(year = factor(year)) %>%
-  filter(year %in% c(startyear,endyear)) %>%
-  newggslopegraph(year, mean_cons, DWELLING_TYPE)
-
-p_slopegraph1 <- p_slopegraph + labs(title = "Monthly Household Electricity Consumption between 2 years",
-                subtitle = "",
-                caption = "Source:Singstat.gov.sg")
-
-p_slopegraph1
 ```
