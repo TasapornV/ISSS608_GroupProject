@@ -807,6 +807,7 @@ clus <- clus %>% relocate(Description, .before = dwelling_type)
 ```
 
 ### Clustering using dendextend & heatmap - Description & dwelling_type
+
 ```{r}
 library(dendextend)
 library(heatmaply)
@@ -825,8 +826,8 @@ heatmaply(normalize(clus_matrix[,-c(1,2)]),
           main="Hierarchical Clustering")
 ```
 
-
 ### Clustering using dendextend & heatmap - Aggregated demand at description level
+
 ```{r}
 clus_group1 <- clus[,-c(2)] %>%
   group_by(Description) %>%
@@ -861,7 +862,6 @@ clus$dwelling_type <- factor(clus$dwelling_type)
 clus_dist <- daisy(clus, metric="gower")
 ```
 
-
 ### Hierarchical Clustering - Agglomerative
 
 ```{r}
@@ -875,8 +875,6 @@ hc <- hclust(clus_dist, method = "complete")
 plot(hc, label = FALSE, main = "Agglomerative, complete method")
 rect.hclust(hc, k=6, border="gold3")
 ```
-
-
 
 ```{r}
 dendro <- as.dendrogram(hc)
@@ -956,7 +954,6 @@ num_k <- find_k(hc)
 plot(num_k)
 ```
 
-
 ```{r}
 # hierarchical clustering using various methods - average
 hc <- hclust(clus_dist, method = "average")
@@ -1007,7 +1004,6 @@ num_clus <- cutree(divisive.clust, k=6)
 clus_hc <- cbind(clus, cluster = as.factor(num_clus))
 ```
 
-
 # Choropleth map
 
 ```{r}
@@ -1044,7 +1040,15 @@ tm_shape(mpsz_clus)+
 
 ```
 
-### Introduction: Consumption by Dwelling Type
+# Introduction: Package and Dataset
+
+```{r}
+#load lib
+library(CGPfunctions)
+library(ggdist)
+```
+
+### Consumption by Dwelling Type (Intro)
 
 ```{r}
 dwelling <- T3.4 %>%
@@ -1077,7 +1081,6 @@ bar_dwelling <- dwelling %>%
 
 ```{r}
 #animated bar plot
-library(gganimate)
 
 anim <- ggplot(bar_dwelling, aes(rank, group = DWELLING_TYPE, 
                 fill = as.factor(DWELLING_TYPE), color = as.factor(DWELLING_TYPE))) +
@@ -1153,12 +1156,6 @@ ggplot() +
 Another consideration for peak system demand is lag plot to check for seasonality.
 
 ```{r}
-#load lib
-library(CGPfunctions)
-library(ggdist)
-```
-
-```{r}
 #Display rate of change using Slopegraph
 #User can choose any 2 years for comparison
 startyear <- 2005
@@ -1214,7 +1211,7 @@ p_slopegraph1
 
 ```
 
-### Inferential Analysis
+# Inferential Analysis
 
 ```{r}
 #Confidence Intervals of Median Household consumption
