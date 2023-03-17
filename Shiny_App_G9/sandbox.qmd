@@ -1044,8 +1044,7 @@ tm_shape(mpsz_clus)+
 
 ```{r}
 #load lib
-library(CGPfunctions)
-library(ggdist)
+pacman::p_load(scales, viridis, lubridate, gridExtra, knitr, data.table, ggthemes, CGPfunctions, ggHoriPlot, gapminder, gganimate, ggbraid, ggstatsplot, ggiraph, plotly, performance, nortest, patchwork, ggdist, tidyverse)
 ```
 
 ### Consumption by Dwelling Type (Intro)
@@ -1072,22 +1071,32 @@ dwelling$class <- case_when(
 ##New: Animated Bar Plots
 
 ```{r}
-bar_dwelling <- dwelling %>%
+dwelling_bar <- dwelling %>% 
+  select('date','DWELLING_TYPE','consumption_GWh')
+
+dwelling_bar <- as.Date(dwelling_bar$date, format="%d-%m,-%Y") 
+```
+
+```{r}
+# Creating the rank and relative value
+bar_data <- dwelling_bar %>%
+  group_by(date) %>%
   mutate(rank = rank(-consumption_GWh),
-         cons_rel = consumption_GWh/consumption_GWh[rank==1],
-         cons_lbl = paste0(" ",consumption_GWh)) %>%
+         Value_rel = ifelse(length(consumption_GWh) == 0, 0, consumption_GWh/consumption_GWh[rank==1]),
+         Value_lbl = paste0(" ", consumption_GWh)) %>%
   ungroup()
+
 ```
 
 ```{r}
 #animated bar plot
 
-anim <- ggplot(bar_dwelling, aes(rank, group = DWELLING_TYPE, 
+anim <- ggplot(bar_data, aes(rank, group = DWELLING_TYPE, 
                 fill = as.factor(DWELLING_TYPE), color = as.factor(DWELLING_TYPE))) +
-  geom_tile(aes(y = consumption_GWh/2,
+  geom_tile(aes(y = consumption_GWh,
                 height = consumption_GWh,
                 width = 0.9), alpha = 0.8, color = NA) +
-  geom_text(aes(y = consumption_GWh, label = paste(" ",DWELLING_TYPE,"\n",cons_lbl)), hjust = 0, color="black") +
+  geom_text(aes(y = consumption_GWh, label = paste(" ",DWELLING_TYPE,"\n",Value_lbl)), hjust = 0, color="black") +
   coord_flip(clip = "off", expand = FALSE) +
   scale_y_continuous(labels = scales::comma) +
   scale_x_reverse() +
@@ -1111,15 +1120,25 @@ anim <- ggplot(bar_dwelling, aes(rank, group = DWELLING_TYPE,
        plot.margin = margin(2,2, 2, 2, "cm")) 
 
 animated <- anim +
-  transition_states(Date, transition_length = 6, state_length = 1) + 
-  view_follow(fixed_y = c(0,300)) +
+  transition_states(date, transition_length = 6, state_length = 1) + 
+  view_follow(fixed_y = c(0,500)) +
   ease_aes('cubic-in-out') + 
-  labs(title = "Total Household Electricity Consumption by Dwelling Type: {format(frame_time, '%b%y')}", 
-       x = "Electricity Consumption (GWh)",
-       caption="Source: ema.gov.sg")
+  labs(title = "Electricity Consumption by Dwelling Type in: {closest_state}", 
+       x = "Consumption (GWh)",
+       caption="Source:ema.gov.sg")
 
-animate(animated, 500, fps = 19,  width = 800, height = 600, 
+animate(animated, 500, fps = 5,  width = 800, height = 600, 
         renderer = gifski_renderer("gganim.gif"))
+```
+
+```{r}
+#linechart # backup
+ggplot(data = dwelling, aes(x = date)) +
+  geom_line(aes(y = consumption_GWh, colour = DWELLING_TYPE)) + 
+  labs(title = "Electricity Consumption by Dwelling Type",
+      x = "Year", y = "Consumption (GWh)") +
+  scale_color_discrete(name="") +
+  theme(legend.position="bottom")
 ```
 
 ```{r}
@@ -1147,8 +1166,9 @@ ggplot() +
              linewidth=0.5) +
   facet_grid(~month) +
   theme(axis.text.x = element_text(angle=90, vjust=1, hjust=1)) +
-  labs(title = "Cycleplot for household electricity consumption (GWh), Jan 2020-Jun 2022",
+  labs(title = "Cycleplot for household electricity consumption (GWh), Jan 2005-Jun 2022",
        subtitle = paste0('Dwelling Type: ',select_type)) +
+  scale_x_discrete(breaks=c("2005","2010","2015","2020")) +
   xlab("") +
   ylab("GWh")
 ```
@@ -1173,7 +1193,7 @@ p_slopegraph <- cons_year %>%
 
 p_slopegraph1 <- p_slopegraph + labs(title = "Monthly Household Electricity Consumption between 2 years",
                 subtitle = "",
-                caption = "Source:Singstat.gov.sg")
+                caption = "Source:ema.gov.sg")
 
 p_slopegraph1
 ```
@@ -1181,7 +1201,12 @@ p_slopegraph1
 ### Introduction: Total Household Electricity Consumption by Town/Region
 
 ```{r}
-
+town <- subset(T3.5, Description != 'Overall' & 
+                 Description !='Central Region'& 
+                 Description !='East Region'&
+                 Description !='North East Region'&
+                 Description !='North Region'&
+                 Description !='West Region')
 ```
 
 ```{r}
