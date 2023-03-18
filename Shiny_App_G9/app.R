@@ -104,7 +104,6 @@ To address this challenge, we build this RShinny app to provide relevant stakeho
 to analyse and understand the data with applicable analytics models. Also, we want to help the 
 users explore more information about the Singapore energy market easily through visualizations."
 
-
 ui <- dashboardPage(
   skin = "red",
   dashboardHeader(title = 'Singapore Energy Consumption', titleWidth = 400),
@@ -128,35 +127,29 @@ ui <- dashboardPage(
                          tabPanel("Introduction",introtext),
                          
                          # ====================== Geofacet ====================== #
-                         # T4.3 
                          tabPanel("Geofacet",
                                   fluidPage(
-                                    fluidRow(
-                                      radioButtons("axis", "select axis",choices = c("fixed", "free x-axis" = "free_x", "free y-axis" = "free_y", "free"), inline = T) ,
-                                      plotOutput("geo", height = 800)
-                                    ))
+                                    radioButtons("axis", label = "select axis",
+                                                 choices = c("fixed", "free x-axis" = "free_x", "free y-axis" = "free_y", "free"), 
+                                                 inline = T),
+                                    plotOutput("geo", height = 800)
+                                  )
                          ),
                          
                          # ====================== Peak System Demand ====================== #
-                         
                          tabPanel("Peak System Demand",
                                   fluidPage(
-                                    fluidRow(
-                                      column(12, plotlyOutput("peakdemand"), height = 200),
-                                      column(12, plotlyOutput("cycleplot"), height = 100)
-                                    ))
+                                    column(12, plotlyOutput("peakdemand"), height = 200),
+                                    column(12, plotlyOutput("cycleplot"), height = 100)
+                                  )
                          ),
                          
                          # ====================== Consumption by Dwelling Type ====================== #
                          tabPanel("Consumption by Dwelling Type",
                                   fluidPage(
-                                    fluidRow(
-                                      plotlyOutput("dwelling")
-                                    )
-                                  ))
-                         
-                         # ******************* END Bar chart ******************* #
-                         
+                                    plotlyOutput("dwelling")
+                                  )
+                         )
               )                               
       ),
       
@@ -176,20 +169,23 @@ ui <- dashboardPage(
                                                                         "complete", "average", "mcquitty", 
                                                                         "median", "centroid"),  
                                                             selected = "complete")),
-                                       
                                        column(3,pickerInput("distance", "Choose Distance Method", 
-                                                            choices = c("euclidian", "maximum", "manhattan", "canberra", "binary", "minkowski"))),
+                                                            choices = c("euclidian", "maximum", "manhattan", 
+                                                                        "canberra", "binary", "minkowski"))),
                                        column(3,numericInput("k", "Choose number of cluster", 
                                                              min = 1, max = 10, value = 2))
                                      ),
+                                     
                                      fluidRow(
                                        column(4, plotlyOutput("numberk", height = "500px")),
                                        column(8, plotlyOutput("dendro", height = "500px"))
                                      ),
+                                     
                                      column(12, tmapOutput("map")))
-                                   
                           ),
+                          
                           tabPanel("DTW"),
+                          
                           tabPanel("Time Series Clustering")
                )
       ),
@@ -197,7 +193,6 @@ ui <- dashboardPage(
       # ************************ END CLUSTERING ************************ #
       
       # ========================== INFERENTIAL ========================== #     
-      
       tabItem(tabName = "inferential", icon = icon("magnifying-glass-chart"),
               navbarPage("INFERENTIAL STATISTICS", 
                          
@@ -213,10 +208,11 @@ ui <- dashboardPage(
                                       ),
                                       column(7, plotOutput("dwellingstat"))
                                     ),
+                                    
                                     fluidRow(
                                       column(5,
                                              pickerInput(inputId = "region", label = "Select Region", 
-                                                         choices = c("Central Region", "West Region", "East Region", "North Region", "North East Region"), selected = "Central Region", 
+                                                         choices = regions, selected = "Central Region", 
                                                          options = list(`actions-box` = TRUE), multiple = F),
                                              verbatimTextOutput("anovastat2")
                                       ),
@@ -296,10 +292,10 @@ ui <- dashboardPage(
                                   fluidPage(
                                     fluidRow(
                                       column(8, wellPanel(
-                                        radioButtons("SelectTable",
-                                                     label = "Select Data",
-                                                     choices = tables,
-                                                     selected = "Electricity")
+                                        pickerInput("SelectTable",
+                                                    label = "Select Data",
+                                                    choices = tables,
+                                                    selected = "Electricity")
                                       ) ),
                                       
                                       column(12, dataTableOutput("table"))
@@ -636,26 +632,26 @@ server = function(input, output, session) {
   })
   
   observeEvent(input$region,{
-      output$dwellingstat2 <- renderPlot({
-        
-        consumption %>%
-          filter(Region==input$region) %>% 
-          mutate(class = fct_reorder(Description, kwh_per_acc, .fun='mean')) %>%
-          ggplot( aes(x=reorder(Description, kwh_per_acc), y=kwh_per_acc)) +
-          geom_boxplot() +
-          stat_summary(fun.y=mean, geom="point", color="red") +
-          theme(legend.position="none") +
-          theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1)) +
-          ggtitle("Boxplot of consumption per planning area")
-        
-      })
+    output$dwellingstat2 <- renderPlot({
       
-      output$anovastat2 <- renderPrint({
-        consumption %>% 
-          filter(Region == input$region)
-        
-        summary(aov(kwh_per_acc ~ Description, data = consumption))
-      })
+      consumption %>%
+        filter(Region==input$region) %>% 
+        mutate(class = fct_reorder(Description, kwh_per_acc, .fun='mean')) %>%
+        ggplot( aes(x=reorder(Description, kwh_per_acc), y=kwh_per_acc)) +
+        geom_boxplot() +
+        stat_summary(fun.y=mean, geom="point", color="red") +
+        theme(legend.position="none") +
+        theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1)) +
+        ggtitle("Boxplot of consumption per planning area")
+      
+    })
+    
+    output$anovastat2 <- renderPrint({
+      consumption %>% 
+        filter(Region == input$region)
+      
+      summary(aov(kwh_per_acc ~ Description, data = consumption))
+    })
     
   })
   
