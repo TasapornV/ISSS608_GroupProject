@@ -15,6 +15,7 @@ library(knitr)
 library(psych)
 library(earth)
 library(stats)
+library(CGPfunctions)
 
 library(ggrepel)
 library(ggstatsplot)
@@ -33,6 +34,8 @@ library(geofacet)
 library(treemap)
 library(cluster)
 library(dendextend)
+library(dendextend)
+library(heatmaply)
 
 library(sf)
 library(tmap)
@@ -68,6 +71,9 @@ consumption <- consumption %>%
 
 clus_hc$Description <- toupper(clus_hc$Description)
 
+geofacet <- T3.5
+geofacet$kwh_per_acc <- as.numeric(geofacet$kwh_per_acc)
+
 ## Set up parameter
 years <- c("2022","2021", "2020", "2019", "2018", "2017")
 regions <- c( "Central Region", "NorthEast Region", "East Region", "North Region", "West Region")
@@ -98,248 +104,230 @@ To address this challenge, we build this RShinny app to provide relevant stakeho
 to analyse and understand the data with applicable analytics models. Also, we want to help the 
 users explore more information about the Singapore energy market easily through visualizations."
 
-ui = fluidPage(
-  theme = shinytheme("slate"),
-  headerPanel(title = "Singapore Energy Consumption"),
+
+ui <- dashboardPage(
+  skin = "red",
+  dashboardHeader(title = 'Singapore Energy Consumption', titleWidth = 400),
   
-  navlistPanel(
-    widths = c(3, 9),
-    
-    # ========================== OVERVIEW ========================== #      
-    tabPanel("OVERVIEW",tabName = "overview",icon = icon("chalkboard-user"),
-             navbarPage("OVERVIEW", 
-                        # =================== Introduction =================== # 
-                        tabPanel("Introduction",introtext),
-                        
-                        # ====================== Boxplot ====================== #
-                        tabPanel("Boxplot",
-                                 fluidPage(
-                                   fluidRow(
-                                     column(3,wellPanel(
-                                       pickerInput(inputId = "BoxYear", label = "Select Year", choices = years, selected = "2022", 
-                                                   options = list(`actions-box` = TRUE), multiple = F),
-                                       
-                                       checkboxGroupInput("BoxRegion", label = "Select Region", choices = regions, selected = regions)
-                                     )),
-                                     
-                                     column(width = 9, plotlyOutput("boxplot",height=400))
-                                   )
-                                 )
-                        ),
-                        
-                        # ====================== Geofacet ====================== #
-                        # T4.3 
-                        tabPanel("Geofacet",
-                                 fluidPage(
-                                   fluidRow(
-                                     column(12,
-                                            fluidPage(
-                                              fluidRow(
-                                                column(12,plotOutput("geo", height = 800))
-                                              )
-                                            )
-                                     )
-                                   )
-                                 )
-                        ),
-                        
-                        # ====================== Lineplot ====================== #
-                        
-                        tabPanel("Lineplot",
-                                 fluidPage(
-                                   fluidRow(
-                                     column(width = 12, plotlyOutput("lineplot",height=400))
-                                   )
-                                 )
-                        ),
-                        
-                        # ====================== Peak System Demand ====================== #
-                        
-                        tabPanel("Peak System Demand",
-                                 fluidPage(
-                                   fluidRow(
-                                     column(12, plotlyOutput("peakdemand"), height = 200),
-                                     column(12, plotlyOutput("cycleplot"), height = 100)
-                                   )
-                                 )
-                        ),
-                        
-                        # ====================== Consumption by Dwelling Type ====================== #
-                        tabPanel("Consumption by Dwelling Type",
-                                 fluidPage(
-                                   fluidRow(
-                                     column(9, plotlyOutput("dwelling")),
-                                     column(12, plotOutput("dwellingstat"))
-                                   )
-                                 ))
-                        
-                        # ******************* END Bar chart ******************* #
-             )
-    ),
-    
-    # ************************ END OVERVIEW ************************ #       
-    
-    # ========================== CLUSTERING ========================== #
-    
-    tabPanel("CLUSTERING", tabName = "clustering", icon = icon("circle-nodes"),
-             navbarPage("CLUSTERING", 
-                        tabPanel("Hierachical Clustering",
-                                 fluidPage(
-                                   column(3, numericInput("k", "Choose number of cluster", 
-                                                          min = 1, max = 10, value = 2),
-                                          radioButtons("method2", "Select method",
-                                                       choices = c("agglomerative", "divisive"),
-                                                       selected = "agglomerative"),
-                                          radioButtons("method", "Select method", 
-                                                       choices = c("ward.D", "ward.D2", "single", 
-                                                                   "complete", "average", "mcquitty", 
-                                                                   "median", "centroid"),  
-                                                       selected = "complete")),
-                                   column(9, plotlyOutput("numberk", height = "350px")),
-                                   column(12, plotOutput("dendro")),
-                                   column(12, tmapOutput("map"))
-                                   
-                                 )),
-                        tabPanel("DTW"),
-                        tabPanel("Time Series Clustering")
-             )
-    ),
-    
-    # ************************ END CLUSTERING ************************ #
-    
-    # ========================== INFERENTIAL ========================== #     
-    
-    tabPanel("INFERENTIAL STATISTICS", tabName = "inferential", icon = icon("magnifying-glass-chart"),
-             navbarPage("INFERENTIAL STATISTICS", 
-                        
-                        # ====================== Anova ====================== #
-                        tabPanel("ANOVA",
-                                 fluidPage(
-                                   fluidRow(
-                                     column(3, wellPanel(
-                                       pickerInput(inputId = "AnovaVar1", label = "Select Variable", 
-                                                   choices = years, selected = "2022", 
-                                                   options = list(`actions-box` = TRUE), multiple = F
-                                       ),
-                                       
-                                       pickerInput(inputId = "AnovaVar2", label = "Select Dependent Variable", 
-                                                   choices = years, selected = "2022", 
-                                                   options = list(`actions-box` = TRUE), multiple = F
-                                       ),
-                                       
-                                       sliderInput("slider_significant", "Significance level (alpha):",min = 0.0001, 
-                                                   max = 0.01, 
-                                                   value =  0.001),
-                                       
-                                       radioButtons("anovatype",
-                                                    label = "Select test type",
-                                                    choices = type,
-                                                    selected = "parametric")
-                                     )),
-                                     
-                                     column(width = 9, plotlyOutput("anova",height=400))
-                                   )
-                                 )),
-                        # ====================== End Anova ====================== #
-                        
-                        # ====================== Correlation ====================== #
-                        tabPanel("Correlation Analysis",
-                                 fluidPage(
-                                   fluidRow(
-                                     column(3, wellPanel(
-                                       pickerInput(inputId = "CorreSelect", label = "Select Dataset", 
-                                                   choices = years, selected = "2022", 
-                                                   options = list(`actions-box` = TRUE), multiple = F)
-                                     )),
-                                     
-                                     column(width = 9, plotlyOutput("correlation",height=400))
-                                   )
-                                 )
-                        )
-                        
-                        # ******************** End Correlation ******************** #
-             )
-    ),
-    
-    # ************************* END INFERENTIAL ************************* #        
-    
-    # ========================== TIME SERIES ========================== #     
-    
-    tabPanel("TIME SERIES FORECASTING", tabName = "time_series", icon = icon("chart-line"),
-             navbarPage("TIME SERIES FORECASTING",
-                        
-                        # ==================== ARIMA ==================== #
-                        tabPanel("ARIMA",
-                                 fluidPage(
-                                   fluidRow(
-                                     column(width = 5, 
-                                            numericInput("arima_d", "input order of differencing", value=1),
-                                            numericInput("arima_d2", "input order of seasonal differencing", value=2),
-                                            checkboxInput("arima_d3", "allow drift", value = FALSE),
-                                            sliderInput("year", "Select year", min = 2005, max = 2022, step=1, round=TRUE, value = c(2005,2022)),
-                                            verbatimTextOutput("arimatext")),
-                                     column(width = 7, plotOutput("arima",height="500px")),
-                                     column(width = 12, plotOutput("arima_plot",height=400))
-                                   ) )
-                        ),
-                        
-                        # ******************** End Trend Prediction ******************** #
-                        
-                        # ======================= Slope Graph ======================= #
-                        tabPanel("Slope Graph",
-                                 fluidPage(
-                                   fluidRow(
-                                     column(3, wellPanel(
-                                       sliderInput("slider_year", "Select year",min = 2005, 
-                                                   max = 2022, step = 1, round = TRUE,
-                                                   value =  c(2005, 2022)),
-                                       radioButtons("slope_value", "select value", choices = c("sum", "average", "median" ))
-                                     )),
-                                     
-                                     column(width = 9, plotOutput("slope",height=400))
-                                   ) )
-                        )
-                        
-                        # ******************** End Oil consumption ******************** #
-             )
-    ),
-    
-    # *************************** END TIME SERIES *************************** #
-    
-    # =============================== DATA =============================== #     
-    
-    tabPanel("DATA", tabName = "data", icon = icon("table"),
-             navbarPage("DATA",
-                        tabPanel("data table",
-                                 fluidPage(
-                                   fluidRow(
-                                     column(8, wellPanel(
-                                       radioButtons("SelectTable",
-                                                    label = "Select Data",
-                                                    choices = tables,
-                                                    selected = "Electricity")
-                                     ) ),
-                                     
-                                     column(12, dataTableOutput("table"))
-                                   )
-                                 ))
-             )
-    ),
-    
-    # ******************************* END DATA ******************************* #    
-    
-    # =============================== ABOUT =============================== #    
-    
-    tabPanel("ABOUT", tabName = "about", icon = icon("info")),
-    
-    # ****************************** END ABOUT ****************************** #    
-    tabPanel(wellPanel(
-      sliderInput("slider_time", "Select date range",min = as.Date("2021-02-24"), 
-                  max = as.Date("2021-04-24"), 
-                  value =  c(as.Date("2021-02-24"),as.Date("2021-03-03") )),
+  dashboardSidebar(width = 210,
+                   sidebarMenu(
+                     menuItem("OVERVIEW", tabName = 'overview', icon = icon("chalkboard-user")),
+                     menuItem("CLUSTERING", tabName = 'clustering', icon = icon("circle-nodes")),
+                     menuItem("INFERENTIAL STATISTICS", tabName = "inferential", icon = icon("magnifying-glass-chart")),
+                     menuItem("TIME SERIES FORECASTING", tabName = "time_series", icon = icon("chart-line")),
+                     menuItem("DATA", tabName = "data", icon = icon("table"))
+                   )
+  ),
+  
+  dashboardBody(
+    tabItems(
+      # ========================== OVERVIEW ========================== #      
+      tabItem(tabName = "overview",
+              navbarPage("OVERVIEW", 
+                         # =================== Introduction =================== # 
+                         tabPanel("Introduction",introtext),
+                         
+                         # ====================== Geofacet ====================== #
+                         # T4.3 
+                         tabPanel("Geofacet",
+                                  fluidPage(
+                                    fluidRow(
+                                      radioButtons("axis", "select axis",choices = c("fixed", "free x-axis" = "free_x", "free y-axis" = "free_y", "free"), inline = T) ,
+                                      plotOutput("geo", height = 800)
+                                    ))
+                         ),
+                         
+                         # ====================== Peak System Demand ====================== #
+                         
+                         tabPanel("Peak System Demand",
+                                  fluidPage(
+                                    fluidRow(
+                                      column(12, plotlyOutput("peakdemand"), height = 200),
+                                      column(12, plotlyOutput("cycleplot"), height = 100)
+                                    ))
+                         ),
+                         
+                         # ====================== Consumption by Dwelling Type ====================== #
+                         tabPanel("Consumption by Dwelling Type",
+                                  fluidPage(
+                                    fluidRow(
+                                      plotlyOutput("dwelling")
+                                    )
+                                  ))
+                         
+                         # ******************* END Bar chart ******************* #
+                         
+              )                               
+      ),
       
-      dateRangeInput("daterange", "Input date range", 
-                     start = as.Date("2021-02-24"),end = as.Date("2021-03-03") )
+      # ************************ END OVERVIEW ************************ #       
+      # ========================== CLUSTERING ========================== #
+      
+      tabItem( tabName = "clustering", icon = icon("circle-nodes"),
+               navbarPage("CLUSTERING", 
+                          tabPanel("Hierachical Clustering",
+                                   fluidPage(
+                                     fluidRow(
+                                       column(3,pickerInput("method2", "Select method",
+                                                            choices = c("agglomerative", "divisive"),
+                                                            selected = "agglomerative")),
+                                       column(3,pickerInput("method", "Choose Clustering Method", 
+                                                            choices = c("ward.D", "ward.D2", "single", 
+                                                                        "complete", "average", "mcquitty", 
+                                                                        "median", "centroid"),  
+                                                            selected = "complete")),
+                                       
+                                       column(3,pickerInput("distance", "Choose Distance Method", 
+                                                            choices = c("euclidian", "maximum", "manhattan", "canberra", "binary", "minkowski"))),
+                                       column(3,numericInput("k", "Choose number of cluster", 
+                                                             min = 1, max = 10, value = 2))
+                                     ),
+                                     fluidRow(
+                                       column(4, plotlyOutput("numberk", height = "500px")),
+                                       column(8, plotlyOutput("dendro", height = "500px"))
+                                     ),
+                                     column(12, tmapOutput("map")))
+                                   
+                          ),
+                          tabPanel("DTW"),
+                          tabPanel("Time Series Clustering")
+               )
+      ),
+      
+      # ************************ END CLUSTERING ************************ #
+      
+      # ========================== INFERENTIAL ========================== #     
+      
+      tabItem(tabName = "inferential", icon = icon("magnifying-glass-chart"),
+              navbarPage("INFERENTIAL STATISTICS", 
+                         
+                         # ====================== Anova ====================== #
+                         tabPanel("ANOVA",
+                                  fluidPage(
+                                    fluidRow(
+                                      column(5,
+                                             pickerInput(inputId = "anovainput", label = "Select Parameter", 
+                                                         choices = c("dwelling_type", "Region", "year"), selected = "dwelling_type", 
+                                                         options = list(`actions-box` = TRUE), multiple = F),
+                                             verbatimTextOutput("anovastat")
+                                      ),
+                                      column(7, plotOutput("dwellingstat"))
+                                    ),
+                                    fluidRow(
+                                      column(5,
+                                             pickerInput(inputId = "region", label = "Select Region", 
+                                                         choices = c("Central Region", "West Region", "East Region", "North Region", "North East Region"), selected = "Central Region", 
+                                                         options = list(`actions-box` = TRUE), multiple = F),
+                                             verbatimTextOutput("anovastat2")
+                                      ),
+                                      column(7, plotOutput("dwellingstat2"))
+                                    )
+                                  )),
+                         # ====================== End Anova ====================== #
+                         
+                         # ====================== Correlation ====================== #
+                         tabPanel("Correlation Analysis",
+                                  fluidPage(
+                                    fluidRow(
+                                      column(3, wellPanel(
+                                        pickerInput(inputId = "CorreSelect", label = "Select Dataset", 
+                                                    choices = years, selected = "2022", 
+                                                    options = list(`actions-box` = TRUE), multiple = F)
+                                      )),
+                                      
+                                      column(width = 9, plotlyOutput("correlation",height=400))
+                                    )
+                                  )
+                         )
+                         
+                         # ******************** End Correlation ******************** #
+              )
+      ),
+      
+      # ************************* END INFERENTIAL ************************* #        
+      # ========================== TIME SERIES ========================== #     
+      
+      tabItem(tabName = "time_series", icon = icon("chart-line"),
+              navbarPage("TIME SERIES FORECASTING",
+                         
+                         # ==================== ARIMA ==================== #
+                         tabPanel("ARIMA",
+                                  fluidPage(
+                                    fluidRow(
+                                      column(width = 5, 
+                                             numericInput("arima_d", "input order of differencing", value=1),
+                                             numericInput("arima_d2", "input order of seasonal differencing", value=2),
+                                             checkboxInput("arima_d3", "allow drift", value = FALSE),
+                                             sliderInput("year", "Select year", min = 2005, max = 2022, step=1, round=TRUE, value = c(2005,2022)),
+                                             verbatimTextOutput("arimatext")),
+                                      column(width = 7, plotOutput("arima",height="500px")),
+                                      column(width = 12, plotOutput("arima_plot",height=400))
+                                    ) )
+                         ),
+                         
+                         # ******************** End Trend Prediction ******************** #
+                         
+                         # ======================= Slope Graph ======================= #
+                         tabPanel("Slope Graph",
+                                  fluidPage(
+                                    fluidRow(
+                                      column(3, wellPanel(
+                                        sliderInput("slider_year", "Select year",min = 2005, 
+                                                    max = 2022, step = 1, round = TRUE,
+                                                    value =  c(2005, 2022)),
+                                        radioButtons("slope_value", "select value", choices = c("sum", "average", "median" ))
+                                      )),
+                                      
+                                      column(width = 9, plotOutput("slope",height=400))
+                                    ) )
+                         )
+                         
+                         # ******************** End Oil consumption ******************** #
+              )
+      ),
+      
+      # *************************** END TIME SERIES *************************** #
+      
+      # =============================== DATA =============================== #     
+      
+      tabItem(tabName = "data", icon = icon("table"),
+              navbarPage("DATA",
+                         tabPanel("data table",
+                                  fluidPage(
+                                    fluidRow(
+                                      column(8, wellPanel(
+                                        radioButtons("SelectTable",
+                                                     label = "Select Data",
+                                                     choices = tables,
+                                                     selected = "Electricity")
+                                      ) ),
+                                      
+                                      column(12, dataTableOutput("table"))
+                                    )
+                                  ))
+              )
+      ),
+      # ******************************* END DATA ******************************* #    
+      # =============================== ABOUT =============================== #    
+      
+      tabItem(tabName = "about", icon = icon("info")))
+  ),
+  tags$head(
+    tags$style(HTML(
+      "
+      .my-custom-skin .sidebar {
+        background-color: #444444;
+      }
+      .my-custom-skin .main-header {
+        background-color: #555555;
+      }
+      .my-custom-skin .content-wrapper {
+        background-color: #666666;
+      }
+      .my-custom-skin .sidebar-menu li.active a {
+        background-color: #777777;
+      }
+      "
     ))
   )
 )
@@ -347,33 +335,36 @@ ui = fluidPage(
 server = function(input, output, session) {
   
   # -------------------- Geofacet ------------------- #
-  
-  output$geo <- renderPlot ({
-    geofacet <- geofacet %>%
-      filter(month != "Annual" & 
-               year > 2017 & 
-               dwelling_type != "Overall" &
-               !str_detect(Description,"Region|Pioneer|Overall")) %>% 
-      group_by(year, dwelling_type, Description ) %>%
-      summarise(avgprice = mean(kwh_per_acc, na.rm = TRUE),
-                medprice = median(kwh_per_acc, na.rm = TRUE))%>%
-      ungroup()
+  observeEvent(input$axis,{
     
-    # merge table with town name
-    geofacet_gas_consump <- inner_join(geofacet, area_grid,
-                                       by = c("Description" = "name"))
-    
-    common_grid <- area_grid[area_grid$name %in% unique(geofacet$Description),]
-    ggplot(geofacet_gas_consump, aes(x = year, y = avgprice)) +
-      geom_line(aes(color = as.factor(dwelling_type))) +
-      # scale_x_date(date_labels = "%b") +
-      facet_geo(~Description, grid = common_grid) +
-      labs(title = "Average Monthly Household Electricity Consumption by Planning Area & Dwelling Type") +
-      theme(plot.title = element_text(size=22),
-            axis.text.x = element_text(size = 10, angle = 45),
-            axis.text.y = element_text(size = 10),
-            strip.text = element_text(size = 10),
-            legend.position = "right")
+    output$geo <- renderPlot ({
+      geofacet <- geofacet %>%
+        filter(month != "Annual" & 
+                 year > 2017 & 
+                 dwelling_type != "Overall" &
+                 dwelling_type != "Private Housing" &
+                 dwelling_type != "Public Housing" &
+                 !str_detect(Description,"Region|Pioneer|Overall")) %>% 
+        group_by(year, dwelling_type, Description ) %>%
+        summarise(avgprice = mean(kwh_per_acc, na.rm = TRUE),
+                  medprice = median(kwh_per_acc, na.rm = TRUE))%>%
+        ungroup()
+      
+      # merge table with town name
+      geofacet_gas_consump <- inner_join(geofacet, area_grid,
+                                         by = c("Description" = "name"))
+      
+      common_grid <- area_grid[area_grid$name %in% unique(geofacet$Description),]
+      ggplot(geofacet_gas_consump, aes(x = year, y = avgprice)) +
+        geom_line(aes(color = as.factor(dwelling_type))) +
+        facet_geo(~Description, grid = common_grid, scales = input$axis) +
+        labs(title = "Average Monthly Household Electricity Consumption by Planning Area & Dwelling Type") +
+        theme(plot.title = element_text(size=22),
+              axis.text.x = element_text(size = 10, angle = 90),
+              axis.text.y = element_text(size = 10),
+              strip.text = element_text(size = 10),
+              legend.position = "right")
+    })
   })
   
   # --------------------- Table --------------------- #
@@ -393,7 +384,6 @@ server = function(input, output, session) {
     if(input$SelectTable == "T5.5")  {tabletext <- T5.5}
     output$table <- renderDataTable(tabletext)
   }
-  
   )
   
   # ---------------- ANOVA ------------------- #
@@ -562,7 +552,6 @@ server = function(input, output, session) {
                             title = "Private",
                             package = "ggthemes", palette = "Tableau_10") +
     theme(axis.title.x = element_blank())
-  #  + scale_y_continuous(limits = c(0, 1500000))
   
   public <- ggbetweenstats(data = dwelling |> filter(class == "Public", year == givenyear), x = DWELLING_TYPE, y = consumption_GWh,
                            xlab = "Dwelling Type", ylab = "GWh",
@@ -571,7 +560,6 @@ server = function(input, output, session) {
                            title = "Public",
                            package = "ggthemes", palette = "Tableau_10") +
     theme(axis.title.x = element_blank())
-  #  + scale_y_continuous(limits = c(0, 1500000))
   
   #combining plots
   combine_plots(
@@ -584,8 +572,91 @@ server = function(input, output, session) {
         plot.subtitle = element_text(size = 10),
         plot.title = element_text(size = 12))))
   
-  output$dwellingstat <- renderPlot({
-    public
+  consumption <- T3.5
+  consumption <- consumption %>% 
+    mutate(kwh_per_acc = as.numeric(kwh_per_acc)) %>% 
+    mutate(year = as.character(year))
+  
+  
+  observeEvent(input$anovainput,{
+    if(input$anovainput == "Region"){output$dwellingstat <- renderPlot({
+      
+      consumption %>%
+        mutate(class = fct_reorder(Region, kwh_per_acc, .fun='mean')) %>%
+        ggplot( aes(x=reorder(Region, kwh_per_acc), y=kwh_per_acc)) +
+        geom_boxplot() +
+        stat_summary(fun.y=mean, geom="point", color="red") +
+        theme(legend.position="none") +
+        theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1)) +
+        ggtitle("Boxplot of consumption per planning area")
+      
+    })
+    }
+    if(input$anovainput == "year"){output$dwellingstat <- renderPlot({
+      
+      consumption %>%
+        mutate(class = fct_reorder(year, kwh_per_acc, .fun='mean')) %>%
+        ggplot( aes(x=reorder(year, kwh_per_acc), y=kwh_per_acc)) +
+        geom_boxplot() +
+        stat_summary(fun.y=mean, geom="point", color="red") +
+        theme(legend.position="none") +
+        theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1)) +
+        ggtitle("Boxplot of consumption per planning area")
+      
+    })}
+    if(input$anovainput == "dwelling_type"){output$dwellingstat <- renderPlot({
+      
+      consumption %>%
+        mutate(class = fct_reorder(dwelling_type, kwh_per_acc, .fun='mean')) %>%
+        ggplot( aes(x=reorder(dwelling_type, kwh_per_acc), y=kwh_per_acc)) +
+        geom_boxplot() +
+        stat_summary(fun.y=mean, geom="point", color="red") +
+        theme(legend.position="none") +
+        theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1)) +
+        ggtitle("Boxplot of consumption per planning area")
+      
+    })}
+    
+    if(input$anovainput == "dwelling_type"){
+      output$anovastat <- renderPrint({
+        summary(aov(kwh_per_acc ~ dwelling_type, data = consumption))
+      })}
+    
+    
+    if(input$anovainput == "Region"){
+      output$anovastat <- renderPrint({
+        summary(aov(kwh_per_acc ~ Region, data = consumption))
+      })}
+    
+    if(input$anovainput == "year"){
+      output$anovastat <- renderPrint({
+        summary(aov(kwh_per_acc ~ year, data = consumption))
+      })}
+    
+  })
+  
+  observeEvent(input$region,{
+      output$dwellingstat2 <- renderPlot({
+        
+        consumption %>%
+          filter(Region==input$region) %>% 
+          mutate(class = fct_reorder(Description, kwh_per_acc, .fun='mean')) %>%
+          ggplot( aes(x=reorder(Description, kwh_per_acc), y=kwh_per_acc)) +
+          geom_boxplot() +
+          stat_summary(fun.y=mean, geom="point", color="red") +
+          theme(legend.position="none") +
+          theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1)) +
+          ggtitle("Boxplot of consumption per planning area")
+        
+      })
+      
+      output$anovastat2 <- renderPrint({
+        consumption %>% 
+          filter(Region == input$region)
+        
+        summary(aov(kwh_per_acc ~ Description, data = consumption))
+      })
+    
   })
   
   # ---------------------------- clustering ----------------------------- #
@@ -594,8 +665,6 @@ server = function(input, output, session) {
              year > 2017 & 
              dwelling_type != "Overall" &
              !str_detect(Description,"Region|Pioneer|Overall"))
-  
-  # transform dataset
   
   # convert kwh into numbers
   clus_data$kwh_per_acc <- as.numeric(clus_data$kwh_per_acc)
@@ -662,7 +731,14 @@ server = function(input, output, session) {
     output[is.num] <- lapply(output[is.num], round, 2)
     output
   }
-  observeEvent(c(input$k, input$method, input$method2),{
+  
+  clus_group1 <- clus[,-c(2)] %>%
+    group_by(Description) %>%
+    summarise_each(list(sum))
+  
+  row.names(clus_group1) <- clus_group1$Description
+  clus_matrix1 <- data.matrix(clus_group1)
+  observeEvent(c(input$k, input$method, input$method2, input$distance),{
     if(input$method2 == "agglomerative") {a <- hc} 
     if(input$method2 == "divisive") {a <- divisive.clust}
     
@@ -673,45 +749,28 @@ server = function(input, output, session) {
       ggplot(data = data.frame(t(cstats.table(clus_dist, a, 15))), 
              aes(x=cluster.number, y=within.cluster.ss)) + 
         geom_point()+
-        geom_line(color = "#FFEEAD") + # add color parameter to change line color
+        geom_line() +
         ggtitle(title) +
         labs(x = "Num.of clusters", y = "Within clusters sum of squares") +
-        theme_minimal(base_size=16) +
+        theme_minimal(base_size=12) +
         theme(axis.title=element_blank(),
-              plot.title = element_text(size= rel(1), color = "grey50"),
-              plot.background = element_rect(fill = "#3B4045"),
-              panel.background = element_rect(fill="#3B4045"),
-              panel.grid.minor = element_line(colour = "grey50"),
-              legend.text = element_text(colour="grey50"))
+              plot.title = element_text(size= rel(1))
+              
+              
+        )
     })
     
-    # hierarchical clustering using various methods
-    # (ward.D, ward.D2, single, complete, average, mcquitty, median, centroid)
-    
-    output$dendro <- renderPlot({
-      hc <- hclust(clus_dist, method = input$method)
-      dendro <- as.dendrogram(hc)
-      dendro.col <- dendro %>%
-        set("branches_k_color", k = input$k, value = rainbow(input$k)) %>%
-        set("branches_lwd", 0.6) %>%
-        set("labels_colors", 
-            value = c("darkslategray")) %>% 
-        set("labels_cex", 0.5)
-      ggd1 <- as.ggdend(dendro.col)
-      title <- if(input$method == "ward.D") {"Dendrogram (Ward's Method)"} 
-      else {paste("Dendrogram (", input$method, " Method)", sep="")}
-      
-      ggplot(ggd1, theme = theme_minimal()) +
-        labs(x = "Num. observations", y = "Height", title = title)+
-        theme_tq_dark(base_size=16) +
-        theme(axis.title=element_blank(),
-              plot.title = element_text(size= rel(1), color = "grey50"),
-              plot.background = element_rect(fill = "#3B4045"),
-              panel.background = element_rect(fill="#3B4045"),
-              legend.text = element_text(colour="grey50"),
-              panel.grid.major = element_blank(),
-              panel.grid.minor = element_blank()
-        )
+    output$dendro <- renderPlotly({
+      heatmaply(normalize(clus_matrix1[,-c(1,2)]),
+                dist_method = input$distance,
+                hclust_method = input$method2,
+                Colv=NA,
+                seriate = "none",
+                colors = rainbow(input$k),
+                k_row = input$k,
+                margins = c(NA,200,60,NA),
+                fontsize_row = 7,
+                fontsize_col = 7)
     })
     
     num_clus <- cutree(a, k=input$k)
@@ -729,7 +788,6 @@ server = function(input, output, session) {
                 palette = rainbow(input$k)) +
         tm_borders(alpha = 0.7)
     )
-    
   })
   
   # -------------------------- slope graph --------------------------- #

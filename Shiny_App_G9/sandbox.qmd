@@ -735,6 +735,11 @@ consumption %>%
 ```{r ANOVA}
 set.seed(1234)
 
+consumption <- T3.5
+consumption <- consumption %>% 
+  mutate(kwh_per_acc = as.numeric(kwh_per_acc)) %>% 
+  mutate(year = as.character(year))
+
 ggbetweenstats(
   data = consumption,
   x = Region,
@@ -753,6 +758,8 @@ consumption %>%
   theme(legend.position="none") +
   theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1)) +
   ggtitle("Boxplot of consumption per planning area")
+
+summary(aov(kwh_per_acc ~ dwelling_type, data = consumption))
 ```
 
 ```{r}
