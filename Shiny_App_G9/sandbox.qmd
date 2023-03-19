@@ -776,7 +776,7 @@ library(ggstatsplot)
 library(ggridges)
 ```
 
-# Clustering - data preparation
+# Final: Clustering - data preparation
 
 ```{r}
 # Filter the required data for clustering
@@ -794,7 +794,6 @@ clus_data <- T3.5 %>%
            !str_detect(Description,"Region|Pioneer|Overall"))
 
 # transform dataset
-
 # convert kwh into numbers
 clus_data$kwh_per_acc <- as.numeric(clus_data$kwh_per_acc)
 # join month and year into a date
@@ -813,11 +812,195 @@ clus <- na.omit(clus)
 clus <- clus %>% relocate(Description, .before = dwelling_type)
 ```
 
-### Clustering using dendextend & heatmap - Description & dwelling_type
+# Final: Clustering using dendextend & heatmap - Aggregated demand at description level
 
 ```{r}
+# parameter 1: distance method ("euclidean", "maximum", "manhattan", "canberra", "binary" or "minkowski")
+# parameter 2: hclust method ("ward.D", "ward.D2","single","complete","average", "mcquitty", "median" or "centroid")
+# parameter 3: number of clusters
+# parameter 4: seriate (Optimal leaf ordering, Gruvaeus and Wainer, mean, none)
+# parameter 5: scale / normalize / percentize (the code for this part is different)
+
+# Remove dwelling type
+clus_group1 <- clus[,-c(2)] %>%
+  group_by(Description) %>%
+  summarise_each(list(sum))
+
+# making "Description" the row name (index)
+row.names(clus_group1) <- clus_group1$Description
+
+# Making it into a matrix
+clus_matrix1 <- data.matrix(clus_group1)
+
+# plot
+heatmaply(clus_matrix1[,-c(1)],
+          scale = "column",
+          dist_method = "euclidean",
+          hclust_method = "average",
+          Colv=NA,
+          seriate = "none",
+          k_row = 3,
+          margins = c(NA,200,50,NA),
+          colors = viridis(
+            n= 256, alpha=1, 
+            begin=0, end=1,
+            option="viridis"),
+          fontsize_row = 5,
+          fontsize_col = 5,
+          main="Hierarchical Clustering",
+          ylab = "Towns",
+          xlab = "Time")
+```
+
+# Final: using dendextend to determine the recommended clustering method
+```{r}
+# parameter: method 
+# user will need to input the distance calculated method here to determine which clustering method is optimal
 library(dendextend)
+clustering <- dist(normalize(clus_group1,-c(1)), method="euclidean")
+dend_expend(clustering)[[3]]
+```
+
+# Final: using find_k() to determine the optimal number of clusters
+```{r}
+# once user have gotten the clustering method from above, they need to input that to find the optimal number of k
+clust2 <- hclust(clustering, method = "mcquitty")
+num_k <- find_k(clust2)
+plot(num_k)
+```
+
+# Final: Adding the clusters to dataset for Choropleth map
+```{r}
+## Add clusters to dataframe
+num_clus <- cutree(clust2, k=3)
+clus_hc <- cbind(clus_group1, cluster = as.factor(num_clus))
+```
+
+```{r}
+library(sf)
+# reading the map file
+mpsz <- st_read(dsn = 'master-plan-2014-subzone-boundary-web-shp',
+                layer = 'MP14_SUBZONE_WEB_PL',
+                crs = 3414) 
+
+singapore <- st_transform(mpsz, 4326)
+```
+
+```{r}
+library(tmap)
+# change Description to upper case
+clus_hc$Description <- toupper(clus_hc$Description)
+
+# Preparing the choropleth map
+mpsz_clus <- left_join(singapore, clus_hc, by = c("PLN_AREA_N" = "Description"))
+tmap_mode("view")
+tm_shape(mpsz_clus)+
+  tmap_options(check.and.fix = TRUE)+
+  tm_fill("cluster", id=paste("PLN_AREA_N"),
+          style = "pretty",
+          palette = "Blues") +
+  tm_borders(alpha = 0.7)
+```
+
+
+# Final: DTW (time series clustering)
+```{r}
+library(dtwclust)
+library(tibble)
+library(ggdendro)
+
+# Clustering Method (type) ("partitional", "hierarchical", "tadpole", "fuzzy".) - fixed at hierarchical, otherwise need to change the quote because some parameters apply only to certain methods
+# parameter 1: Number of cluster (k)
+# parameter 2: Distance function (distance) (dtw_basic, dtw, dtw2, lbk, lbi, sbd, gak, sdtw) - full form can be found https://www.rdocumentation.org/packages/dtwclust/versions/5.5.12/topics/tsclust
+# parameter 3: hierarchical clustering method ("ward.D", "ward.D2", "single", "complete", "average", "mcquitty", "median" or "centroid" .)
+
+
+
+cluster_dtw <- tsclust(clus_matrix1[,-c(1)],
+                       type = "h", 
+                       k=2,
+                       distance="dtw",
+                       control = hierarchical_control(method = "ward.D"),
+                       preproc = NULL,
+                       args=tsclust_args(dist = list(window.size = 5L)))
+
+hclus_dtw <- cutree(cluster_dtw, k=4) %>%
+  as.data.frame(.) %>%
+  rename(.,cluster_group = .) %>%
+  rownames_to_column("type_col")
+
+# hcdata <- dendro_data(cluster_dtw)
+# names_order <- hcdata$labels$label
+```
+
+
+```{R}
+library(ggplot2)
+library(ggiraph)
+library(timetk)
+
+# add the cluster number
+dtw_cluster <- clus_group1 %>%
+  left_join(hclus_dtw, by=c("Description" = "type_col")) 
+
+# change date columns into rows
+dtw_cluster_t <- dtw_cluster %>%
+  mutate_at(vars(contains("202")),as.numeric) %>%
+  gather(Date, value, 2:55)
+
+# Add the word "Cluster"
+dtw_cluster_t$cluster_group <- paste("Cluster", dtw_cluster_t$cluster_group)
+
+# convert Date into date format
+dtw_cluster_t$Date <- parse_date_time(dtw_cluster_t$Date, orders=c("%Y-%m-%d")) 
+
+# plot time series by cluster
+
+ts <- plot_time_series(.data=dtw_cluster_t,
+                 .date_var=Date, 
+                 .value=value,
+                 .color_var=Description,
+                 .facet_var=cluster_group,
+                 .facet_ncol=2,
+                 .facet_scales = "free_y",
+                 .smooth=FALSE,
+                 .line_size = 0.3,
+                 .plotly_slider = TRUE,
+                 .title = "Time Series Plot by cluster") 
+
+ts <- ts %>%
+  layout(hovermode="x",
+         hoverlabel=list(font=list(size=7)))
+ts
+
+# how to modify the tooltip? Town is being shown twice here...
+```
+# Final: Click-and-appear Table
+```{r}
+# Click-and-appear
+
+# When user click on 1 cluster, a table appear at the side or bottom listing all the towns in the same cluster.
+
+dtw_cluster_t %>%
+  group_by(cluster_group, Description) %>%
+  summarise(sum(value)) %>%
+  filter(cluster_group==1)
+
+```
+
+
+### Backup: Clustering using heatmap - Description & dwelling_type
+
+```{r}
+# parameter 1: distance method ("euclidean", "maximum", "manhattan", "canberra", "binary" or "minkowski")
+# parameter 2: hclust method ("ward.D", "ward.D2","single","complete","average", "mcquitty", "median" or "centroid")
+# parameter 3: number of clusters
+# parameter 4: seriate (Optimal leaf ordering, Gruvaeus and Wainer, mean, none)
+
+# with normalization
 library(heatmaply)
+
+# making town the row names
 row.names(clus) <- paste(clus$Description, clus$dwelling_type)
 clus_matrix <- data.matrix(clus)
 heatmaply(normalize(clus_matrix[,-c(1,2)]),
@@ -825,37 +1008,19 @@ heatmaply(normalize(clus_matrix[,-c(1,2)]),
           hclust_method = "average",
           Colv=NA,
           seriate = "none",
-          colors = Blues,
           k_row = 3,
           margins = c(NA,200,60,NA),
+          scale_fill_gradient_fun = scale_fill_gradient2(
+            low = "red", 
+            high = "green", 
+            midpoint = 0.5, 
+            limits = c(0, 1)),
           fontsize_row = 5,
           fontsize_col = 5,
           main="Hierarchical Clustering")
 ```
 
-### Clustering using dendextend & heatmap - Aggregated demand at description level
-
-```{r}
-clus_group1 <- clus[,-c(2)] %>%
-  group_by(Description) %>%
-  summarise_each(list(sum))
-
-row.names(clus_group1) <- clus_group1$Description
-clus_matrix1 <- data.matrix(clus_group1)
-heatmaply(normalize(clus_matrix1[,-c(1,2)]),
-          dist_method = "euclidean",
-          hclust_method = "average",
-          Colv=NA,
-          seriate = "none",
-          colors = Blues,
-          k_row = 3,
-          margins = c(NA,200,60,NA),
-          fontsize_row = 5,
-          fontsize_col = 5,
-          main="Hierarchical Clustering")
-```
-
-### Hierarchical Clustering - calculate distance
+### Backup: Hierarchical Clustering - calculate distance
 
 ```{r}
 # Clustering
@@ -869,7 +1034,7 @@ clus$dwelling_type <- factor(clus$dwelling_type)
 clus_dist <- daisy(clus, metric="gower")
 ```
 
-### Hierarchical Clustering - Agglomerative
+### Backup: Hierarchical Clustering - Agglomerative
 
 ```{r}
 # hierarchical clustering using various methods
@@ -983,7 +1148,7 @@ plot(hc, label = FALSE, main = "Agglomerative, centroid method")
 rect.hclust(hc, k=3, border="blue")
 ```
 
-### Hierarchical Clustering - Divisive
+### Backup: Hierarchical Clustering - Divisive
 
 ```{r}
 divisive.clust <- diana(as.matrix(clus_dist), 
@@ -1005,39 +1170,8 @@ ggplot(data = data.frame(t(cstats.table(clus_dist, divisive.clust, 15))),
   theme(plot.title = element_text(hjust = 0.5))
 ```
 
-```{r}
-## choose the number of k and add to dataframe
-num_clus <- cutree(divisive.clust, k=6)
-clus_hc <- cbind(clus, cluster = as.factor(num_clus))
-```
 
-# Choropleth map
 
-```{r}
-library(sf)
-# reading the map file
-mpsz <- st_read(dsn = 'master-plan-2014-subzone-boundary-web-shp',
-                layer = 'MP14_SUBZONE_WEB_PL',
-                crs = 3414) 
-
-singapore <- st_transform(mpsz, 4326)
-```
-
-```{r}
-library(tmap)
-# change Description to upper case
-clus_hc$Description <- toupper(clus_hc$Description)
-
-# Preparing the choropleth map
-mpsz_clus <- left_join(singapore, clus_hc, by = c("PLN_AREA_N" = "Description"))
-tmap_mode("view")
-tm_shape(mpsz_clus)+
-  tmap_options(check.and.fix = TRUE)+
-  tm_fill("cluster", id=paste("PLN_AREA_N"),
-          style = "pretty",
-          palette = "Blues") +
-  tm_borders(alpha = 0.7)
-```
 
 # Time Series Clsutering (by month)
 
