@@ -853,6 +853,7 @@ heatmaply(clus_matrix1[,-c(1)],
 ```
 
 # Final: using dendextend to determine the recommended clustering method
+
 ```{r}
 # parameter: method 
 # user will need to input the distance calculated method here to determine which clustering method is optimal
@@ -862,6 +863,7 @@ dend_expend(clustering)[[3]]
 ```
 
 # Final: using find_k() to determine the optimal number of clusters
+
 ```{r}
 # once user have gotten the clustering method from above, they need to input that to find the optimal number of k
 clust2 <- hclust(clustering, method = "mcquitty")
@@ -870,6 +872,7 @@ plot(num_k)
 ```
 
 # Final: Adding the clusters to dataset for Choropleth map
+
 ```{r}
 ## Add clusters to dataframe
 num_clus <- cutree(clust2, k=3)
@@ -902,8 +905,8 @@ tm_shape(mpsz_clus)+
   tm_borders(alpha = 0.7)
 ```
 
-
 # Final: DTW (time series clustering)
+
 ```{r}
 library(dtwclust)
 library(tibble)
@@ -932,7 +935,6 @@ hclus_dtw <- cutree(cluster_dtw, k=4) %>%
 # hcdata <- dendro_data(cluster_dtw)
 # names_order <- hcdata$labels$label
 ```
-
 
 ```{R}
 library(ggplot2)
@@ -975,7 +977,9 @@ ts
 
 # how to modify the tooltip? Town is being shown twice here...
 ```
+
 # Final: Click-and-appear Table
+
 ```{r}
 # Click-and-appear
 
@@ -987,7 +991,6 @@ dtw_cluster_t %>%
   filter(cluster_group==1)
 
 ```
-
 
 ### Backup: Clustering using heatmap - Description & dwelling_type
 
@@ -1169,9 +1172,6 @@ ggplot(data = data.frame(t(cstats.table(clus_dist, divisive.clust, 15))),
   labs(x = "Num.of clusters", y = "Within clusters sum of squares (SS)") +
   theme(plot.title = element_text(hjust = 0.5))
 ```
-
-
-
 
 # Time Series Clsutering (by month)
 
