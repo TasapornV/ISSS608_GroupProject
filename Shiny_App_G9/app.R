@@ -586,7 +586,7 @@ server = function(input, output, session) {
       summary(aov(kwh_per_acc ~ Description, data = consumption))
     })
   })
-  # clustering ----------------------------------------------------------------
+  # clustering dendro ----------------------------------------------------------
   clus_data <- T3.5 %>% 
     filter(month != "Annual" & 
              year > 2017 & 
@@ -646,27 +646,18 @@ server = function(input, output, session) {
     
     clustering <- dist(normalize(clus_group1,-c(1)), method=input$distance)
     
+    # clustering dendex --------------------------------------------------------
     output$dendextend <- renderDataTable(
       dend_expend(clustering)[[3]]
     )
-    
+    # clustering number k-------------------------------------------------------
     clust2 <- hclust(clustering, method = input$method)
     num_k <- find_k(clust2)
-
+    output$numberk <- renderPlotly(
+      plot(num_k)
+    )
     
     
-        output$numberk <- renderPlotly({
-          ggplot(data = data.frame(t(cstats.table(clus_dist, divisive.clust, 15))),
-                 aes(x=cluster.number, y=within.cluster.ss)) +
-            geom_point()+
-            geom_line() +
-            ggtitle(title) +
-            labs(x = "Num.of clusters", y = "Within clusters sum of squares") +
-            theme_minimal(base_size=12) +
-            theme(axis.title=element_blank(),
-                  plot.title = element_text(size= rel(1))
-            )
-        })
 
     
   })
