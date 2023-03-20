@@ -1739,3 +1739,120 @@ dwelling %>%
   fmt_number(columns = 4,
     decimals = 2)
 ```
+
+# Final (Town): Data Preparation
+
+```{r}
+town <- subset(T3.5, Description != 'Overall' & Description !='Central Region' & 
+                 Description !='East Region' & Description !='North East Region' &
+                 Description !='North Region' & Description !='West Region' &
+                 kwh_per_acc != 's' & dwelling_type != 'Private Housing' &
+                 dwelling_type != 'Public Housing' & month != 'Annual') %>%
+  mutate(kwh_per_acc = as.numeric(kwh_per_acc)) %>%
+  mutate(date = parse_date_time(paste0(year, "-", month,"-1"),"ymd"))
+  
+town$date <- as.Date(town$date, format="%d-%m,-%Y") 
+
+#Adding housing type
+town$type <- case_when(
+    town$dwelling_type %in% c('Private Apartments and Condominiums',
+                                 'Landed Properties', 'Others') ~ "Private",
+    town$dwelling_type %in% c('1-room / 2-room','3-room','4-room',
+                                  '5-room and Executive') ~ "Public")
+```
+
+# Final (Town): Boxplot for electricity consumption by town for a selected year
+
+```{r}
+inputyr <- 2021
+
+town_boxplot <- town %>% 
+  filter(year %in% c(inputyr))
+
+#PLotting the chart
+town_boxplot %>%
+  mutate(Description = fct_reorder(Description, kwh_per_acc)) %>%
+  ggplot( aes(x=Description, y=kwh_per_acc, fill=Description)) +
+    geom_boxplot() +
+    scale_fill_viridis(discrete = TRUE, alpha=0.6) +
+#    theme_ipsum() +
+    theme(
+      legend.position="none",
+      plot.title = element_text(size=11)
+    ) +
+    ggtitle(paste0("Electricity Consumption by each Town, Year ",inputyr)) +
+    theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1)) +
+  xlab("") +
+  ylab("Consumption (kWh)")
+```
+
+# Final (Town): For click and show - boxplot by dwelling type
+
+```{r}
+town_boxplot <- town %>% 
+  filter(year %in% c(inputyr)) %>%
+  filter(Description %in% c('Ang Mo Kio'))
+
+#PLotting the chart
+dwelling_boxplot %>%
+  mutate(dwelling_type = fct_reorder(dwelling_type, kwh_per_acc)) %>%
+  ggplot( aes(x=dwelling_type, y=kwh_per_acc, fill=dwelling_type)) +
+    geom_boxplot() +
+    scale_fill_viridis(discrete = TRUE, alpha=0.6) +
+#    theme_ipsum() +
+    theme(
+      legend.position="none",
+      plot.title = element_text(size=11)
+    ) +
+    ggtitle(paste0("Electricity Consumption by each dwelling in the Town, Year ",inputyr)) +
+    theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1)) +
+  xlab("") +
+  ylab("Consumption (kWh)")
+```
+
+# Final (Town): Interactive Sparklines for a time period -Bandline
+
+```{r}
+#data formatting
+t_sparks <- town %>%
+  filter(year %in% c(startyear:endyear)) %>%
+  mutate(`Town` = Description) %>%
+  group_by(`Town`) %>%
+  summarize(`Monthly Consumption` = list(kwh_per_acc))
+
+#react_sparkline
+reactable(
+  t_sparks,
+  defaultPageSize = 13,
+  columns = list(
+    `Town` = colDef(maxWidth = 200),
+    `Monthly Consumption` = colDef(
+      cell = react_sparkline(
+        t_sparks,
+        highlight_points = highlight_points(
+          min = "red", max = "blue"),
+        line_width = 1,
+        bandline = "innerquartiles",
+        bandline_color = "green"
+        )
+    )
+  )
+)
+```
+
+Final
+
+```{r}
+#Preparing the data for report
+
+town %>%
+  filter(year %in% c(startyear:endyear)) %>%
+  group_by(Description) %>%
+  summarise("Min" = min(kwh_per_acc, na.rm = T),
+            "Max" = max(kwh_per_acc, na.rm = T),
+            "Average" = mean(kwh_per_acc, na.rm = T)
+            ) %>%
+  gt() %>%
+  fmt_number(columns = 4,
+    decimals = 2)
+```
