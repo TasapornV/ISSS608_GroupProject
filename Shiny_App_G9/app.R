@@ -41,6 +41,10 @@ library(sf)
 library(tmap)
 
 library(zoo)
+remotes::install_github("timelyportfolio/dataui")
+library(dataui)
+pacman::p_load(reactable, reactablefmtr, gt, gtExtras)
+
 
 ## Read compressed data file
 T2.3 <- readRDS(file = "RDS/T2-3.rds") # Peak System Demand
@@ -76,6 +80,23 @@ consumption <- consumption %>%
   mutate(kwh_per_acc = as.numeric(kwh_per_acc)) %>%
   mutate(year = as.character(year)) %>%
   mutate('date' = make_date(year=year, month=month))
+
+dwelling <- T3.4 %>%
+  filter(year %in% c(2005:2022)) %>%
+  filter(month %in% c(1:12)) %>%
+  filter(DWELLING_TYPE %in% c('1-room / 2-room','3-room','4-room',
+                              '5-room and Executive',
+                              'Private Apartments and Condominiums',
+                              'Landed Properties', 'Others')) %>%
+  mutate(date = parse_date_time(paste0(year, "-", month,"-1"),"ymd")) %>%
+  mutate(monthyear = format(as.Date(date), "%b %Y"))
+
+#Add Private vs Public Classification
+dwelling$class <- case_when(
+  dwelling$DWELLING_TYPE %in% c('Private Apartments and Condominiums',
+                                'Landed Properties', 'Others') ~ "Private",
+  dwelling$DWELLING_TYPE %in% c('1-room / 2-room','3-room','4-room',
+                                '5-room and Executive') ~ "Public")
 
 
 ## Set up parameter
@@ -147,7 +168,8 @@ ui = dashboardPage(
                                          radioButtons("slope_value", "select value", choices = c("sum", "average", "median" ))
                                        )),
                                 
-                                column(9, plotOutput("slope",height=400))
+                                column(9, plotOutput("slope",height=400),
+                                       reactableOutput("sparkline"))
                               )),
                             
                             fluidPage(
@@ -199,6 +221,24 @@ ui = dashboardPage(
                    ### Time Series Clustering ----------------------------
                    tabPanel("Time Series Clustering",
                             fluidPage(
+                              fluidRow(
+                                column(3,pickerInput("method2", "Select method",
+                                                     choices = c("agglomerative", "divisive"),
+                                                     selected = "agglomerative")),
+                                
+                                column(3,pickerInput("method", "Choose Clustering Method",
+                                                     choices = c("ward.D", "ward.D2", "single",
+                                                                 "complete", "average", "mcquitty",
+                                                                 "median", "centroid"),
+                                                     selected = "complete")),
+                                
+                                column(3,pickerInput("distance", "Choose Distance Method",
+                                                     choices = c("euclidian", "maximum", "manhattan",
+                                                                 "canberra", "binary", "minkowski"))),
+                                
+                                column(3,numericInput("k", "Choose number of cluster",
+                                                      min = 1, max = 10, value = 2))
+                              ),
                               plotlyOutput("dtw")
                             ))
         )
@@ -262,6 +302,8 @@ ui = dashboardPage(
                                              numericInput("arima_d2", "Order of seasonal differencing", value=2),
                                              checkboxInput("arima_d3", "Allow drift", value = FALSE)
                                              )
+                                      # ,
+                                      # column(12, plotlyOutput("arima_plot"))
                                     #   ,
                                     #   column(5,      
                                     #          verbatimTextOutput("arimatext"))
@@ -348,22 +390,36 @@ server = function(input, output, session) {
   })
   
   # arima ----------------------------------------------------------------------
-  # arima <- town
-  # arima$ym <- yearmonth(as.yearmon(paste(arima$year, arima$month), "%Y %m"))
-  # a <- arima %>%
-  #   group_by(ym) %>%
-  #   summarise(avgcon = mean(kwh_per_acc, na.rm = TRUE)) %>%
-  #   ungroup()
-  # 
-  # arima_ts <- ts(data=a$avgcon, start = c(2005,1), end = c(2022,6), frequency=12)
-  # 
-  # 
-  # observeEvent(c(input$timemodel, input$arima_d,input$arima_d2, input$arima_d3, input$year), {
-  #   
-  #   arima_arima = auto.arima(arima_ts,
-  #                            d = input$arima_d,
-  #                            D = input$arima_d2,
-  #                            allowdrift = input$arima_d3)
+  arima <- town
+  arima$ym <- yearmonth(as.yearmon(paste(arima$year, arima$month), "%Y %m"))
+  a <- arima %>%
+    group_by(ym) %>%
+    summarise(avgcon = mean(kwh_per_acc, na.rm = TRUE)) %>%
+    ungroup()
+
+  arima_ts <- ts(data=a$avgcon, start = c(2005,1), end = c(2022,6), frequency=12)
+
+
+  observeEvent(c(input$timemodel, input$arima_d,input$arima_d2, input$arima_d3, input$year), {
+
+    arima_model = auto.arima(arima_ts,
+                             d = input$arima_d,
+                             D = input$arima_d2,
+                             allowdrift = input$arima_d3)
+    
+    # # Generate forecast
+    # arima_forecast <- forecast(arima_model, h = 12)
+    # 
+    # # Create plot
+    # arima_plot <- plot_ly() %>%
+    #   add_lines(x = index(arima_ts), y = arima_ts, name = "Actual") %>%
+    #   add_lines(x = index(arima_forecast$mean), y = arima_forecast$mean, name = "Forecast") %>%
+    #   layout(title = "ARIMA Forecast",
+    #          xaxis = list(title = "Year"),
+    #          yaxis = list(title = "Average Consumption"))
+    
+    # Render plot
+    # output$arima_plot <- renderPlotly(arima_plot)
     # fit <- ets(window(arima_ts))
     #   output$arima <- renderPlot(
     #     { plot(forecast(arima_arima)) }
@@ -400,7 +456,7 @@ server = function(input, output, session) {
     #   full_arima %>%
     #     gg_tsdisplay(difference(avgcon), plot_type='partial')
     # })
-  # })
+  })
   
   # ------------- peak system demand ------------- #
   sysdemand <- T2.3 %>%
@@ -590,10 +646,68 @@ server = function(input, output, session) {
     })
   })
   
+  # sparklines -----------------------------------------------------------------
+  observeEvent(c(input$slider_year, input$slope_value),{
+    startyear <- input$slider_year[1]
+    endyear <- input$slider_year[2]
+    
+    d_sparks <- dwelling %>%
+      filter(year %in% c(startyear:endyear)) %>%
+      mutate(`Dwelling Type` = DWELLING_TYPE) %>%
+      group_by(`Dwelling Type`) %>%
+      summarize(`Monthly Consumption` = list(consumption_GWh))
+    #react_sparkline
+    output$sparkline <- renderReactable(reactable(
+      d_sparks,
+      defaultPageSize = 13,
+      columns = list(
+        `Dwelling Type` = colDef(maxWidth = 200),
+        `Monthly Consumption` = colDef(
+          cell = react_sparkline(
+            d_sparks,
+            highlight_points = highlight_points(
+              min = "red", max = "blue"),
+            line_width = 1,
+            bandline = "innerquartiles",
+            bandline_color = "green"
+          )
+        )
+      )
+    ))
+    # slope graph-----------------------------------------------------------------
+    cons_yr <- dwelling
+    
+    if (input$slope_value == "sum") {
+      cons_year <- cons_yr %>%
+        group_by(DWELLING_TYPE, year) %>%
+        summarise(mean_cons=round(sum(consumption_GWh),2))}
+    if (input$slope_value == "average") {
+      cons_year <- cons_yr %>%
+        group_by(DWELLING_TYPE, year) %>%
+        summarise(mean_cons=round(mean(consumption_GWh),2))}
+    
+    if (input$slope_value == "median") {
+      cons_year <- cons_yr %>%
+        group_by(DWELLING_TYPE, year) %>%
+        summarise(mean_cons=round(median(consumption_GWh),2))}
+    
+    p_slopegraph <- cons_year %>% 
+      mutate(year = factor(year)) %>%
+      filter(year %in% c(startyear,endyear)) %>%
+      newggslopegraph(year, mean_cons, DWELLING_TYPE)
+    
+    p_slopegraph1 <- p_slopegraph + labs(title = "Monthly Household Electricity Consumption between 2 points of time",
+                                         subtitle = "",
+                                         caption = "Source:Singstat.gov.sg")
+    
+    output$slope <- renderPlot({p_slopegraph1})
+  })
+  
   # dtw ------------------------------------------------------------------------
+  observeEvent(c(input$k, input$method, input$method2, input$distance),{
   cluster_dtw <- tsclust(clus_matrix1[,-c(1)],
                          type = "h", 
-                         k=2,
+                         k=input$k,
                          distance="dtw",
                          control = hierarchical_control(method = "ward.D"),
                          preproc = NULL,
@@ -603,7 +717,6 @@ server = function(input, output, session) {
     as.data.frame(.) %>%
     rename(.,cluster_group = .) %>%
     rownames_to_column("type_col")
-  
   
   # add the cluster number
   dtw_cluster <- clus_group1 %>%
@@ -621,8 +734,7 @@ server = function(input, output, session) {
   dtw_cluster_t$Date <- parse_date_time(dtw_cluster_t$Date, orders=c("%Y-%m-%d")) 
   
   # plot time series by cluster
-  
-   
+
      ts <- plot_time_series(.data=dtw_cluster_t,
                          .date_var=Date, 
                          .value=value,
@@ -639,12 +751,8 @@ server = function(input, output, session) {
     layout(hovermode="x",
            hoverlabel=list(font=list(size=7)))
   
-  output$dtw <- renderPlotly(
-  
-  
-  ts
-    
-  )
+  output$dtw <- renderPlotly( ts )
+  })
   
   # clustering dendro ----------------------------------------------------------
   clus_data <- T3.5 %>%
@@ -740,38 +848,7 @@ server = function(input, output, session) {
   
   
   
-  # slope graph-----------------------------------------------------------------
-  observeEvent(c(input$slider_year, input$slope_value),{
-    startyear <- input$slider_year[1]
-    endyear <- input$slider_year[2]
-    
-    cons_yr <- dwelling
-    
-    if (input$slope_value == "sum") {
-      cons_year <- cons_yr %>%
-        group_by(DWELLING_TYPE, year) %>%
-        summarise(mean_cons=round(sum(consumption_GWh),2))}
-    if (input$slope_value == "average") {
-      cons_year <- cons_yr %>%
-        group_by(DWELLING_TYPE, year) %>%
-        summarise(mean_cons=round(mean(consumption_GWh),2))}
-    
-    if (input$slope_value == "median") {
-      cons_year <- cons_yr %>%
-        group_by(DWELLING_TYPE, year) %>%
-        summarise(mean_cons=round(median(consumption_GWh),2))}
-    
-    p_slopegraph <- cons_year %>% 
-      mutate(year = factor(year)) %>%
-      filter(year %in% c(startyear,endyear)) %>%
-      newggslopegraph(year, mean_cons, DWELLING_TYPE)
-    
-    p_slopegraph1 <- p_slopegraph + labs(title = "Monthly Household Electricity Consumption between 2 points of time",
-                                         subtitle = "",
-                                         caption = "Source:Singstat.gov.sg")
-    
-    output$slope <- renderPlot({p_slopegraph1})
-  })
+  
   
 }
 
