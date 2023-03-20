@@ -33,8 +33,8 @@ This section of code is used to compress the file so that it will not load too s
 
 ```{r read data, warning=FALSE, message=FALSE}
 library(readr)
-#T2.3 <- read_csv("data/T2-3.csv")
-#saveRDS(T2.3, file = "RDS/T2-3.rds")
+T2.3 <- read_csv("data/T2-3.csv")
+saveRDS(T2.3, file = "RDS/T2-3.rds")
 
 #T2.6 <- read_csv("data/T2-6.csv")
 #saveRDS(T2.6, file = "RDS/T2-6.rds")
@@ -664,7 +664,7 @@ arima %>%
 ```
 
 ```{r}
-arima_ts <- ts(data=arima$peak_system_demand_mw)
+arima_ts <- ts(data=arima$peak_system_demand_mw, start = c(2005,1), end = c(2022, 6), frequency=12)
 plot.ts(arima_ts, plot.type=('single'))                   
 ```
 
@@ -676,7 +676,7 @@ ggplotly(plot(arima_ds))
 ```{r}
 arima_arima = auto.arima(arima_ts)
 arima_arima
-plot(forecast(arima_arima))
+plot(forecast(arima_ts))
 ```
 
 ```{r}
@@ -685,7 +685,7 @@ plot(forecast(arima_arima))
   arima_ts <- ts(data=arima$peak_system_demand_mw)
   arima_arima = auto.arima(arima_ts, d =1, D =1, allowdrift = FALSE)
 
-  plot(forecast(arima_arima))
+  # plot(forecast(arima_ts))
 
 ```
 
@@ -810,6 +810,9 @@ clus <- clus_data %>%
 # omit na
 clus <- na.omit(clus)
 clus <- clus %>% relocate(Description, .before = dwelling_type)
+
+# clus_data
+# clus
 ```
 
 # Final: Clustering using dendextend & heatmap - Aggregated demand at description level
@@ -853,15 +856,17 @@ heatmaply(clus_matrix1[,-c(1)],
 ```
 
 # Final: using dendextend to determine the recommended clustering method
+
 ```{r}
 # parameter: method 
 # user will need to input the distance calculated method here to determine which clustering method is optimal
 library(dendextend)
-clustering <- dist(normalize(clus_group1,-c(1)), method="euclidean")
+clustering <- dist(normalize(clus_group1,-c(1)), method="canberra")
 dend_expend(clustering)[[3]]
 ```
 
 # Final: using find_k() to determine the optimal number of clusters
+
 ```{r}
 # once user have gotten the clustering method from above, they need to input that to find the optimal number of k
 clust2 <- hclust(clustering, method = "mcquitty")
@@ -1171,14 +1176,22 @@ ggplot(data = data.frame(t(cstats.table(clus_dist, divisive.clust, 15))),
   theme(plot.title = element_text(hjust = 0.5))
 ```
 
-### Introduction: Package and Dataset
+# Time Series Clsutering (by month)
+
+```{r}
+# dtwclust
+# tsclust
+
+```
+
+# Introduction: Package and Dataset
 
 ```{r}
 #load lib
 pacman::p_load(scales, viridis, hrbrthemes, lubridate, gridExtra, knitr, data.table, ggthemes, CGPfunctions, ggHoriPlot, gapminder, gganimate, ggbraid, ggstatsplot, ggiraph, plotly, performance, nortest, patchwork, ggdist, ggridges, tidyverse)
 ```
 
-# Final (Intro): Data preparation for dwelling type
+### Consumption by Dwelling Type (Intro)
 
 ```{r}
 dwelling <- T3.4 %>%
@@ -1199,179 +1212,7 @@ dwelling$class <- case_when(
                                   '5-room and Executive') ~ "Public")
 ```
 
-# Final (Intro): Line plot - Cons by Dwelling Type
-
-```{r}
-#linechart
-ggplot(data = dwelling, aes(x = date)) +
-  geom_line(aes(y = consumption_GWh, colour = DWELLING_TYPE)) + 
-  labs(title = "Electricity Consumption by Dwelling Type",
-      x = "Year", y = "Consumption (GWh)") +
-  scale_color_discrete(name="") +
-  theme(legend.position="bottom")
-```
-
-# Final (Intro): Cycleplot for a dwelling type
-
-```{r}
-# cycleplot for each dwelling type
-select_type <- 'Private Apartments and Condominiums'
-
-select_dwelling <- dwelling %>% 
-  filter(DWELLING_TYPE %in% c(select_type)) %>%
-  mutate(year = factor(year, levels = 2005:2022),
-         month = factor(month, levels = 1:12))
-
-#Computing year average by months
-hline.data <- select_dwelling %>%
-  group_by(month) %>%
-  summarise(avg_cons = mean(consumption_GWh))
-
-#Plotting cycle plot for imports
-ggplot() + 
-  geom_line(data = select_dwelling,
-            aes(x=year,y=consumption_GWh, group=month), colour = "black") +
-  geom_hline(data = hline.data,
-             aes(yintercept=avg_cons),
-             linetype=6, 
-             colour="red", 
-             linewidth=0.5) +
-  facet_grid(~month) +
-  theme(axis.text.x = element_text(angle=90, vjust=1, hjust=1)) +
-  labs(title = "Cycleplot for household electricity consumption (GWh), Jan 2005-Jun 2022",
-       subtitle = paste0('Dwelling Type: ',select_type)) +
-  scale_x_discrete(breaks=c("2005","2010","2015","2020")) +
-  xlab("") +
-  ylab("GWh")
-```
-
-# Final (Intro): Slopegraph between two years
-
-```{r}
-#Display rate of change using Slopegraph
-#User can choose any 2 years for comparison
-startyear <- 2005
-endyear <- 2021
-
-cons_yr <- dwelling
-cons_year <- cons_yr %>%
-  group_by(DWELLING_TYPE, year) %>%
-  summarise(mean_cons=round(mean(consumption_GWh),2))
-
-p_slopegraph <- cons_year %>% 
-  mutate(year = factor(year)) %>%
-  filter(year %in% c(startyear,endyear)) %>%
-  newggslopegraph(year, mean_cons, DWELLING_TYPE)
-
-p_slopegraph1 <- p_slopegraph + labs(title = "Monthly Household Electricity Consumption between 2 years",
-                subtitle = "",
-                caption = "Source:ema.gov.sg")
-
-p_slopegraph1
-```
-
-Final (Intro) Interactive Sparklines for a year
-
-```{r}
-remotes::install_github("timelyportfolio/dataui")
-```
-
-```{r}
-library(dataui)
-```
-
-```{r}
-pacman::p_load(reactable, reactablefmtr, gt, gtExtras)
-```
-
-# Final (Intro): Interactive Sparklines for a time period (Bandline/Mean)
-
-```{r}
-#data formatting
-d_sparks <- dwelling %>%
-  filter(year %in% c(startyear:endyear)) %>%
-  mutate(`Dwelling Type` = DWELLING_TYPE) %>%
-  group_by(`Dwelling Type`) %>%
-  summarize(`Monthly Consumption` = list(consumption_GWh))
-
-#react_sparkline
-reactable(
-  d_sparks,
-  defaultPageSize = 13,
-  columns = list(
-    `Dwelling Type` = colDef(maxWidth = 200),
-    `Monthly Consumption` = colDef(
-      cell = react_sparkline(
-        d_sparks,
-        highlight_points = highlight_points(
-          min = "red", max = "blue"),
-        line_width = 1,
-        bandline = "innerquartiles",
-        bandline_color = "green"
-        )
-    )
-  )
-)
-```
-
-# Final (Intro): Interactive Sparklines for a time period (Mean)
-
-```{r}
-#Allow users to switch between bandline and mean statline
-reactable(
-  d_sparks,
-  defaultPageSize = 13,
-  columns = list(
-    `Dwelling Type` = colDef(maxWidth = 200),
-    `Monthly Consumption` = colDef(
-      cell = react_sparkline(
-        d_sparks,
-        highlight_points = highlight_points(
-          min = "red", max = "blue"),
-        statline = "mean"
-        )
-    )
-  )
-)       
-
-```
-
-Final Report & Bullet
-
-```{r}
-#Preparing the data for report
-dwelling %>%
-  filter(year %in% c(startyear:endyear)) %>%
-  group_by(DWELLING_TYPE) %>%
-  summarise("Min" = min(consumption_GWh, na.rm = T),
-            "Max" = max(consumption_GWh, na.rm = T),
-            "Average" = mean(consumption_GWh, na.rm = T)
-            ) %>%
-  gt() %>%
-  fmt_number(columns = 4,
-    decimals = 2)
-```
-
-### Introduction: Total Household Electricity Consumption by Town/Region
-
-```{r}
-town <- subset(T3.5, Description != 'Overall' & Description !='Central Region' & 
-                 Description !='East Region' & Description !='North East Region' &
-                 Description !='North Region' & Description !='West Region' &
-                 kwh_per_acc != 's' & dwelling_type != 'Private Housing' &
-                 dwelling_type != 'Public Housing' & month != 'Annual') %>%
-  mutate(kwh_per_acc = as.numeric(kwh_per_acc)) %>%
-  mutate(date = parse_date_time(paste0(year, "-", month,"-1"),"ymd"))
-
-#Adding housing type
-town$type <- case_when(
-    town$dwelling_type %in% c('Private Apartments and Condominiums',
-                                 'Landed Properties', 'Others') ~ "Private",
-    town$dwelling_type %in% c('1-room / 2-room','3-room','4-room',
-                                  '5-room and Executive') ~ "Public")
-```
-
-### Backup: Animated Bar Plots
+##New: Animated Bar Plots
 
 ```{r}
 dwelling_bar <- dwelling %>% 
@@ -1434,7 +1275,96 @@ animate(animated, 500, fps = 5,  width = 800, height = 600,
         renderer = gifski_renderer("gganim.gif"))
 ```
 
+```{r}
+#linechart # backup
+ggplot(data = dwelling, aes(x = date)) +
+  geom_line(aes(y = consumption_GWh, colour = DWELLING_TYPE)) + 
+  labs(title = "Electricity Consumption by Dwelling Type",
+      x = "Year", y = "Consumption (GWh)") +
+  scale_color_discrete(name="") +
+  theme(legend.position="bottom")
+```
+
+```{r}
+# cycleplot for each dwelling type
+select_type <- 'Private Apartments and Condominiums'
+
+select_dwelling <- dwelling %>% 
+  filter(DWELLING_TYPE %in% c(select_type)) %>%
+  mutate(year = factor(year, levels = 2005:2022),
+         month = factor(month, levels = 1:12))
+
+#Computing year average by months
+hline.data <- select_dwelling %>%
+  group_by(month) %>%
+  summarise(avg_cons = mean(consumption_GWh))
+
+#Plotting cycle plot for imports
+ggplot() + 
+  geom_line(data = select_dwelling,
+            aes(x=year,y=consumption_GWh, group=month), colour = "black") +
+  geom_hline(data = hline.data,
+             aes(yintercept=avg_cons),
+             linetype=6, 
+             colour="red", 
+             linewidth=0.5) +
+  facet_grid(~month) +
+  theme(axis.text.x = element_text(angle=90, vjust=1, hjust=1)) +
+  labs(title = "Cycleplot for household electricity consumption (GWh), Jan 2005-Jun 2022",
+       subtitle = paste0('Dwelling Type: ',select_type)) +
+  scale_x_discrete(breaks=c("2005","2010","2015","2020")) +
+  xlab("") +
+  ylab("GWh")
+```
+
 Another consideration for peak system demand is lag plot to check for seasonality.
+
+```{r}
+#Display rate of change using Slopegraph
+#User can choose any 2 years for comparison
+startyear <- 2005
+endyear <- 2021
+
+cons_yr <- dwelling
+cons_year <- cons_yr %>%
+  group_by(DWELLING_TYPE, year) %>%
+  summarise(mean_cons=round(mean(consumption_GWh),2))
+
+p_slopegraph <- cons_year %>% 
+  mutate(year = factor(year)) %>%
+  filter(year %in% c(startyear,endyear)) %>%
+  newggslopegraph(year, mean_cons, DWELLING_TYPE)
+
+p_slopegraph1 <- p_slopegraph + labs(title = "Monthly Household Electricity Consumption between 2 years",
+                subtitle = "",
+                caption = "Source:ema.gov.sg")
+
+p_slopegraph1
+```
+
+### Introduction: Total Household Electricity Consumption by Town/Region
+
+```{r}
+town <- subset(T3.5, Description != 'Overall' & Description !='Central Region' & 
+                 Description !='East Region' & Description !='North East Region' &
+                 Description !='North Region' & Description !='West Region' &
+                 kwh_per_acc != 's' & dwelling_type != 'Private Housing' &
+                 dwelling_type != 'Public Housing' & month != 'Annual') %>%
+  mutate(kwh_per_acc = as.numeric(kwh_per_acc)) %>%
+  mutate(date = parse_date_time(paste0(year, "-", month,"-1"),"ymd"))
+
+#Adding housing type
+town$type <- case_when(
+    town$dwelling_type %in% c('Private Apartments and Condominiums',
+                                 'Landed Properties', 'Others') ~ "Private",
+    town$dwelling_type %in% c('1-room / 2-room','3-room','4-room',
+                                  '5-room and Executive') ~ "Public")
+```
+
+```{r}
+#Horizon plot
+
+```
 
 ```{r}
 #boxplot
@@ -1498,7 +1428,6 @@ private_uncert
 ```
 
 ```{r}
-{r}
 #Comparison of Median Consumption by Dwelling Type per year
 #Give user choice to choose the year
 givenyear <- 2021
@@ -1586,4 +1515,50 @@ stats_sysdemand %>%
     subtitle = "Mean vs Standard Deviation") +
     scale_color_tq() +
     theme_tq()
+```
+
+```{r}
+library(forecast)
+library(tsibble)
+library(zoo)
+
+  arima <- town
+  arima$ym <- yearmonth(as.yearmon(paste(arima$year, arima$month), "%Y %m"))
+  a <- arima %>%
+    group_by(ym) %>%
+    summarise(avgcon = mean(kwh_per_acc, na.rm = TRUE)) %>%
+    ungroup()
+  
+  arima_ts <- ts(data=a$avgcon, start = c(2005,1), end = c(2022,6), frequency=12)
+  n <- auto.arima(arima_ts)
+  n
+  plot(n)
+  forecast(arima_ts, fit = arima(window(arima_ts)))
+  
+# arima_ts <- ts(data=a$avgcon, start = c(2005,1), end = c(2022,6), frequency=12)
+
+# fit <- ets(window(arima_ts))
+# fit2 <- arima(window(arima_ts))
+# fit3 <- tslm(window(arima_ts))
+# Generate forecasts using the ARIMA method
+# plot(forecast(arima_ts, h =10))
+# plot(forecast(arima_ts, h =10, model = fit2))
+
+
+```
+
+```{r}
+library(fracdiff)
+
+m <- modelAR(arima_ts, FUN)
+fit <- arfima(arima_ts)
+tsdisplay(residuals(fit))
+plot(forecast(m))
+```
+
+```{r}
+arima <- T2.3
+  arima$Date <- yearmonth(as.yearmon(paste(arima$year, arima$mth), "%Y %m"))
+  arima_ts <- ts(data=arima$peak_system_demand_mw)
+  arima_arima = auto.arima(arima_ts, d =2, D =1, seasonal = FALSE, trace=TRUE)
 ```
