@@ -120,7 +120,7 @@ Power generation companies, Electricity Retailers, etc) involved in the electric
 To address this challenge, we build this RShinny app to provide relevant stakeholders with means 
 to analyse and understand the data with applicable analytics models. Also, we want to help the 
 users explore more information about the Singapore energy market easily through visualizations."
-# ui ----------------------------------------------------------------------
+# UI ----------------------------------------------------------------------
 ui = dashboardPage(
   dashboardHeader(title = 'Singapore Energy Consumption', titleWidth = 400),
   
@@ -136,12 +136,11 @@ ui = dashboardPage(
   
   dashboardBody(
     tabItems(
-      
-      ## overview --------------------------------------------------------------
-      
+      ## OVERVIEW --------------------------------------------------------------
       tabItem(
         tabName = "overview",
-        navbarPage("OVERVIEW", 
+        navbarPage("OVERVIEW",
+                   
                    ### introduction --------------------------------------------
                    tabPanel("Introduction",introtext),
                    
@@ -177,10 +176,11 @@ ui = dashboardPage(
       
       # ************************ END OVERVIEW ************************ #       
       
-      ## clustering ----------------------------------------------------------------
+      ## CLUSTERING ----------------------------------------------------------------
       
       tabItem(tabName = "clustering", icon = icon("circle-nodes"),
               navbarPage("CLUSTERING", 
+                         ### hierachical Clustering ----------------------------
                          # tabPanel("Hierachical Clustering",
                          #          fluidPage(
                          #            fluidRow(
@@ -206,21 +206,19 @@ ui = dashboardPage(
                          #            
                          #            column(12, tmapOutput("map")))
                          # ),
-                         
-                         tabPanel("DTW"),
-                         
+                         ### Time Series Clustering ----------------------------
                          tabPanel("Time Series Clustering")
               )
       ),
       
       # ************************ END CLUSTERING ************************ #
       
-     ## inferential -------------------------------------------------------------
+     ## INFERENTIAL ------------------------------------------------------------
    
       tabItem(tabName = "inferential", icon = icon("magnifying-glass-chart"),
               navbarPage("INFERENTIAL STATISTICS", 
                          
-                         # ====================== Anova ====================== #
+                         ### anova ---------------------------------------------
                          tabPanel("ANOVA",
                                   fluidPage(
                                     fluidRow(
@@ -243,9 +241,8 @@ ui = dashboardPage(
                                       column(7, plotOutput("dwellingstat2"))
                                     )
                                   )),
-                         # ====================== End Anova ====================== #
                          
-                         # ====================== Correlation ====================== #
+                         ### correlation ---------------------------------------
                          tabPanel("Correlation Analysis",
                                   fluidPage(
                                     fluidRow(
@@ -259,19 +256,15 @@ ui = dashboardPage(
                                     )
                                   )
                          )
-                         
-                         # ******************** End Correlation ******************** #
               )
       ),
-      
-      # ************************* END INFERENTIAL ************************* #        
 
-    ## time series -------------------------------------------------------------
+    ## TIME SERIES -------------------------------------------------------------
       
       tabItem(tabName = "time_series", icon = icon("chart-line"),
               navbarPage("TIME SERIES FORECASTING",
                          
-                         # ==================== ARIMA ==================== #
+                         ### arima ---------------------------------------------
                          tabPanel("ARIMA",
                                   fluidPage(
                                     fluidRow(
@@ -285,8 +278,6 @@ ui = dashboardPage(
                                       column(width = 12, plotOutput("arima_plot",height=400))
                                     ) )
                          ),
-                         
-                         # ******************** End Trend Prediction ******************** #
                          
                          # ======================= Slope Graph ======================= #
                          tabPanel("Slope Graph",
@@ -302,7 +293,6 @@ ui = dashboardPage(
                                       column(width = 9, plotOutput("slope",height=400))
                                     ) )
                          )
-                         # ******************** End Oil consumption ******************** #
               )
       ),
       
