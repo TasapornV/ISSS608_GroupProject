@@ -302,19 +302,21 @@ ui = dashboardPage(
                                              numericInput("arima_d2", "Order of seasonal differencing", value=2),
                                              checkboxInput("arima_d3", "Allow drift", value = FALSE)
                                              )
+                                      ),
                                       # ,
                                       # column(12, plotlyOutput("arima_plot"))
                                     #   ,
-                                    #   column(5,      
-                                    #          verbatimTextOutput("arimatext"))
+                                      column(5,
+                                             verbatimTextOutput("arimatext")),
                                     # #   ,
-                                    # fluidRow(
-                                    #   column(width = 6, plotOutput("arima",height="500px")),
+                                    fluidRow(
+                                      column(6, plotOutput("arima",height="500px"))
                                     #   column(width = 6, plotOutput("arima_plot",height=400))
-                                    #   )
-                                  ))
+                                      )
+                                  )
+                                  )
                          )
-              )
+              
       ),
       
       ## DATA TABLE ------------------------------------------------------------
@@ -390,22 +392,14 @@ server = function(input, output, session) {
   })
   
   # arima ----------------------------------------------------------------------
-  arima <- town
-  arima$ym <- yearmonth(as.yearmon(paste(arima$year, arima$month), "%Y %m"))
-  a <- arima %>%
-    group_by(ym) %>%
-    summarise(avgcon = mean(kwh_per_acc, na.rm = TRUE)) %>%
-    ungroup()
+  arima <- T2.3
+  arima$Date <- yearmonth(as.yearmon(paste(arima$year, arima$mth), "%Y %m"))
 
-  arima_ts <- ts(data=a$avgcon, start = c(2005,1), end = c(2022,6), frequency=12)
-
-
-  observeEvent(c(input$timemodel, input$arima_d,input$arima_d2, input$arima_d3, input$year), {
-
-    arima_model = auto.arima(arima_ts,
-                             d = input$arima_d,
-                             D = input$arima_d2,
-                             allowdrift = input$arima_d3)
+  arima_tsbl  = as_tsibble(arima)
+  arima_ts <- ts(data=arima$peak_system_demand_mw, start = c(2005,1), end = c(2022, 6), frequency=12)
+  arima_arima = auto.arima(arima_ts)
+  output$arima <- renderPlot(plot(forecast(arima_arima)))
+  
     
     # # Generate forecast
     # arima_forecast <- forecast(arima_model, h = 12)
@@ -424,27 +418,8 @@ server = function(input, output, session) {
     #   output$arima <- renderPlot(
     #     { plot(forecast(arima_arima)) }
     #   )
-      
-    # if(input$timemodel == "ETS"){
-    #   fit <- ets(window(arima_ts))
-    #   output$arima <- renderPlot(
-    #     { plot(forecast(arima_ts, h =10, model = fit)) }
-    #   )
-    # }
-    # 
-    # if(input$timemodel == "ARIMA"){
-    #   output$arima <- renderPlot(
-    #     { plot(forecast(arima_ts, h =10, model = arima(window(arima_ts))))}
-    #   )
-    # }
-    # 
-    # if(input$timemodel == "AR"){
-    #   output$arima <- renderPlot(
-    #     {plot(forecast(ar(window(arima_ts))))}
-    #   )
-    # }
     
-    # output$arimatext <- renderPrint(arima_arima)
+    output$arimatext <- renderPrint(arima_arima)
     
     # arima_tsbl  = as_tsibble(arima)
     # full_arima = arima_tsbl %>%
@@ -456,7 +431,7 @@ server = function(input, output, session) {
     #   full_arima %>%
     #     gg_tsdisplay(difference(avgcon), plot_type='partial')
     # })
-  })
+  # })
   
   # ------------- peak system demand ------------- #
   sysdemand <- T2.3 %>%
