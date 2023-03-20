@@ -132,7 +132,7 @@ ui = dashboardPage(
                    tabPanel("Introduction",introtext),
                    
                    ### geofacet ------------------------------------------------
-                   tabPanel("Geofacet",
+                   tabPanel("Consumption by Planning Area & Dwelling Type",
                             fluidPage(
                               radioButtons("axis", label = "select axis control",
                                            choices = c("fixed", 
@@ -192,14 +192,15 @@ ui = dashboardPage(
                                 column(3,numericInput("k", "Choose number of cluster",
                                                       min = 1, max = 10, value = 2))
                               ),
-                              #            fluidRow(
-                              #              column(4, plotlyOutput("numberk", height = "500px")),
-                              #              column(8, plotlyOutput("dendro", height = "500px"))
-                              #            ),
-                              #            
-                              #            column(12, tmapOutput("map")
-                            )
+                                         fluidRow(
+                                           column(4, plotlyOutput("numberk", height = "500px")),
+                                           column(8, plotlyOutput("dendro", height = "500px"))
+                                         ),
+
+                                         column(12, tmapOutput("map")
+                            ))
                    ),
+                   
                    ### Time Series Clustering ----------------------------
                    tabPanel("Time Series Clustering")
         )
@@ -304,7 +305,7 @@ server = function(input, output, session) {
   # geofacet ----------------------------------------------------------------
   geofacet <- town %>% 
         group_by(year, dwelling_type, Description)  %>%
-        summarise(avgprice = mean(kwh_per_acc, na.rm = TRUE))%>%
+        summarise(average_consumption = mean(kwh_per_acc, na.rm = TRUE))%>%
         ungroup()
   geofacet_gas_consump <- inner_join(geofacet, area_grid,
                                      by = c("Description" = "name"))
@@ -314,7 +315,7 @@ server = function(input, output, session) {
   observeEvent(input$axis,{
     
     output$geo <- renderPlot ({
-      ggplot(geofacet_gas_consump, aes(x = year, y = avgprice)) +
+      ggplot(geofacet_gas_consump, aes(x = year, y = average_consumption)) +
         geom_line(aes(color = as.factor(dwelling_type))) +
         facet_geo(~Description, grid = common_grid, scales = input$axis) +
         labs(title = "Average Monthly Household Electricity Consumption by Planning Area & Dwelling Type") +
@@ -345,7 +346,7 @@ server = function(input, output, session) {
     output$table <- renderDataTable(tabletext)
   })
   
-  # arima ----------------------------------------------------------------
+  # arima ----------------------------------------------------------------------
   arima <- town
   arima$ym <- yearmonth(as.yearmon(paste(arima$year, arima$month), "%Y %m"))
   a <- arima %>%
@@ -353,8 +354,8 @@ server = function(input, output, session) {
     summarise(avgcon = mean(kwh_per_acc, na.rm = TRUE)) %>%
     ungroup()
   
-  timeseries <- ts(data=a$avgcon, start = c(2005,1), end = c(2022,6), frequency=12)
-  
+  arima_ts <- ts(data=a$avgcon, start = c(2005,1), end = c(2022,6), frequency=12)
+
   
   observeEvent(c(input$timemodel, input$arima_d,input$arima_d2, input$arima_d3, input$year), {
     
@@ -362,24 +363,29 @@ server = function(input, output, session) {
                              d = input$arima_d,
                              D = input$arima_d2,
                              allowdrift = input$arima_d3)
-    
-    if(input$timemodel == "ETS"){
+    fit <- ets(window(arima_ts))
       output$arima <- renderPlot(
-        { plot(forecast(timeseries, h =10, model = ets(window(timeseries)))) }
-                                 )
-    }
-    
-    if(input$timemodel == "ARIMA"){
-      output$arima <- renderPlot(
-        { plot(forecast(timeseries, h =10, model = arima(window(timeseries))))}
+        { plot(forecast(arima_arima)) }
       )
-    }
       
-    if(input$timemodel == "AR"){
-      output$arima <- renderPlot(
-        {plot(forecast(ar(window(timeseries))))}
-      )
-    }
+    # if(input$timemodel == "ETS"){
+    #   fit <- ets(window(arima_ts))
+    #   output$arima <- renderPlot(
+    #     { plot(forecast(arima_ts, h =10, model = fit)) }
+    #   )
+    # }
+    # 
+    # if(input$timemodel == "ARIMA"){
+    #   output$arima <- renderPlot(
+    #     { plot(forecast(arima_ts, h =10, model = arima(window(arima_ts))))}
+    #   )
+    # }
+    # 
+    # if(input$timemodel == "AR"){
+    #   output$arima <- renderPlot(
+    #     {plot(forecast(ar(window(arima_ts))))}
+    #   )
+    # }
     
     output$arimatext <- renderPrint(arima_arima)
     
@@ -415,8 +421,8 @@ server = function(input, output, session) {
     ggplotly(p_line, tooltip = "text")
   })
   
-  # ------------------ cycle plot -------------------- #
-  #cycleplot
+  # cycle plot -----------------------------------------------------------------
+
   sysdemand21 <- sysdemand %>%
     filter(year %in% c(2005:2021))
   
@@ -597,7 +603,7 @@ server = function(input, output, session) {
     
   })
   
-  # ---------------------------- clustering ----------------------------- #
+  # clustering -----------------------------------------------------------------
   clus_data <- T3.5 %>% 
     filter(month != "Annual" & 
              year > 2017 & 
@@ -738,7 +744,7 @@ server = function(input, output, session) {
     # )
   })
   
-  # -------------------------- slope graph --------------------------- #
+  # slope graph-----------------------------------------------------------------
   observeEvent(c(input$slider_year, input$slope_value),{
     startyear <- input$slider_year[1]
     endyear <- input$slider_year[2]
@@ -770,24 +776,6 @@ server = function(input, output, session) {
     
     output$slope <- renderPlot({p_slopegraph1})
   })
-  
-  
-  # ----------------- Lineplot ------------------ #
-  # 
-  # output$lineplot <- renderPlotly({
-  #   consumption %>%
-  #     group_by(date) %>%
-  #     summarise(avg = mean(kwh_per_acc, na.rm = TRUE)) %>%
-  #     plot_ly(
-  #       type="scatter",
-  #       x=~date,
-  #       y=~avg,
-  #       mode="lines") %>%
-  #     layout(title=list(text="<b>Average Singapore Energy Consumption</b>"),
-  #            xaxis = list(title="Date"),
-  #            yaxis = list(title="Average Consumption"))
-  # }
-  # )
   
 }
 
