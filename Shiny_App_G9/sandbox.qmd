@@ -861,7 +861,7 @@ heatmaply(clus_matrix1[,-c(1)],
 # parameter: method 
 # user will need to input the distance calculated method here to determine which clustering method is optimal
 library(dendextend)
-clustering <- dist(normalize(clus_group1,-c(1)), method="euclidean")
+clustering <- dist(normalize(clus_group1,-c(1)), method="canberra")
 dend_expend(clustering)[[3]]
 ```
 
