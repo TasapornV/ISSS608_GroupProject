@@ -602,14 +602,23 @@ server = function(input, output, session) {
     })
     
   })
+  # clustering2 ----------------------------------------------------------------
   
-  # clustering -----------------------------------------------------------------
+  # Filter the required data for clustering
+  
+  # remove month = "Annual"
+  # remove dewlling_type/description = Overall
+  # year 2018 and onwards due to missing data
+  # exclude "%region" in description
+  # Exclude Pioneer as data is incomplete
+  
   clus_data <- T3.5 %>% 
     filter(month != "Annual" & 
              year > 2017 & 
              dwelling_type != "Overall" &
              !str_detect(Description,"Region|Pioneer|Overall"))
   
+  # transform dataset
   # convert kwh into numbers
   clus_data$kwh_per_acc <- as.numeric(clus_data$kwh_per_acc)
   # join month and year into a date
@@ -626,6 +635,51 @@ server = function(input, output, session) {
   # omit na
   clus <- na.omit(clus)
   clus <- clus %>% relocate(Description, .before = dwelling_type)
+  
+  clus_group1 <- clus[,-c(2)] %>%
+    group_by(Description) %>%
+    summarise_each(list(sum))
+  
+  # making "Description" the row name (index)
+  row.names(clus_group1) <- clus_group1$Description
+  
+  # Making it into a matrix
+  clus_matrix1 <- data.matrix(clus_group1)
+  
+  observeEvent(c(input$k, input$method, input$method2, input$distance),{
+    
+    output$dendro <- renderPlotly({
+      heatmaply(clus_matrix1[,-c(1)],
+                scale = "column",
+                dist_method = input$distance,
+                hclust_method = input$method2,
+                Colv=NA,
+                seriate = "none",
+                colors = viridis(
+              n= 256, alpha=1, 
+              begin=0, end=1,
+              option="viridis"),
+                k_row = input$k,
+                margins = c(NA,200,60,NA),
+                fontsize_row = 7,
+                fontsize_col = 7,
+                main="Hierarchical Clustering",
+            ylab = "Towns",
+            xlab = "Time"
+        )
+                
+                
+    })
+    
+  })
+  
+  # clustering -----------------------------------------------------------------
+ 
+
+
+  
+  # plot
+  
   
   # Convert to factor
   clus$Description <- factor(clus$Description)
@@ -676,9 +730,7 @@ server = function(input, output, session) {
     output
   }
   
-  clus_group1 <- clus[,-c(2)] %>%
-    group_by(Description) %>%
-    summarise_each(list(sum))
+
   
   row.names(clus_group1) <- clus_group1$Description
   clus_matrix1 <- data.matrix(clus_group1)
@@ -714,25 +766,14 @@ server = function(input, output, session) {
           )
       })}
     
-    output$dendro <- renderPlotly({
-      heatmaply(normalize(clus_matrix1[,-c(1,2)]),
-                dist_method = input$distance,
-                hclust_method = input$method2,
-                Colv=NA,
-                seriate = "none",
-                colors = rainbow(input$k),
-                k_row = input$k,
-                margins = c(NA,200,60,NA),
-                fontsize_row = 7,
-                fontsize_col = 7)
-    })
+
     
-    # num_clus <- cutree(a, k=input$k)
-    # clus_hc <- cbind(clus, cluster = as.factor(num_clus))
-    # clus_hc$Description <- toupper(clus_hc$Description)
-    # 
-    # # Preparing the choropleth map
-    # mpsz_clus <- left_join(singapore, clus_hc, by = c("PLN_AREA_N" = "Description"))
+    num_clus <- cutree(a, k=input$k)
+    clus_hc <- cbind(clus, cluster = as.factor(num_clus))
+    clus_hc$Description <- toupper(clus_hc$Description)
+
+    # Preparing the choropleth map
+    mpsz_clus <- left_join(singapore, clus_hc, by = c("PLN_AREA_N" = "Description"))
     # output$map <- renderTmap(
     #   
     #   tm_shape(mpsz_clus)+

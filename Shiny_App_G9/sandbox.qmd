@@ -810,6 +810,9 @@ clus <- clus_data %>%
 # omit na
 clus <- na.omit(clus)
 clus <- clus %>% relocate(Description, .before = dwelling_type)
+
+# clus_data
+# clus
 ```
 
 # Final: Clustering using dendextend & heatmap - Aggregated demand at description level
