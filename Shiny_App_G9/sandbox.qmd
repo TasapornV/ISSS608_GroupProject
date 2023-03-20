@@ -1514,3 +1514,26 @@ stats_sysdemand %>%
     scale_color_tq() +
     theme_tq()
 ```
+
+```{r}
+library(forecast)
+library(tsibble)
+library(zoo)
+arima <- town
+  arima$ym <- yearmonth(as.yearmon(paste(arima$year, arima$month), "%Y %m"))
+  a <- arima %>%
+    group_by(ym) %>%
+    summarise(avgcon = mean(kwh_per_acc, na.rm = TRUE)) %>%
+    ungroup()
+  
+arima_ts <- ts(data=a$avgcon, start = c(2005,1), end = c(2022,6), frequency=12)
+
+fit <- ets(window(arima_ts))
+fit2 <- arima(window(arima_ts))
+# fit3 <- tslm(window(arima_ts))
+# Generate forecasts using the ARIMA method
+plot(forecast(arima_ts, h =10, model = fit))
+plot(forecast(arima_ts, h =10, model = fit2))
+
+
+```

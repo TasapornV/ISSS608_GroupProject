@@ -40,20 +40,12 @@ library(fpc)
 library(sf)
 library(tmap)
 
+library(zoo)
+
 ## Read compressed data file
 T2.3 <- readRDS(file = "RDS/T2-3.rds") # Peak System Demand
-T2.6 <- readRDS(file = "RDS/T2-6.rds") # Market Share of Electricity Generation
 T3.4 <- readRDS(file = "RDS/T3-4.rds") # Total Household Electricity Consumption by Dwelling Type
 T3.5 <- readRDS(file = "RDS/T3-5.rds") # Average Monthly Household Electricity Consumption by Planning Area & Dwelling Type
-T3.6 <- readRDS(file = "RDS/T3-6.rds") # Market Share for Natural Gas Retail
-T3.7 <- readRDS(file = "RDS/T3-7.rds") # Natural Gas Consumption by Sub-Sector
-T3.8 <- readRDS(file = "RDS/T3-8.rds") # Total Household Town Gas Consumption by Dwelling Type
-T3.9 <- readRDS(file = "RDS/T3-9.rds") # Average Monthly Household Town Gas Consumption by Planning Area & Dwelling Type
-T5.1 <- readRDS(file = "RDS/T5-1.rds") # Electricity and Gas Tariffs
-T5.2 <- readRDS(file = "RDS/T5-2.rds") # Monthly Electricity Tariffs (Low Tension Tariffs)
-T5.3 <- readRDS(file = "RDS/T5-3.rds") # Annual Electricity Tariffs by Components (Low Tension Tariffs)
-T5.4 <- readRDS(file = "RDS/T5-4.rds") # Average Monthly Uniform Singapore Energy Prices (USEP)
-T5.5 <- readRDS(file = "RDS/T5-5.rds") # Monthly Town Gas Tariffs
 
 # reading the map file
 mpsz <- st_read(dsn = 'master-plan-2014-subzone-boundary-web-shp',
@@ -85,10 +77,7 @@ consumption <- consumption %>%
   mutate(year = as.character(year)) %>%
   mutate('date' = make_date(year=year, month=month))
 
-clus_hc$Description <- toupper(clus_hc$Description)
-
-# geofacet <- T3.5
-# geofacet$kwh_per_acc <- as.numeric(geofacet$kwh_per_acc)
+# clus_hc$Description <- toupper(clus_hc$Description)
 
 ## Set up parameter
 years <- c("2022","2021", "2020", "2019", "2018", "2017")
@@ -152,7 +141,7 @@ ui = dashboardPage(
                                                        "free"), 
                                            inline = T),
                               plotOutput("geo", height = 800)
-                   )),
+                            )),
                    
                    ### peak system demand --------------------------------------
                    tabPanel("Peak System Demand",
@@ -178,13 +167,13 @@ ui = dashboardPage(
                    tabPanel("Consumption by Dwelling Type",
                             fluidPage( plotlyOutput("dwelling"))
                    )
-        )                               
+        )
       ),
       
       ## CLUSTERING ----------------------------------------------------------------
       tabItem(
         tabName = "clustering",
-        navbarPage("CLUSTERING", 
+        navbarPage("CLUSTERING",
                    ### hierachical Clustering ----------------------------
                    tabPanel("Hierachical Clustering",
                             fluidPage(
@@ -203,7 +192,6 @@ ui = dashboardPage(
                                 column(3,numericInput("k", "Choose number of cluster",
                                                       min = 1, max = 10, value = 2))
                               ),
-                              #            
                               #            fluidRow(
                               #              column(4, plotlyOutput("numberk", height = "500px")),
                               #              column(8, plotlyOutput("dendro", height = "500px"))
@@ -211,7 +199,7 @@ ui = dashboardPage(
                               #            
                               #            column(12, tmapOutput("map")
                             )
-                   ) ,
+                   ),
                    ### Time Series Clustering ----------------------------
                    tabPanel("Time Series Clustering")
         )
@@ -226,56 +214,64 @@ ui = dashboardPage(
                                   fluidPage(
                                     fluidRow(
                                       column(5,
-                                             pickerInput(inputId = "anovainput", label = "Select Parameter", 
-                                                         choices = c("dwelling_type", "Region", "year"), selected = "dwelling_type", 
+                                             pickerInput(inputId = "anovainput", label = "Select Parameter",
+                                                         choices = c("dwelling_type", "Region", "year"), selected = "dwelling_type",
                                                          options = list(`actions-box` = TRUE), multiple = F),
                                              verbatimTextOutput("anovastat")
                                       ),
                                       column(7, plotOutput("dwellingstat"))
                                     ),
-                                    
+
                                     fluidRow(
                                       column(5,
-                                             pickerInput(inputId = "region", label = "Select Region", 
-                                                         choices = regions, selected = "Central Region", 
+                                             pickerInput(inputId = "region", label = "Select Region",
+                                                         choices = regions, selected = "Central Region",
                                                          options = list(`actions-box` = TRUE), multiple = F),
                                              verbatimTextOutput("anovastat2")
                                       ),
                                       column(7, plotOutput("dwellingstat2"))
                                     )
                          )),
-                         
+
                          ### correlation ---------------------------------------
-                         tabPanel("Correlation Analysis",
-                                  fluidPage(
-                                    fluidRow(
-                                      column(width = 9, plotlyOutput("correlation",height=400))
-                                    )
-                        ))
+                          tabPanel("Correlation Analysis",
+                                   fluidPage(
+                                     fluidRow(
+                                       column(width = 9, plotlyOutput("correlation",height=400))
+                                     )
+                         ))
               )
       ),
       
       ## TIME SERIES FORECASTING------------------------------------------------
       
-      # tabItem(tabName = "time_series", icon = icon("chart-line"),
-      #         navbarPage("TIME SERIES FORECASTING",
-      #                    
-      #                    ### arima ---------------------------------------------
-      #                    tabPanel("ARIMA",
-      #                             fluidPage(
-      #                               fluidRow(
-      #                                 column(width = 3, 
-      #                                        numericInput("arima_d", "Order of differencing", value=1),
-      #                                        numericInput("arima_d2", "Order of seasonal differencing", value=2),
-      #                                        checkboxInput("arima_d3", "Allow drift", value = FALSE),
-      #                                        numericInput("year", "Months to forecast ahead", min = 1, max = 24, step=1, value = 3),
-      #                                        verbatimTextOutput("arimatext")),
-      #                                 column(width = 9, plotOutput("arima",height="500px")),
-      #                                 column(width = 12, plotOutput("arima_plot",height=400))
-      #                               ) )
-      #                    )
-      #         )
-      # ),
+      tabItem(tabName = "time_series", icon = icon("chart-line"),
+              navbarPage("TIME SERIES FORECASTING",
+
+                         ### arima ---------------------------------------------
+                         tabPanel("ARIMA",
+                                  fluidPage(
+                                    fluidRow(
+                                      column(3,
+                                             pickerInput(inputId = "timemodel", label = "Select Model",
+                                                         choices = c("ARIMA", "ETS", "TSLM", "AR"),
+                                                         selected = "ARIMA", multiple = F),
+                                             numericInput("year", "Months to forecast ahead", min = 1, max = 24, step=1, value = 3)
+                                             ),
+                                      column(3,
+                                             numericInput("arima_d", "Order of differencing", value=1),
+                                             numericInput("arima_d2", "Order of seasonal differencing", value=2),
+                                             checkboxInput("arima_d3", "Allow drift", value = FALSE)),
+                                      column(5,      
+                                             verbatimTextOutput("arimatext")),
+                                    fluidRow(
+                                      column(width = 6, plotOutput("arima",height="500px")),
+                                      column(width = 6, plotOutput("arima_plot",height=400))
+                                      )
+                                  ))
+                         )
+              )
+      ),
       
       ## DATA TABLE ------------------------------------------------------------
       tabItem(tabName = "data", icon = icon("table"),
@@ -297,7 +293,7 @@ ui = dashboardPage(
       ), 
       ## ABOUT ------------------------------------------------------------
       tabItem(tabName = "about", icon = icon("info"))
-      ) #close tabItems
+    ) #close tabItems
   ) #close dashboard body
 ) #close UI
 
@@ -333,7 +329,7 @@ server = function(input, output, session) {
   # table ----------------------------------------------------------------------
   observeEvent((input$SelectTable),{
     
-    if(input$SelectTable == "T2.3") {tabletext <- T2.3}
+    if(input$SelectTable == "T2.3")  {tabletext <- T2.3}
     if(input$SelectTable == "T2.6")  {tabletext <- T2.6}
     if(input$SelectTable == "T3.4")  {tabletext <- T3.4}
     if(input$SelectTable == "T3.5")  {tabletext <- T3.5}
@@ -353,20 +349,37 @@ server = function(input, output, session) {
   arima <- town
   arima$ym <- yearmonth(as.yearmon(paste(arima$year, arima$month), "%Y %m"))
   a <- arima %>%
-    group_by(ym) %>% 
-    summarise(avgcon = mean(kwh_per_acc, na.rm = TRUE)) %>% 
+    group_by(ym) %>%
+    summarise(avgcon = mean(kwh_per_acc, na.rm = TRUE)) %>%
     ungroup()
   
-  arima_ts <- ts(data=a$avgcon, start = c(2005,1), end = c(2022,6), frequency=12)
+  timeseries <- ts(data=a$avgcon, start = c(2005,1), end = c(2022,6), frequency=12)
   
-  observeEvent(c(input$arima_d,input$arima_d2, input$arima_d3, input$year), {
+  
+  observeEvent(c(input$timemodel, input$arima_d,input$arima_d2, input$arima_d3, input$year), {
     
     arima_arima = auto.arima(arima_ts,
                              d = input$arima_d,
                              D = input$arima_d2,
                              allowdrift = input$arima_d3)
     
-    output$arima <- renderPlot({plot(forecast(arima_arima, h = 1))})
+    if(input$timemodel == "ETS"){
+      output$arima <- renderPlot(
+        { plot(forecast(timeseries, h =10, model = ets(window(timeseries)))) }
+                                 )
+    }
+    
+    if(input$timemodel == "ARIMA"){
+      output$arima <- renderPlot(
+        { plot(forecast(timeseries, h =10, model = arima(window(timeseries))))}
+      )
+    }
+      
+    if(input$timemodel == "AR"){
+      output$arima <- renderPlot(
+        {plot(forecast(ar(window(timeseries))))}
+      )
+    }
     
     output$arimatext <- renderPrint(arima_arima)
     
@@ -695,7 +708,6 @@ server = function(input, output, session) {
           )
       })}
     
-    
     output$dendro <- renderPlotly({
       heatmaply(normalize(clus_matrix1[,-c(1,2)]),
                 dist_method = input$distance,
@@ -709,21 +721,21 @@ server = function(input, output, session) {
                 fontsize_col = 7)
     })
     
-    num_clus <- cutree(a, k=input$k)
-    clus_hc <- cbind(clus, cluster = as.factor(num_clus))
-    clus_hc$Description <- toupper(clus_hc$Description)
-    
-    # Preparing the choropleth map
-    mpsz_clus <- left_join(singapore, clus_hc, by = c("PLN_AREA_N" = "Description"))
-    output$map <- renderTmap(
-      
-      tm_shape(mpsz_clus)+
-        tmap_options(check.and.fix = TRUE)+
-        tm_fill("cluster", id=paste("PLN_AREA_N"),
-                style = "pretty",
-                palette = rainbow(input$k)) +
-        tm_borders(alpha = 0.7)
-    )
+    # num_clus <- cutree(a, k=input$k)
+    # clus_hc <- cbind(clus, cluster = as.factor(num_clus))
+    # clus_hc$Description <- toupper(clus_hc$Description)
+    # 
+    # # Preparing the choropleth map
+    # mpsz_clus <- left_join(singapore, clus_hc, by = c("PLN_AREA_N" = "Description"))
+    # output$map <- renderTmap(
+    #   
+    #   tm_shape(mpsz_clus)+
+    #     tmap_options(check.and.fix = TRUE)+
+    #     tm_fill("cluster", id=paste("PLN_AREA_N"),
+    #             style = "pretty",
+    #             palette = rainbow(input$k)) +
+    #     tm_borders(alpha = 0.7)
+    # )
   })
   
   # -------------------------- slope graph --------------------------- #
