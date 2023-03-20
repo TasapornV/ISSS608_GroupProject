@@ -77,7 +77,6 @@ consumption <- consumption %>%
   mutate(year = as.character(year)) %>%
   mutate('date' = make_date(year=year, month=month))
 
-# clus_hc$Description <- toupper(clus_hc$Description)
 
 ## Set up parameter
 years <- c("2022","2021", "2020", "2019", "2018", "2017")
@@ -174,30 +173,34 @@ ui = dashboardPage(
                                 column(3,pickerInput("method2", "Select method",
                                                      choices = c("agglomerative", "divisive"),
                                                      selected = "agglomerative")),
+                                
                                 column(3,pickerInput("method", "Choose Clustering Method",
                                                      choices = c("ward.D", "ward.D2", "single",
                                                                  "complete", "average", "mcquitty",
                                                                  "median", "centroid"),
                                                      selected = "complete")),
+                                
                                 column(3,pickerInput("distance", "Choose Distance Method",
                                                      choices = c("euclidian", "maximum", "manhattan",
                                                                  "canberra", "binary", "minkowski"))),
+                                
                                 column(3,numericInput("k", "Choose number of cluster",
                                                       min = 1, max = 10, value = 2))
                               ),
-                                         fluidRow(
-                                           column(4, dataTableOutput("dendextend")),
-                                           column(12, plotlyOutput("numberk")),
-                                           column(8, plotlyOutput("dendro", height = "500px"))
-                                         )
-                              # ,
-                              # 
-                              #            column(12, tmapOutput("map"))
+                              fluidRow(
+                                column(4, dataTableOutput("dendextend"),
+                                       plotOutput("numberk", height = "300px")),
+                                column(8, plotlyOutput("dendro", height = "300px"),
+                                       tmapOutput("map"))
+                              )
                             )
                    ),
                    
                    ### Time Series Clustering ----------------------------
-                   tabPanel("Time Series Clustering")
+                   tabPanel("Time Series Clustering",
+                            fluidPage(
+                              plotlyOutput("dtw")
+                            ))
         )
       ),
       
@@ -241,7 +244,7 @@ ui = dashboardPage(
       
       ## TIME SERIES FORECASTING------------------------------------------------
       
-      tabItem(tabName = "time_series", icon = icon("chart-line"),
+      tabItem(tabName = "time_series",
               navbarPage("TIME SERIES FORECASTING",
 
                          ### arima ---------------------------------------------
@@ -273,7 +276,7 @@ ui = dashboardPage(
       ),
       
       ## DATA TABLE ------------------------------------------------------------
-      tabItem(tabName = "data", icon = icon("table"),
+      tabItem(tabName = "data",
               navbarPage("DATA",
                          tabPanel("data table",
                                   fluidPage(
@@ -291,7 +294,7 @@ ui = dashboardPage(
               )
       ), 
       ## ABOUT ------------------------------------------------------------
-      tabItem(tabName = "about", icon = icon("info"))
+      tabItem(tabName = "about")
     ) #close tabItems
   ) #close dashboard body
 ) #close UI
@@ -385,7 +388,7 @@ server = function(input, output, session) {
     #   )
     # }
     
-    output$arimatext <- renderPrint(arima_arima)
+    # output$arimatext <- renderPrint(arima_arima)
     
     # arima_tsbl  = as_tsibble(arima)
     # full_arima = arima_tsbl %>%
@@ -566,7 +569,7 @@ server = function(input, output, session) {
       })}
   })
   
-  # anova2 -----------------------------------------------------------------
+  # anova2 ---------------------------------------------------------------------
   observeEvent(input$region,{
     output$dwellingstat2 <- renderPlot({
       consumption %>%
@@ -586,44 +589,101 @@ server = function(input, output, session) {
       summary(aov(kwh_per_acc ~ Description, data = consumption))
     })
   })
+  
+  # dtw ------------------------------------------------------------------------
+  cluster_dtw <- tsclust(clus_matrix1[,-c(1)],
+                         type = "h", 
+                         k=2,
+                         distance="dtw",
+                         control = hierarchical_control(method = "ward.D"),
+                         preproc = NULL,
+                         args=tsclust_args(dist = list(window.size = 5L)))
+  
+  hclus_dtw <- cutree(cluster_dtw, k=4) %>%
+    as.data.frame(.) %>%
+    rename(.,cluster_group = .) %>%
+    rownames_to_column("type_col")
+  
+  
+  # add the cluster number
+  dtw_cluster <- clus_group1 %>%
+    left_join(hclus_dtw, by=c("Description" = "type_col")) 
+  
+  # change date columns into rows
+  dtw_cluster_t <- dtw_cluster %>%
+    mutate_at(vars(contains("202")),as.numeric) %>%
+    gather(Date, value, 2:55)
+  
+  # Add the word "Cluster"
+  dtw_cluster_t$cluster_group <- paste("Cluster", dtw_cluster_t$cluster_group)
+  
+  # convert Date into date format
+  dtw_cluster_t$Date <- parse_date_time(dtw_cluster_t$Date, orders=c("%Y-%m-%d")) 
+  
+  # plot time series by cluster
+  
+   
+     ts <- plot_time_series(.data=dtw_cluster_t,
+                         .date_var=Date, 
+                         .value=value,
+                         .color_var=Description,
+                         .facet_var=cluster_group,
+                         .facet_ncol=2,
+                         .facet_scales = "free_y",
+                         .smooth=FALSE,
+                         .line_size = 0.3,
+                         .plotly_slider = TRUE,
+                         .title = "Time Series Plot by cluster")
+  
+  ts <- ts %>%
+    layout(hovermode="x",
+           hoverlabel=list(font=list(size=7)))
+  
+  output$dtw <- renderPlotly(
+  
+  
+  ts
+    
+  )
+  
   # clustering dendro ----------------------------------------------------------
-  clus_data <- T3.5 %>% 
-    filter(month != "Annual" & 
-             year > 2017 & 
+  clus_data <- T3.5 %>%
+    filter(month != "Annual" &
+             year > 2017 &
              dwelling_type != "Overall" &
              !str_detect(Description,"Region|Pioneer|Overall"))
-  
+
   # transform dataset
   # convert kwh into numbers
   clus_data$kwh_per_acc <- as.numeric(clus_data$kwh_per_acc)
   # join month and year into a date
-  clus_data$date <- parse_date_time(paste(clus_data$year, clus_data$month), orders=c("%Y %m")) 
-  
+  clus_data$date <- parse_date_time(paste(clus_data$year, clus_data$month), orders=c("%Y %m"))
+
   # drop month and year column
   clus_data <- subset(clus_data, select=-c(month, year, Region)) %>%
     arrange(date)
-  
+
   # pivot wider
   clus <- clus_data %>%
-    pivot_wider(names_from=date, values_from=kwh_per_acc) 
-  
+    pivot_wider(names_from=date, values_from=kwh_per_acc)
+
   # omit na
   clus <- na.omit(clus)
   clus <- clus %>% relocate(Description, .before = dwelling_type)
-  
+
   clus_group1 <- clus[,-c(2)] %>%
     group_by(Description) %>%
     summarise_each(list(sum))
-  
+
   # making "Description" the row name (index)
   row.names(clus_group1) <- clus_group1$Description
-  
+
   # Making it into a matrix
   clus_matrix1 <- data.matrix(clus_group1)
-  
+
   # plot
   observeEvent(c(input$k, input$method, input$method2, input$distance),{
-    
+
     output$dendro <- renderPlotly({
       heatmaply(clus_matrix1[,-c(1)],
                 scale = "column",
@@ -634,7 +694,7 @@ server = function(input, output, session) {
                 k_row = input$k,
                 margins = c(NA,200,50,NA),
                 colors = viridis(
-                  n= 256, alpha=1, 
+                  n= 256, alpha=1,
                   begin=0, end=1,
                   option="viridis"),
                 fontsize_row = 7,
@@ -643,130 +703,42 @@ server = function(input, output, session) {
                 ylab = "Towns",
                 xlab = "Time")
     })
-    
-    clustering <- dist(normalize(clus_group1,-c(1)), method=input$distance)
-    
-    # clustering dendex --------------------------------------------------------
-    output$dendextend <- renderDataTable(
-      dend_expend(clustering)[[3]]
-    )
-    # clustering number k-------------------------------------------------------
-    clust2 <- hclust(clustering, method = input$method)
-    num_k <- find_k(clust2)
-    output$numberk <- renderPlotly(
-      plot(num_k)
-    )
-    
-    
 
-    
+    # clustering <- dist(normalize(clus_group1,-c(1)), method=input$method)
+
+
+#     # clustering dendex --------------------------------------------------------
+#     output$dendextend <- renderDataTable(
+#       dend_expend(clustering)[[3]]
+#     )
+#     # clustering number k ------------------------------------------------------
+#     clust2 <- hclust(clustering, method = input$method)
+#     num_k <- find_k(clust2)
+#     output$numberk <- renderPlot(
+#       plot(num_k)
+#     )
+#
+#     # clustering map -----------------------------------------------------------
+#     num_clus <- cutree(clust2, k=input$k)
+#     clus_hc <- cbind(clus_group1, cluster = as.factor(num_clus))
+#
+#     clus_hc$Description <- toupper(clus_hc$Description)
+#
+#     # Preparing the choropleth map
+#     mpsz_clus <- left_join(singapore, clus_hc, by = c("PLN_AREA_N" = "Description"))
+#       output$map <- renderTmap(
+#
+#         tm_shape(mpsz_clus)+
+#           tmap_options(check.and.fix = TRUE)+
+#           tm_fill("cluster", id=paste("PLN_AREA_N"),
+#                   style = "pretty",
+#                   palette = viridis(input$k)) +
+#           tm_borders(alpha = 0.7)
+#       )
   })
   
   
-
-  # Convert to factor
-  # clus$Description <- factor(clus$Description)
-  # clus$dwelling_type <- factor(clus$dwelling_type)
-  # 
-  # # calculate distance - can only use "gower" because data has categorical variable
-  # clus_dist <- daisy(clus, metric="gower")
-  # 
-  # # function to create table for clustering stats
-  # # Cluster stats comes out as list while it is more convenient to look at it as a table
-  # # This code below will produce a dataframe with observations in columns and variables in row
-  # # Not quite tidy data, which will require a tweak for plotting, but I prefer this view as an output here as I find it more comprehensive 
-  # 
-  # cstats.table <- function(dist, tree, k) {
-  #   clust.assess <- c("cluster.number","n","within.cluster.ss","average.within","average.between",
-  #                     "wb.ratio","dunn2","avg.silwidth")
-  #   clust.size <- c("cluster.size")
-  #   stats.names <- c()
-  #   row.clust <- c()
-  #   output.stats <- matrix(ncol = k, nrow = length(clust.assess))
-  #   cluster.sizes <- matrix(ncol = k, nrow = k)
-  #   for(i in c(1:k)){
-  #     row.clust[i] <- paste("Cluster-", i, " size")
-  #   }
-  #   for(i in c(2:k)){
-  #     stats.names[i] <- paste("Test", i-1)
-  #     
-  #     for(j in seq_along(clust.assess)){
-  #       output.stats[j, i] <- unlist(cluster.stats(d = dist, clustering = cutree(tree, k = i))[clust.assess])[j]
-  #     }
-  #     for(d in 1:k) {
-  #       cluster.sizes[d, i] <- unlist(cluster.stats(d = dist, clustering = cutree(tree, k = i))[clust.size])[d]
-  #       dim(cluster.sizes[d, i]) <- c(length(cluster.sizes[i]), 1)
-  #       cluster.sizes[d, i]
-  #       
-  #     }
-  #   }
-  #   output.stats.df <- data.frame(output.stats)
-  #   cluster.sizes <- data.frame(cluster.sizes)
-  #   cluster.sizes[is.na(cluster.sizes)] <- 0
-  #   rows.all <- c(clust.assess, row.clust)
-  #   # rownames(output.stats.df) <- clust.assess
-  #   output <- rbind(output.stats.df, cluster.sizes)[ ,-1]
-  #   colnames(output) <- stats.names[2:k]
-  #   rownames(output) <- rows.all
-  #   is.num <- sapply(output, is.numeric)
-  #   output[is.num] <- lapply(output[is.num], round, 2)
-  #   output
-  # }
-  # 
-  # 
-  # 
-  # row.names(clus_group1) <- clus_group1$Description
-  # clus_matrix1 <- data.matrix(clus_group1)
-  # observeEvent(c(input$k, input$method, input$method2, input$distance),{
-  #   
-  #   if(input$method2 == "agglomerative") {
-  #     title <- "Agglomerative (complete) - Elbow"
-  #     output$numberk <- renderPlotly({
-  #       ggplot(data = data.frame(t(cstats.table(clus_dist, hc, 15))), 
-  #              aes(x=cluster.number, y=within.cluster.ss)) + 
-  #         geom_point()+
-  #         geom_line() +
-  #         ggtitle(title) +
-  #         labs(x = "Num.of clusters", y = "Within clusters sum of squares") +
-  #         theme_minimal(base_size=12) +
-  #         theme(axis.title=element_blank(),
-  #               plot.title = element_text(size= rel(1))
-  #         )
-  #     })} 
-  #   
-  #   if(input$method2 == "divisive") {
-  #     title <- "Divisive (complete) - Elbow"
-  #     output$numberk <- renderPlotly({
-  #       ggplot(data = data.frame(t(cstats.table(clus_dist, divisive.clust, 15))), 
-  #              aes(x=cluster.number, y=within.cluster.ss)) + 
-  #         geom_point()+
-  #         geom_line() +
-  #         ggtitle(title) +
-  #         labs(x = "Num.of clusters", y = "Within clusters sum of squares") +
-  #         theme_minimal(base_size=12) +
-  #         theme(axis.title=element_blank(),
-  #               plot.title = element_text(size= rel(1))
-  #         )
-  #     })}
-  #   
-  # 
-  #   
-  #   num_clus <- cutree(a, k=input$k)
-  #   clus_hc <- cbind(clus, cluster = as.factor(num_clus))
-  #   clus_hc$Description <- toupper(clus_hc$Description)
-  # 
-  #   # Preparing the choropleth map
-  #   mpsz_clus <- left_join(singapore, clus_hc, by = c("PLN_AREA_N" = "Description"))
-  #   # output$map <- renderTmap(
-  #   #   
-  #   #   tm_shape(mpsz_clus)+
-  #   #     tmap_options(check.and.fix = TRUE)+
-  #   #     tm_fill("cluster", id=paste("PLN_AREA_N"),
-  #   #             style = "pretty",
-  #   #             palette = rainbow(input$k)) +
-  #   #     tm_borders(alpha = 0.7)
-  #   # )
-  # })
+  
   
   # slope graph-----------------------------------------------------------------
   observeEvent(c(input$slider_year, input$slope_value),{
