@@ -160,6 +160,18 @@ ui = dashboardPage(
                    ### peak system demand --------------------------------------
                    tabPanel("Peak System Demand",
                             fluidPage(
+                              fluidRow(
+                                column(3, wellPanel(
+                                  sliderInput("slider_year", "Select year",min = 2005, 
+                                              max = 2022, step = 1, round = TRUE,
+                                              value =  c(2005, 2022)),
+                                  radioButtons("slope_value", "select value", choices = c("sum", "average", "median" ))
+                                )),
+                                
+                                column(9, plotOutput("slope",height=400))
+                              ) ),
+                            
+                            fluidPage(
                               column(12, plotlyOutput("peakdemand"), height = 200),
                               column(12, plotlyOutput("cycleplot"), height = 100)
                             )
@@ -174,48 +186,44 @@ ui = dashboardPage(
         )                               
       ),
       
-      # ************************ END OVERVIEW ************************ #       
-      
       ## CLUSTERING ----------------------------------------------------------------
       
       tabItem(tabName = "clustering", icon = icon("circle-nodes"),
               navbarPage("CLUSTERING", 
                          ### hierachical Clustering ----------------------------
-                         # tabPanel("Hierachical Clustering",
-                         #          fluidPage(
-                         #            fluidRow(
-                         #              column(3,pickerInput("method2", "Select method",
-                         #                                   choices = c("agglomerative", "divisive"),
-                         #                                   selected = "agglomerative")),
-                         #              column(3,pickerInput("method", "Choose Clustering Method", 
-                         #                                   choices = c("ward.D", "ward.D2", "single", 
-                         #                                               "complete", "average", "mcquitty", 
-                         #                                               "median", "centroid"),  
-                         #                                   selected = "complete")),
-                         #              column(3,pickerInput("distance", "Choose Distance Method", 
-                         #                                   choices = c("euclidian", "maximum", "manhattan", 
-                         #                                               "canberra", "binary", "minkowski"))),
-                         #              column(3,numericInput("k", "Choose number of cluster", 
-                         #                                    min = 1, max = 10, value = 2))
-                         #            ),
-                         #            
-                         #            fluidRow(
-                         #              column(4, plotlyOutput("numberk", height = "500px")),
-                         #              column(8, plotlyOutput("dendro", height = "500px"))
-                         #            ),
-                         #            
-                         #            column(12, tmapOutput("map")))
-                         # ),
+                         tabPanel("Hierachical Clustering",
+                                  fluidPage(
+                                    fluidRow(
+                                      column(3,pickerInput("method2", "Select method",
+                                                           choices = c("agglomerative", "divisive"),
+                                                           selected = "agglomerative")),
+                                      column(3,pickerInput("method", "Choose Clustering Method",
+                                                           choices = c("ward.D", "ward.D2", "single",
+                                                                       "complete", "average", "mcquitty",
+                                                                       "median", "centroid"),
+                                                           selected = "complete")),
+                                      column(3,pickerInput("distance", "Choose Distance Method",
+                                                           choices = c("euclidian", "maximum", "manhattan",
+                                                                       "canberra", "binary", "minkowski"))),
+                                      column(3,numericInput("k", "Choose number of cluster",
+                                                            min = 1, max = 10, value = 2))
+                                    ),
+                                      #            
+                                      #            fluidRow(
+                                      #              column(4, plotlyOutput("numberk", height = "500px")),
+                                      #              column(8, plotlyOutput("dendro", height = "500px"))
+                                      #            ),
+                                      #            
+                                      #            column(12, tmapOutput("map")
+                                    )
+                         ) ,
                          ### Time Series Clustering ----------------------------
                          tabPanel("Time Series Clustering")
               )
       ),
       
-      # ************************ END CLUSTERING ************************ #
-      
-     ## INFERENTIAL ------------------------------------------------------------
-   
-      tabItem(tabName = "inferential", icon = icon("magnifying-glass-chart"),
+      ## INFERENTIAL ------------------------------------------------------------
+      tabItem(tabName = "inferential",
               navbarPage("INFERENTIAL STATISTICS", 
                          
                          ### anova ---------------------------------------------
@@ -258,8 +266,8 @@ ui = dashboardPage(
                          )
               )
       ),
-
-    ## TIME SERIES -------------------------------------------------------------
+      
+      ## TIME SERIES -------------------------------------------------------------
       
       tabItem(tabName = "time_series", icon = icon("chart-line"),
               navbarPage("TIME SERIES FORECASTING",
@@ -268,38 +276,20 @@ ui = dashboardPage(
                          tabPanel("ARIMA",
                                   fluidPage(
                                     fluidRow(
-                                      column(width = 5, 
-                                             numericInput("arima_d", "input order of differencing", value=1),
-                                             numericInput("arima_d2", "input order of seasonal differencing", value=2),
-                                             checkboxInput("arima_d3", "allow drift", value = FALSE),
-                                             sliderInput("year", "Select year", min = 2005, max = 2022, step=1, round=TRUE, value = c(2005,2022)),
+                                      column(width = 3, 
+                                             numericInput("arima_d", "Order of differencing", value=1),
+                                             numericInput("arima_d2", "Order of seasonal differencing", value=2),
+                                             checkboxInput("arima_d3", "Allow drift", value = FALSE),
+                                             numericInput("year", "Months to forecast ahead", min = 1, max = 24, step=1, value = 3),
                                              verbatimTextOutput("arimatext")),
-                                      column(width = 7, plotOutput("arima",height="500px")),
+                                      column(width = 9, plotOutput("arima",height="500px")),
                                       column(width = 12, plotOutput("arima_plot",height=400))
-                                    ) )
-                         ),
-                         
-                         # ======================= Slope Graph ======================= #
-                         tabPanel("Slope Graph",
-                                  fluidPage(
-                                    fluidRow(
-                                      column(3, wellPanel(
-                                        sliderInput("slider_year", "Select year",min = 2005, 
-                                                    max = 2022, step = 1, round = TRUE,
-                                                    value =  c(2005, 2022)),
-                                        radioButtons("slope_value", "select value", choices = c("sum", "average", "median" ))
-                                      )),
-                                      
-                                      column(width = 9, plotOutput("slope",height=400))
                                     ) )
                          )
               )
       ),
       
-      # *************************** END TIME SERIES *************************** #
-
-  ## data table --------------------------------------------------------------
-      
+      ## data table ------------------------------------------------------------
       tabItem(tabName = "data", icon = icon("table"),
               navbarPage("DATA",
                          tabPanel("data table",
@@ -316,33 +306,14 @@ ui = dashboardPage(
                                     )
                                   ))
               )
-      ),
-      # ******************************* END DATA ******************************* #    
-      # =============================== ABOUT =============================== #    
-      
-      tabItem(tabName = "about", icon = icon("info")))
-  ),
-  tags$head(
-    tags$style(HTML(
-      "
-      .my-custom-skin .sidebar {
-        background-color: #444444;
-      }
-      .my-custom-skin .main-header {
-        background-color: #555555;
-      }
-      .my-custom-skin .content-wrapper {
-        background-color: #666666;
-      }
-      .my-custom-skin .sidebar-menu li.active a {
-        background-color: #777777;
-      }
-      "
-    ))
+      ), 
+      ## about team ------------------------------------------------------------
+      tabItem(tabName = "about", icon = icon("info"))
+      ) #close tabItems
   )
 )
 
-# server ------------------------------------------------------------------
+# SERVER ------------------------------------------------------------------
 
 server = function(input, output, session) {
   
