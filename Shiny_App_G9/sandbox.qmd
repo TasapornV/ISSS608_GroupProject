@@ -852,6 +852,8 @@ clus <- clus %>% relocate(Description, .before = dwelling_type)
 # Final: Clustering using dendextend & heatmap - Aggregated demand at description level
 
 ```{r}
+library(heatmaply)
+
 # parameter 1: distance method ("euclidean", "maximum", "manhattan", "canberra", "binary" or "minkowski")
 # parameter 2: hclust method ("ward.D", "ward.D2","single","complete","average", "mcquitty", "median" or "centroid")
 # parameter 3: number of clusters
@@ -906,9 +908,6 @@ dend_expend(clustering)[[3]]
 
 ```
 
-```{r}
-
-```
 
 # Final: using find_k() to determine the optimal number of clusters
 
@@ -1025,6 +1024,35 @@ ts
 
 # how to modify the tooltip? Town is being shown twice here...
 ```
+
+# Final: Map for DTW clusters
+```{r}
+library(sf)
+# reading the map file
+mpsz <- st_read(dsn = 'master-plan-2014-subzone-boundary-web-shp',
+                layer = 'MP14_SUBZONE_WEB_PL',
+                crs = 3414) 
+
+singapore <- st_transform(mpsz, 4326)
+```
+
+```{r}
+library(tmap)
+# change Description to upper case
+dtw_cluster_t$Description <- toupper(dtw_cluster_t$Description)
+
+# Preparing the choropleth map
+mpsz_clus_dtw <- left_join(singapore, dtw_cluster_t, by = c("PLN_AREA_N" = "Description"))
+tmap_mode("view")
+tm_shape(mpsz_clus_dtw)+
+  tmap_options(check.and.fix = TRUE)+
+  tm_fill("cluster_group", id=paste("PLN_AREA_N"),
+          style = "pretty",
+          palette = "Greens") +
+  tm_borders(alpha = 0.7)
+```
+
+
 
 # Final: Click-and-appear Table
 
