@@ -4,7 +4,7 @@
 remotes::install_github("timelyportfolio/dataui")
 
 packages = c('CGPfunctions', 'cluster', 'data.table', 'dataui','dendextend', 
-             'devtools', 'dplyr', 'dtwclust', 'earth', 'fable', 'feasts', 
+             'devtools','DT', 'dplyr', 'dtwclust', 'earth', 'fable', 'feasts', 
              'forecast','fpc', 'geofacet', 'ggdendro', 'ggiraph', 'ggplot2', 
              'ggstatsplot', 'ggrepel', 'ggridges', 'gt', 'gtExtras', 'heatmaply', 
              'knitr','plotly', 'lubridate', 'psych', 'RColorBrewer', 'reactable', 
@@ -27,6 +27,7 @@ T3.4 <- readRDS(file = "RDS/T3-4.rds") # Total Household Electricity Consumption
 T3.5 <- readRDS(file = "RDS/T3-5.rds") # Average Monthly Household Electricity Consumption by Planning Area & Dwelling Type
 dwelling <- readRDS(file = "RDS/dwelling.rds")
 town <- readRDS(file = "RDS/town.rds")
+
 # reading the map file
 mpsz <- st_read(dsn = 'master-plan-2014-subzone-boundary-web-shp',
                 layer = 'MP14_SUBZONE_WEB_PL',
@@ -90,38 +91,31 @@ ui = dashboardPage(
                    tabPanel("Consumption by Planning Area & Dwelling Type",
                             fluidPage(
                               radioButtons("axis", label = "select axis control",
-                                           choices = c("fixed", 
-                                                       "free x-axis" = "free_x", 
-                                                       "free y-axis" = "free_y", 
-                                                       "free"), 
+                                           choices = c("fixed y-axis" = "fixed", 
+                                                       # "free x-axis" = "free_x", 
+                                                       "free y-axis" = "free_y"), 
                                            inline = T),
                               plotOutput("geo", height = 800)
                             )),
                    
                    ### peak system demand --------------------------------------
-                   tabPanel("Peak System Demand",
-                            fluidPage(
-                              fluidRow(
-                                column(3, 
-                                       wellPanel(
-                                         sliderInput("slider_year", "Select year",min = 2005, 
-                                                     max = 2022, step = 1, round = TRUE,
-                                                     value =  c(2005, 2022)),
-                                         radioButtons("slope_value", "select value", choices = c("sum", "average", "median" ))
-                                       )),
-                                
-                                column(9, plotOutput("slope",height=400),
-                                       reactableOutput("sparkline"))
-                              ))
-                            # ,fluidPage(
-                            #   column(12, plotlyOutput("peakdemand"), height = 200),
-                            #   column(12, plotlyOutput("cycleplot"), height = 100)
-                            # )
+                   tabPanel("Consumption by Dwelling type and Town",
+                            fluidRow(
+                              column(4, sliderInput("slider_year", "Select year",min = 2005,
+                                          max = 2022, step = 1, round = FALSE,
+                                          value =  c(2005, 2022))),
+                              column(4, radioButtons("type", "Select parameter", choices = c("By town", "By dwelling type"), inline = TRUE)),
+                              column(4, radioButtons("slope_value", "select value", choices = c("sum", "average", "median" ), inline = TRUE))
+                              
                             ),
-                   
-                   ### consumption by dwelling type ----------------------------
-                   tabPanel("Consumption by Dwelling Type",
-                            fluidPage( plotlyOutput("dwelling"))
+                            fluidRow(
+                              column(6, plotlyOutput("dwelling", height = 400)),
+                              column(6, tableOutput("sparktable"))
+                            ),
+                            fluidRow(
+                              column(6, plotlyOutput("cycleplot")),
+                              column(6, plotOutput("slope",height=400))
+                            )
                    )
         )
       ),
@@ -134,9 +128,6 @@ ui = dashboardPage(
                    tabPanel("Hierachical Clustering",
                             fluidPage(
                               fluidRow(
-                                column(3,pickerInput("method2", "Select method",
-                                                     choices = c("agglomerative", "divisive"),
-                                                     selected = "agglomerative")),
                                 
                                 column(3,pickerInput("method", "Choose Clustering Method",
                                                      choices = c("ward.D", "ward.D2", "single",
@@ -151,6 +142,7 @@ ui = dashboardPage(
                                 column(3,numericInput("k", "Choose number of cluster",
                                                       min = 1, max = 10, value = 2))
                               ),
+                              
                               fluidRow(
                                 column(4, dataTableOutput("dendextend"),
                                        plotOutput("numberk", height = "350px")),
@@ -160,28 +152,21 @@ ui = dashboardPage(
                             )
                    ),
                    
-                   ### Time Series Clustering ----------------------------
+                   ### Time Series Clustering ----------------------------------
                    tabPanel("Time Series Clustering",
                             fluidPage(
                               fluidRow(
-                                column(3,pickerInput("method2", "Select method",
-                                                     choices = c("agglomerative", "divisive"),
-                                                     selected = "agglomerative")),
                                 
-                                column(3,pickerInput("method", "Choose Clustering Method",
+                                column(3,pickerInput("method2", "Choose Clustering Method",
                                                      choices = c("ward.D", "ward.D2", "single",
                                                                  "complete", "average", "mcquitty",
                                                                  "median", "centroid"),
                                                      selected = "complete")),
                                 
-                                column(3,pickerInput("distance", "Choose Distance Method",
-                                                     choices = c("euclidian", "maximum", "manhattan",
-                                                                 "canberra", "binary", "minkowski"))),
-                                
-                                column(3,numericInput("k", "Choose number of cluster",
+                                column(3,numericInput("k2", "Choose number of cluster",
                                                       min = 1, max = 10, value = 2))
                               ),
-                              plotlyOutput("dtw", height =1000)
+                              plotlyOutput("dtw", height =500)
                             ))
         )
       ),
@@ -307,7 +292,7 @@ server = function(input, output, session) {
         facet_geo(~Description, grid = common_grid, scales = input$axis) +
         labs(title = "Average Monthly Household Electricity Consumption by Planning Area & Dwelling Type") +
         theme(plot.title = element_text(size=22),
-              axis.text.x = element_text(size = 10, angle = 90),
+              axis.text.x = element_text(size = 10, angle = 45),
               axis.text.y = element_text(size = 10),
               strip.text = element_text(size = 10),
               legend.position = "right")
@@ -341,12 +326,12 @@ server = function(input, output, session) {
   # arima_ts <- ts(data=arima$kwh_per_acc, start = c(2005,1), end = c(2022, 6), frequency=12)
   # arima_arima = auto.arima(arima_ts, d =1, D =1, allowdrift = FALSE)
   # output$arima <- renderPlot(plot(forecast(arima_arima)))
-  
-  # full_arima = arima_tsbl %>%
-  #   # filter(year==2017) %>% 
-  #   fill_gaps() %>% 
-  #   tidyr::fill(kwh_per_acc, .direction = "down")
   # 
+  # full_arima = arima_tsbl %>%
+  #   # filter(year==2017) %>%
+  #   fill_gaps() %>%
+  #   tidyr::fill(kwh_per_acc, .direction = "down")
+
   # a <- town
   # a$Date <- yearmonth(as.yearmon(paste(a$year, a$month), "%Y %m"))
   # a <- a %>% 
@@ -376,7 +361,7 @@ server = function(input, output, session) {
     #     { plot(forecast(arima_arima)) }
     #   )
     
-    output$arimatext <- renderPrint(arima_arima)
+    # output$arimatext <- renderPrint(arima_arima)
     
     # arima_tsbl  = as_tsibble(arima)
     # full_arima = arima_tsbl %>%
@@ -494,6 +479,8 @@ server = function(input, output, session) {
                            package = "ggthemes", palette = "Tableau_10") +
     theme(axis.title.x = element_blank())
   
+  
+  # table dwelling -------------------------------------------------------------
   #combining plots
   combine_plots(
     list(private, public),
@@ -504,6 +491,21 @@ server = function(input, output, session) {
       theme = theme(
         plot.subtitle = element_text(size = 10),
         plot.title = element_text(size = 12))))
+  
+  # output$dwelling2 <-
+  # dwelling %>%
+  #   filter(year %in% c(startyear:endyear)) %>%
+  #   group_by(DWELLING_TYPE) %>%
+  #   summarise("Min" = min(consumption_GWh, na.rm = T),
+  #             "Max" = max(consumption_GWh, na.rm = T),
+  #             "Average" = mean(consumption_GWh, na.rm = T)
+  #   ) %>%
+  #   gt() %>%
+  #   fmt_number(columns = 4,
+  #              decimals = 2)
+  
+  
+  
   
   # anova -----------------------------------------------------------------
   consumption <- T3.5
@@ -519,7 +521,7 @@ server = function(input, output, session) {
         geom_boxplot() +
         stat_summary(fun.y=mean, geom="point", color="red") +
         theme(legend.position="none") +
-        theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1)) +
+        theme(axis.text.x = element_text(angle = 45, vjust = 0.5, hjust=1)) +
         ggtitle("Boxplot of consumption per planning area")
     })
     }
@@ -530,7 +532,7 @@ server = function(input, output, session) {
         geom_boxplot() +
         stat_summary(fun.y=mean, geom="point", color="red") +
         theme(legend.position="none") +
-        theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1)) +
+        theme(axis.text.x = element_text(angle = 45, vjust = 0.5, hjust=1)) +
         ggtitle("Boxplot of consumption per planning area")
     })}
     if(input$anovainput == "dwelling_type"){output$dwellingstat <- renderPlot({
@@ -540,7 +542,7 @@ server = function(input, output, session) {
         geom_boxplot() +
         stat_summary(fun.y=mean, geom="point", color="red") +
         theme(legend.position="none") +
-        theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1)) +
+        theme(axis.text.x = element_text(angle = 45, vjust = 0.5, hjust=1)) +
         ggtitle("Boxplot of consumption per planning area")
     })}
     if(input$anovainput == "dwelling_type"){
@@ -567,7 +569,7 @@ server = function(input, output, session) {
         geom_boxplot() +
         stat_summary(fun.y=mean, geom="point", color="red") +
         theme(legend.position="none") +
-        theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1)) +
+        theme(axis.text.x = element_text(angle = 45, vjust = 0.5, hjust=1)) +
         ggtitle("Boxplot of consumption per planning area")
     })
     
@@ -606,7 +608,19 @@ server = function(input, output, session) {
         )
       )
     ))
-    # slope graph-----------------------------------------------------------------
+    # spark table --------------------------------------------------------------
+    output$sparktable <- renderTable(dwelling %>%
+      filter(year %in% c(startyear:endyear)) %>%
+      group_by(DWELLING_TYPE) %>%
+      summarise("Min" = min(consumption_GWh, na.rm = T),
+                "Max" = max(consumption_GWh, na.rm = T),
+                "Average" = mean(consumption_GWh, na.rm = T)
+      ) %>%
+      gt() %>%
+      fmt_number(columns = 4,
+                 decimals = 2))
+    
+    # slope graph---------------------------------------------------------------
     cons_yr <- dwelling
     
     if (input$slope_value == "sum") {
@@ -630,22 +644,22 @@ server = function(input, output, session) {
     
     p_slopegraph1 <- p_slopegraph + labs(title = "Monthly Household Electricity Consumption between 2 points of time",
                                          subtitle = "",
-                                         caption = "Source:Singstat.gov.sg")
+                                         caption = "Source:EMA.gov.sg")
     
     output$slope <- renderPlot({p_slopegraph1})
   })
   
-  # dtw ------------------------------------------------------------------------
-  observeEvent(c(input$k, input$method, input$method2, input$distance),{
+  ##  dtw ------------------------------------------------------------------------
+  observeEvent(c(input$k2, input$method2),{
   cluster_dtw <- tsclust(clus_matrix1[,-c(1)],
                          type = "h", 
-                         k=input$k,
+                         k=input$k2,
                          distance="dtw",
-                         control = hierarchical_control(method = "ward.D"),
+                         control = hierarchical_control(method = input$method2),
                          preproc = NULL,
                          args=tsclust_args(dist = list(window.size = 5L)))
   
-  hclus_dtw <- cutree(cluster_dtw, k=4) %>%
+  hclus_dtw <- cutree(cluster_dtw, k=input$k2) %>%
     as.data.frame(.) %>%
     rename(.,cluster_group = .) %>%
     rownames_to_column("type_col")
@@ -666,8 +680,8 @@ server = function(input, output, session) {
   dtw_cluster_t$Date <- parse_date_time(dtw_cluster_t$Date, orders=c("%Y-%m-%d")) 
   
   # plot time series by cluster
-
-     ts <- plot_time_series(.data=dtw_cluster_t,
+  
+  ts <- plot_time_series(.data=dtw_cluster_t,
                          .date_var=Date, 
                          .value=value,
                          .color_var=Description,
@@ -685,6 +699,18 @@ server = function(input, output, session) {
   
   output$dtw <- renderPlotly( ts )
   })
+  
+  #     # Preparing the choropleth map
+  #     mpsz_clus <- left_join(singapore, clus_hc, by = c("PLN_AREA_N" = "Description"))
+  #       output$map <- renderTmap(
+  #
+  #         tm_shape(mpsz_clus)+
+  #           tmap_options(check.and.fix = TRUE)+
+  #           tm_fill("cluster", id=paste("PLN_AREA_N"),
+  #                   style = "pretty",
+  #                   palette = viridis(input$k)) +
+  #           tm_borders(alpha = 0.7)
+  #       )
   
   # clustering dendro ----------------------------------------------------------
   clus_data <- T3.5 %>%
@@ -722,13 +748,13 @@ server = function(input, output, session) {
   clus_matrix1 <- data.matrix(clus_group1)
 
   # plot
-  observeEvent(c(input$k, input$method, input$method2, input$distance),{
+  observeEvent(c(input$k, input$method, input$distance),{
 
     output$dendro <- renderPlotly({
       heatmaply(clus_matrix1[,-c(1)],
                 scale = "column",
                 dist_method = input$distance,
-                hclust_method = input$method2,
+                hclust_method = input$method,
                 Colv=NA,
                 seriate = "none",
                 k_row = input$k,
@@ -745,7 +771,6 @@ server = function(input, output, session) {
     })
 
     # clustering <- dist(normalize(clus_group1,-c(1)), method="euclidean")
-
 
 #     # clustering dendex --------------------------------------------------------
 #     output$dendextend <- renderDataTable(
@@ -776,11 +801,6 @@ server = function(input, output, session) {
 #           tm_borders(alpha = 0.7)
 #       )
   })
-  
-  
-  
-  
-  
   
 }
 

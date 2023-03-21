@@ -1757,6 +1757,7 @@ ggplot() +
 ```
 
 # Final (Dwelling): Slopegraph between any two years
+
 ```{r}
 #Display rate of change using Slopegraph
 #User can choose any 2 years for comparison
@@ -1777,6 +1778,7 @@ p_slopegraph1
 ```
 
 # Final (Dwelling): Interactive Sparklines for a time period -Bandline
+
 ```{r}
 #data formatting
 d_sparks <- dwelling %>%
@@ -1826,6 +1828,7 @@ reactable(
 ```
 
 # Final (Dwelling): Report based on same timeframe as the chart
+
 ```{r}
 #Preparing the data for report
 dwelling %>%
@@ -1839,4 +1842,3 @@ dwelling %>%
   fmt_number(columns = 4,
     decimals = 2)
 ```
-
