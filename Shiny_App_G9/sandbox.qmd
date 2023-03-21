@@ -1621,7 +1621,7 @@ library(dataui)
 pacman::p_load(reactable, reactablefmtr, gt, gtExtras)
 ```
 
-# Final (Intro): Interactive Sparklines for a time period (Bandline/Mean)
+Duplicate: Interactive Sparklines for a time period (Bandline/Mean)
 
 ```{r}
 #data formatting
@@ -1650,7 +1650,7 @@ reactable(
 )
 ```
 
-# Final (Intro): Interactive Sparklines for a time period (Mean)
+Duplicate: Interactive Sparklines for a time period (Mean)
 
 ```{r}
 #Allow users to switch between bandline and mean statline
@@ -1757,6 +1757,7 @@ ggplot() +
 ```
 
 # Final (Dwelling): Slopegraph between any two years
+
 ```{r}
 #Display rate of change using Slopegraph
 #User can choose any 2 years for comparison
@@ -1776,7 +1777,12 @@ p_slopegraph1 <- p_slopegraph + labs(title = "Monthly Household Electricity Cons
 p_slopegraph1
 ```
 
-# Final (Dwelling): Interactive Sparklines for a time period -Bandline
+### Backup (Dwelling): Interactive Sparklines for a time period -Bandline
+
+```{r}
+pacman::p_load(reactable, reactablefmtr, gt, gtExtras)
+```
+
 ```{r}
 #data formatting
 d_sparks <- dwelling %>%
@@ -1804,7 +1810,7 @@ reactable(
 )
 ```
 
-# Final (Dwelling): Interactive Sparklines for a time period (Mean)
+### Backup (Dwelling): Interactive Sparklines for a time period (Mean)
 
 ```{r}
 #Allow users to switch between bandline and mean statline
@@ -1825,18 +1831,30 @@ reactable(
 )       
 ```
 
-# Final (Dwelling): Report based on same timeframe as the chart
+# Final (Dwelling): Report+Sparkline based on same timeframe as the chart
+
 ```{r}
+
+library(svglite)
+
 #Preparing the data for report
-dwelling %>%
+d_report <- dwelling %>%
   filter(year %in% c(startyear:endyear)) %>%
-  group_by(DWELLING_TYPE) %>%
+  mutate(`Dwelling Type` = DWELLING_TYPE) %>%
+  group_by(`Dwelling Type`) %>%
   summarise("Min" = min(consumption_GWh, na.rm = T),
             "Max" = max(consumption_GWh, na.rm = T),
-            "Average" = mean(consumption_GWh, na.rm = T)
-            ) %>%
-  gt() %>%
-  fmt_number(columns = 4,
-    decimals = 2)
-```
+            "Average" = mean(consumption_GWh, na.rm = T))
 
+d_sparks <- dwelling %>%
+  filter(year %in% c(startyear:endyear)) %>%
+  mutate(`Dwelling Type` = DWELLING_TYPE) %>%
+  group_by(`Dwelling Type`) %>%
+  summarize(`Monthly Consumption` = list(consumption_GWh))
+
+dwelling_data = left_join(d_report, d_sparks)
+
+dwelling_data %>%
+  gt() %>%
+  gt_plt_sparkline('Monthly Consumption')
+```
