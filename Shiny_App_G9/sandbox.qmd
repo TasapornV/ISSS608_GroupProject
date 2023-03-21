@@ -908,7 +908,6 @@ dend_expend(clustering)[[3]]
 
 ```
 
-
 # Final: using find_k() to determine the optimal number of clusters
 
 ```{r}
@@ -1026,6 +1025,7 @@ ts
 ```
 
 # Final: Map for DTW clusters
+
 ```{r}
 library(sf)
 # reading the map file
@@ -1051,8 +1051,6 @@ tm_shape(mpsz_clus_dtw)+
           palette = "Greens") +
   tm_borders(alpha = 0.7)
 ```
-
-
 
 # Final: Click-and-appear Table
 
@@ -1855,18 +1853,31 @@ reactable(
 )       
 ```
 
-# Final (Dwelling): Report based on same timeframe as the chart
+# Final (Dwelling): Report+Sparkline based on same timeframe as the chart
 
 ```{r}
-#Preparing the data for report
-dwelling %>%
-  filter(year %in% c(startyear:endyear)) %>%
-  group_by(DWELLING_TYPE) %>%
-  summarise("Min" = min(consumption_GWh, na.rm = T),
+library(svglite)
+```
+
+```{r}
+#Preparing the data for report 
+d_report <- dwelling %>%   
+  filter(year %in% c(startyear:endyear)) %>%   
+  mutate(`Dwelling Type`= DWELLING_TYPE) %>%   
+  group_by(`Dwelling Type`) %>%   
+  summarise("Min" = min(consumption_GWh, na.rm = T),             
             "Max" = max(consumption_GWh, na.rm = T),
-            "Average" = mean(consumption_GWh, na.rm = T)
-            ) %>%
-  gt() %>%
-  fmt_number(columns = 4,
-    decimals = 2)
+            "Average" = mean(consumption_GWh, na.rm = T)) 
+
+d_sparks <- dwelling %>%   
+  filter(year %in% c(startyear:endyear)) %>%   
+  mutate(`Dwelling Type`= DWELLING_TYPE) %>%   
+  group_by(`Dwelling Type`) %>%   
+  summarize(`Monthly Consumption` = list(consumption_GWh))
+
+dwelling_data = left_join(d_report, d_sparks) 
+
+dwelling_data %>% 
+  gt() %>% 
+  gt_plt_sparkline('Monthly Consumption')
 ```
