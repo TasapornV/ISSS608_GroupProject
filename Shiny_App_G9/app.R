@@ -1,56 +1,32 @@
-library(shiny)
-library(shinythemes)
-library(shinydashboard)
-library(shinyWidgets)
 
-library(dplyr)
-library(tidyverse)
-library(tidymodels)
-library(tidyquant)
-library(lubridate)
-library(tsibble)
-library(tsibbletalk)
-library(data.table)
-library(knitr)
-library(psych)
-library(earth)
-library(stats)
-library(CGPfunctions)
 
-library(ggrepel)
-library(ggstatsplot)
-library(ggplot2)
-library(plotly)
-library(ggridges)
+# LIBRARY -----------------------------------------------------------------
 
-library(tseries)
-library(feasts)
-library(fable)
-library(forecast)
-library(devtools)
-
-library(RColorBrewer)
-library(geofacet)
-library(treemap)
-library(cluster)
-library(dendextend)
-library(dendextend)
-library(heatmaply)
-library(fpc)
-library(sf)
-library(tmap)
-
-library(zoo)
 remotes::install_github("timelyportfolio/dataui")
-library(dataui)
-pacman::p_load(reactable, reactablefmtr, gt, gtExtras)
+packages = c('CGPfunctions', 'cluster', 'data.table', 'dataui','dendextend', 
+             'devtools', 'dplyr', 'dtwclust', 'earth', 'fable', 'feasts', 
+             'forecast','fpc', 'geofacet', 'ggdendro', 'ggiraph', 'ggplot2', 
+             'ggstatsplot', 'ggrepel', 'ggridges', 'gt', 'gtExtras', 'heatmaply', 
+             'knitr','plotly', 'lubridate', 'psych', 'RColorBrewer', 'reactable', 
+             'reactablefmtr', 'readr', 'sf', 'shiny', 'shinydashboard', 
+             'shinythemes', 'shinyWidgets', 'stats', 'tibble', 'tidymodels', 
+             'tidyquant', 'tidyr', 'tidyverse', 'timetk', 'tmap', 'treemap', 
+             'TSclust', 'tseries', 'tsibble', 'tsibbletalk', 'zoo')
 
+for(p in packages){
+  if(!require(p,character.only = T)){
+    install.packages(p)
+  }
+  library(p,character.only = T)
+}
 
+# READ DATA ---------------------------------------------------------------
 ## Read compressed data file
 T2.3 <- readRDS(file = "RDS/T2-3.rds") # Peak System Demand
 T3.4 <- readRDS(file = "RDS/T3-4.rds") # Total Household Electricity Consumption by Dwelling Type
 T3.5 <- readRDS(file = "RDS/T3-5.rds") # Average Monthly Household Electricity Consumption by Planning Area & Dwelling Type
-
+dwelling <- readRDS(file = "RDS/dwelling.rds")
+town <- readRDS(file = "RDS/town.rds")
 # reading the map file
 mpsz <- st_read(dsn = 'master-plan-2014-subzone-boundary-web-shp',
                 layer = 'MP14_SUBZONE_WEB_PL',
@@ -58,54 +34,20 @@ mpsz <- st_read(dsn = 'master-plan-2014-subzone-boundary-web-shp',
 
 # Import the area grid data.
 area_grid <- read_csv("data/areagrid.csv")
-
 singapore <- st_transform(mpsz, 4326)
 
-# wrangling data
-town <- subset(T3.5, Description != 'Overall' & Description !='Central Region' & 
-                 Description !='East Region' & Description !='North East Region' &
-                 Description !='North Region' & Description !='West Region' &
-                 kwh_per_acc != 's' & dwelling_type != 'Private Housing' &
-                 dwelling_type != 'Public Housing' & month != 'Annual') %>%
-  mutate(kwh_per_acc = as.numeric(kwh_per_acc)) %>%
-  mutate(date = parse_date_time(paste0(year, "-", month,"-1"),"ymd"))
+# consumption <- T3.5
+# consumption <- consumption %>%
+#   mutate(kwh_per_acc = as.numeric(kwh_per_acc)) %>%
+#   mutate(year = as.character(year)) %>%
+#   mutate('date' = make_date(year=year, month=month))
 
-town$type <- case_when(
-  town$dwelling_type %in% c('Private Apartments and Condominiums',
-                            'Landed Properties', 'Others') ~ "Private",
-  town$dwelling_type %in% c('1-room / 2-room','3-room','4-room',
-                            '5-room and Executive') ~ "Public")
-consumption <- T3.5
-consumption <- consumption %>%
-  mutate(kwh_per_acc = as.numeric(kwh_per_acc)) %>%
-  mutate(year = as.character(year)) %>%
-  mutate('date' = make_date(year=year, month=month))
-
-dwelling <- T3.4 %>%
-  filter(year %in% c(2005:2022)) %>%
-  filter(month %in% c(1:12)) %>%
-  filter(DWELLING_TYPE %in% c('1-room / 2-room','3-room','4-room',
-                              '5-room and Executive',
-                              'Private Apartments and Condominiums',
-                              'Landed Properties', 'Others')) %>%
-  mutate(date = parse_date_time(paste0(year, "-", month,"-1"),"ymd")) %>%
-  mutate(monthyear = format(as.Date(date), "%b %Y"))
-
-#Add Private vs Public Classification
-dwelling$class <- case_when(
-  dwelling$DWELLING_TYPE %in% c('Private Apartments and Condominiums',
-                                'Landed Properties', 'Others') ~ "Private",
-  dwelling$DWELLING_TYPE %in% c('1-room / 2-room','3-room','4-room',
-                                '5-room and Executive') ~ "Public")
-
-
-## Set up parameter
+# PARAMETER ---------------------------------------------------------------
 years <- c("2022","2021", "2020", "2019", "2018", "2017")
 regions <- c( "Central Region", "NorthEast Region", "East Region", "North Region", "West Region")
 tables <- c("Peak System Demand" = "T2.3",
             "Total Household Electricity Consumption by Dwelling Type" = "T3.4",
             "Average Monthly Household Electricity Consumption by Planning Area & Dwelling Type" = "T3.5")
-
 type <- c("parametric", "nonparametric", "robust", "bayes")
 
 introtext = "Singapore has progressively moved towards an open electricity market since 2001 
@@ -170,12 +112,12 @@ ui = dashboardPage(
                                 
                                 column(9, plotOutput("slope",height=400),
                                        reactableOutput("sparkline"))
-                              )),
-                            
-                            fluidPage(
-                              column(12, plotlyOutput("peakdemand"), height = 200),
-                              column(12, plotlyOutput("cycleplot"), height = 100)
-                            )),
+                              ))
+                            # ,fluidPage(
+                            #   column(12, plotlyOutput("peakdemand"), height = 200),
+                            #   column(12, plotlyOutput("cycleplot"), height = 100)
+                            # )
+                            ),
                    
                    ### consumption by dwelling type ----------------------------
                    tabPanel("Consumption by Dwelling Type",
@@ -304,7 +246,7 @@ ui = dashboardPage(
                                              )
                                       ),
                                       # ,
-                                      # column(12, plotlyOutput("arima_plot"))
+                                      column(12, plotlyOutput("arima_plot")),
                                     #   ,
                                       column(5,
                                              verbatimTextOutput("arimatext")),
@@ -392,15 +334,30 @@ server = function(input, output, session) {
   })
   
   # arima ----------------------------------------------------------------------
-  arima <- T2.3
-  arima$Date <- yearmonth(as.yearmon(paste(arima$year, arima$mth), "%Y %m"))
-
-  arima_tsbl  = as_tsibble(arima)
-  arima_ts <- ts(data=arima$peak_system_demand_mw, start = c(2005,1), end = c(2022, 6), frequency=12)
-  arima_arima = auto.arima(arima_ts)
-  output$arima <- renderPlot(plot(forecast(arima_arima)))
+  # arima <- town
+  # arima$Date <- yearmonth(as.yearmon(paste(arima$year, arima$month), "%Y %m"))
+  # 
+  # arima_tsbl  = as_tsibble(arima)
+  # arima_ts <- ts(data=arima$kwh_per_acc, start = c(2005,1), end = c(2022, 6), frequency=12)
+  # arima_arima = auto.arima(arima_ts, d =1, D =1, allowdrift = FALSE)
+  # output$arima <- renderPlot(plot(forecast(arima_arima)))
   
-    
+  # full_arima = arima_tsbl %>%
+  #   # filter(year==2017) %>% 
+  #   fill_gaps() %>% 
+  #   tidyr::fill(kwh_per_acc, .direction = "down")
+  # 
+  # a <- town
+  # a$Date <- yearmonth(as.yearmon(paste(a$year, a$month), "%Y %m"))
+  # a <- a %>% 
+  #   group_by(Date) %>% 
+  #   summarise(avgcon = mean(kwh_per_acc, na.rm = TRUE))
+  # 
+  # output$arima_plot <- renderPlot({
+  #   a %>%
+  #     gg_tsdisplay(difference(avgcon), plot_type='partial')
+  # })
+  
     # # Generate forecast
     # arima_forecast <- forecast(arima_model, h = 12)
     # 
@@ -787,7 +744,7 @@ server = function(input, output, session) {
                 xlab = "Time")
     })
 
-    # clustering <- dist(normalize(clus_group1,-c(1)), method=input$method)
+    clustering <- dist(normalize(clus_group1,-c(1)), method="euclidean")
 
 
 #     # clustering dendex --------------------------------------------------------

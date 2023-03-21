@@ -31,6 +31,44 @@ for(p in packages){
 
 This section of code is used to compress the file so that it will not load too slowly when it is uploaded to the website. I've already built the RDS files in the RDS folder, so you don't need to run this script.
 
+```{r}
+dwelling <- T3.4 %>%
+  filter(year %in% c(2005:2022)) %>%
+  filter(month %in% c(1:12)) %>%
+  filter(DWELLING_TYPE %in% c('1-room / 2-room','3-room','4-room',
+                              '5-room and Executive',
+                              'Private Apartments and Condominiums',
+                              'Landed Properties', 'Others')) %>%
+  mutate(date = parse_date_time(paste0(year, "-", month,"-1"),"ymd")) %>%
+  mutate(monthyear = format(as.Date(date), "%b %Y"))
+
+dwelling$class <- case_when(
+  dwelling$DWELLING_TYPE %in% c('Private Apartments and Condominiums',
+                                'Landed Properties', 'Others') ~ "Private",
+  dwelling$DWELLING_TYPE %in% c('1-room / 2-room','3-room','4-room',
+                                '5-room and Executive') ~ "Public")
+
+saveRDS(dwelling, file = "RDS/dwelling.rds")
+```
+
+```{r}
+# wrangling data
+town <- subset(T3.5, Description != 'Overall' & Description !='Central Region' & 
+                 Description !='East Region' & Description !='North East Region' &
+                 Description !='North Region' & Description !='West Region' &
+                 kwh_per_acc != 's' & dwelling_type != 'Private Housing' &
+                 dwelling_type != 'Public Housing' & month != 'Annual') %>%
+  mutate(kwh_per_acc = as.numeric(kwh_per_acc)) %>%
+  mutate(date = parse_date_time(paste0(year, "-", month,"-1"),"ymd"))
+
+town$type <- case_when(
+  town$dwelling_type %in% c('Private Apartments and Condominiums',
+                            'Landed Properties', 'Others') ~ "Private",
+  town$dwelling_type %in% c('1-room / 2-room','3-room','4-room',
+                            '5-room and Executive') ~ "Public")
+saveRDS(town, file = "RDS/town.rds")
+```
+
 ```{r read data, warning=FALSE, message=FALSE}
 library(readr)
 T2.3 <- read_csv("data/T2-3.csv")
@@ -763,10 +801,6 @@ summary(aov(kwh_per_acc ~ dwelling_type, data = consumption))
 ```
 
 ```{r}
-#library(shiny)
-#library(shinydashboard)
-#library(shinythemes)
-#library(shinyWidgets)
 library(RColorBrewer)
 library(tidyverse)
 library(lubridate)
