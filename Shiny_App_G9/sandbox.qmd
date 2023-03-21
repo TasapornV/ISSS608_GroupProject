@@ -1686,3 +1686,157 @@ dwelling %>%
   fmt_number(columns = 4,
     decimals = 2)
 ```
+
+# Final (Intro) Library and Data Prep
+
+```{r}
+#load lib
+pacman::p_load(scales, viridis, hrbrthemes, lubridate, gridExtra, knitr, data.table, ggthemes, CGPfunctions, ggHoriPlot, gapminder, gganimate, ggbraid, ggstatsplot, ggiraph, plotly, performance, nortest, patchwork, ggdist, ggridges, tidyverse)
+```
+
+```{r}
+dwelling <- T3.4 %>%
+  filter(year %in% c(2005:2022)) %>%
+  filter(month %in% c(1:12)) %>%
+  filter(DWELLING_TYPE %in% c('1-room / 2-room','3-room','4-room',
+                              '5-room and Executive',
+                              'Private Apartments and Condominiums',
+                              'Landed Properties', 'Others')) %>%
+  mutate(date = parse_date_time(paste0(year, "-", month,"-1"),"ymd")) %>%
+  mutate(monthyear = format(as.Date(date), "%b %Y"))
+#Add Private vs Public Classification
+dwelling$class <- case_when(
+    dwelling$DWELLING_TYPE %in% c('Private Apartments and Condominiums',
+                                 'Landed Properties', 'Others') ~ "Private",
+    dwelling$DWELLING_TYPE %in% c('1-room / 2-room','3-room','4-room',
+                                  '5-room and Executive') ~ "Public")
+```
+
+# Final (Dwelling): Line Chart
+
+```{r}
+#linechart # backup
+ggplot(data = dwelling, aes(x = date)) +
+  geom_line(aes(y = consumption_GWh, colour = DWELLING_TYPE)) + 
+  labs(title = "Electricity Consumption by Dwelling Type",
+      x = "Year", y = "Consumption (GWh)") +
+  scale_color_discrete(name="") +
+  theme(legend.position="bottom")
+```
+
+# Final (Dwelling): Cycle Plot for a dwelling type
+
+```{r}
+# cycleplot for each dwelling type
+select_type <- 'Private Apartments and Condominiums'
+select_dwelling <- dwelling %>% 
+  filter(DWELLING_TYPE %in% c(select_type)) %>%
+  mutate(year = factor(year, levels = 2005:2022),
+         month = factor(month, levels = 1:12))
+#Computing year average by months
+hline.data <- select_dwelling %>%
+  group_by(month) %>%
+  summarise(avg_cons = mean(consumption_GWh))
+
+#Plotting cycle plot for electricity consumption per dwelling type
+ggplot() + 
+  geom_line(data = select_dwelling,
+            aes(x=year,y=consumption_GWh, group=month), colour = "black") +
+  geom_hline(data = hline.data,
+             aes(yintercept=avg_cons),
+             linetype=6, 
+             colour="red", 
+             linewidth=0.5) +
+  facet_grid(~month) +
+  theme(axis.text.x = element_text(angle=90, vjust=1, hjust=1)) +
+  labs(title = "Cycleplot for household electricity consumption (GWh), Jan 2005-Jun 2022",
+       subtitle = paste0('Dwelling Type: ',select_type)) +
+  scale_x_discrete(breaks=c("2005","2010","2015","2020")) +
+  xlab("") +
+  ylab("GWh")
+```
+
+# Final (Dwelling): Slopegraph between any two years
+```{r}
+#Display rate of change using Slopegraph
+#User can choose any 2 years for comparison
+startyear <- 2005
+endyear <- 2021
+cons_yr <- dwelling
+cons_year <- cons_yr %>%
+  group_by(DWELLING_TYPE, year) %>%
+  summarise(mean_cons=round(mean(consumption_GWh),2))
+p_slopegraph <- cons_year %>% 
+  mutate(year = factor(year)) %>%
+  filter(year %in% c(startyear,endyear)) %>%
+  newggslopegraph(year, mean_cons, DWELLING_TYPE)
+p_slopegraph1 <- p_slopegraph + labs(title = "Monthly Household Electricity Consumption between 2 years",
+                subtitle = "",
+                caption = "Source:ema.gov.sg")
+p_slopegraph1
+```
+
+# Final (Dwelling): Interactive Sparklines for a time period -Bandline
+```{r}
+#data formatting
+d_sparks <- dwelling %>%
+  filter(year %in% c(startyear:endyear)) %>%
+  mutate(`Dwelling Type` = DWELLING_TYPE) %>%
+  group_by(`Dwelling Type`) %>%
+  summarize(`Monthly Consumption` = list(consumption_GWh))
+#react_sparkline
+reactable(
+  d_sparks,
+  defaultPageSize = 13,
+  columns = list(
+    `Dwelling Type` = colDef(maxWidth = 200),
+    `Monthly Consumption` = colDef(
+      cell = react_sparkline(
+        d_sparks,
+        highlight_points = highlight_points(
+          min = "red", max = "blue"),
+        line_width = 1,
+        bandline = "innerquartiles",
+        bandline_color = "green"
+        )
+    )
+  )
+)
+```
+
+# Final (Dwelling): Interactive Sparklines for a time period (Mean)
+
+```{r}
+#Allow users to switch between bandline and mean statline
+reactable(
+  d_sparks,
+  defaultPageSize = 13,
+  columns = list(
+    `Dwelling Type` = colDef(maxWidth = 200),
+    `Monthly Consumption` = colDef(
+      cell = react_sparkline(
+        d_sparks,
+        highlight_points = highlight_points(
+          min = "red", max = "blue"),
+        statline = "mean"
+        )
+    )
+  )
+)       
+```
+
+# Final (Dwelling): Report based on same timeframe as the chart
+```{r}
+#Preparing the data for report
+dwelling %>%
+  filter(year %in% c(startyear:endyear)) %>%
+  group_by(DWELLING_TYPE) %>%
+  summarise("Min" = min(consumption_GWh, na.rm = T),
+            "Max" = max(consumption_GWh, na.rm = T),
+            "Average" = mean(consumption_GWh, na.rm = T)
+            ) %>%
+  gt() %>%
+  fmt_number(columns = 4,
+    decimals = 2)
+```
+
