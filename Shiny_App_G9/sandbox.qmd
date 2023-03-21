@@ -899,6 +899,15 @@ heatmaply(clus_matrix1[,-c(1)],
 library(dendextend)
 clustering <- dist(normalize(clus_group1,-c(1)), method="euclidean")
 dend_expend(clustering)[[3]]
+# 
+# library(dendextend)
+# clustering <- dist(as.numeric(normalize(clus_group1,-c(1))), method="euclidean")
+# dend_expend(clustering)[[3]]
+
+```
+
+```{r}
+
 ```
 
 # Final: using find_k() to determine the optimal number of clusters
@@ -1605,9 +1614,6 @@ Final (Intro) Interactive Sparklines for a year
 
 ```{r}
 remotes::install_github("timelyportfolio/dataui")
-```
-
-```{r}
 library(dataui)
 ```
 

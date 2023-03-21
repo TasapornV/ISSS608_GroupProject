@@ -1,8 +1,8 @@
 
 
 # LIBRARY -----------------------------------------------------------------
-
 remotes::install_github("timelyportfolio/dataui")
+
 packages = c('CGPfunctions', 'cluster', 'data.table', 'dataui','dendextend', 
              'devtools', 'dplyr', 'dtwclust', 'earth', 'fable', 'feasts', 
              'forecast','fpc', 'geofacet', 'ggdendro', 'ggiraph', 'ggplot2', 
@@ -81,7 +81,7 @@ ui = dashboardPage(
       ## OVERVIEW --------------------------------------------------------------
       tabItem(
         tabName = "overview",
-        navbarPage("OVERVIEW",
+        navbarPage( "OVERVIEW",
                    
                    ### introduction --------------------------------------------
                    tabPanel("Introduction",introtext),
@@ -153,8 +153,8 @@ ui = dashboardPage(
                               ),
                               fluidRow(
                                 column(4, dataTableOutput("dendextend"),
-                                       plotOutput("numberk", height = "300px")),
-                                column(8, plotlyOutput("dendro", height = "300px"),
+                                       plotOutput("numberk", height = "350px")),
+                                column(8, plotlyOutput("dendro", height = "400px"),
                                        tmapOutput("map"))
                               )
                             )
@@ -181,7 +181,7 @@ ui = dashboardPage(
                                 column(3,numericInput("k", "Choose number of cluster",
                                                       min = 1, max = 10, value = 2))
                               ),
-                              plotlyOutput("dtw")
+                              plotlyOutput("dtw", height =1000)
                             ))
         )
       ),
@@ -744,7 +744,7 @@ server = function(input, output, session) {
                 xlab = "Time")
     })
 
-    clustering <- dist(normalize(clus_group1,-c(1)), method="euclidean")
+    # clustering <- dist(normalize(clus_group1,-c(1)), method="euclidean")
 
 
 #     # clustering dendex --------------------------------------------------------
