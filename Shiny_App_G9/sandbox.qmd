@@ -1413,30 +1413,6 @@ p_slopegraph1 <- p_slopegraph + labs(title = "Monthly Household Electricity Cons
 p_slopegraph1
 ```
 
-### Introduction: Total Household Electricity Consumption by Town/Region
-
-```{r}
-town <- subset(T3.5, Description != 'Overall' & Description !='Central Region' & 
-                 Description !='East Region' & Description !='North East Region' &
-                 Description !='North Region' & Description !='West Region' &
-                 kwh_per_acc != 's' & dwelling_type != 'Private Housing' &
-                 dwelling_type != 'Public Housing' & month != 'Annual') %>%
-  mutate(kwh_per_acc = as.numeric(kwh_per_acc)) %>%
-  mutate(date = parse_date_time(paste0(year, "-", month,"-1"),"ymd"))
-
-#Adding housing type
-town$type <- case_when(
-    town$dwelling_type %in% c('Private Apartments and Condominiums',
-                                 'Landed Properties', 'Others') ~ "Private",
-    town$dwelling_type %in% c('1-room / 2-room','3-room','4-room',
-                                  '5-room and Executive') ~ "Public")
-```
-
-```{r}
-#Horizon plot
-
-```
-
 ```{r}
 #boxplot
 inputyr <- 2021
@@ -1643,11 +1619,7 @@ remotes::install_github("timelyportfolio/dataui")
 library(dataui)
 ```
 
-```{r}
-pacman::p_load(reactable, reactablefmtr, gt, gtExtras)
-```
-
-# Final (Intro): Interactive Sparklines for a time period (Bandline/Mean)
+Duplicate: Interactive Sparklines for a time period (Bandline/Mean)
 
 ```{r}
 #data formatting
@@ -1676,7 +1648,7 @@ reactable(
 )
 ```
 
-# Final (Intro): Interactive Sparklines for a time period (Mean)
+Duplicate: Interactive Sparklines for a time period (Mean)
 
 ```{r}
 #Allow users to switch between bandline and mean statline
@@ -1717,8 +1689,10 @@ dwelling %>%
 
 ```{r}
 #load lib
-pacman::p_load(scales, viridis, hrbrthemes, lubridate, gridExtra, knitr, data.table, ggthemes, CGPfunctions, ggHoriPlot, gapminder, gganimate, ggbraid, ggstatsplot, ggiraph, plotly, performance, nortest, patchwork, ggdist, ggridges, tidyverse)
+pacman::p_load(scales, viridis, hrbrthemes, lubridate, gridExtra, knitr, data.table, ggthemes, CGPfunctions, ggHoriPlot, gapminder, gganimate, ggbraid, ggstatsplot, ggiraph, plotly, performance, nortest, patchwork, ggdist, ggridges, reactable, reactablefmtr, gt, gtExtras, tidyverse)
 ```
+
+Dwelling Type Data Preparation
 
 ```{r}
 dwelling <- T3.4 %>%
@@ -1728,14 +1702,65 @@ dwelling <- T3.4 %>%
                               '5-room and Executive',
                               'Private Apartments and Condominiums',
                               'Landed Properties', 'Others')) %>%
-  mutate(date = parse_date_time(paste0(year, "-", month,"-1"),"ymd")) %>%
-  mutate(monthyear = format(as.Date(date), "%b %Y"))
+  mutate(date = parse_date_time(paste0(year, "-", month,"-1"),"ymd"))
+
 #Add Private vs Public Classification
 dwelling$class <- case_when(
     dwelling$DWELLING_TYPE %in% c('Private Apartments and Condominiums',
                                  'Landed Properties', 'Others') ~ "Private",
     dwelling$DWELLING_TYPE %in% c('1-room / 2-room','3-room','4-room',
                                   '5-room and Executive') ~ "Public")
+```
+
+Town Data Preparation
+
+```{r}
+town <- subset(T3.5, Description != 'Overall' & Description !='Central Region' & 
+                 Description !='East Region' & Description !='North East Region' &
+                 Description !='North Region' & Description !='West Region' &
+                 kwh_per_acc != 's' & dwelling_type != 'Private Housing' &
+                 dwelling_type != 'Public Housing' & month != 'Annual') %>%
+  mutate(kwh_per_acc = as.numeric(kwh_per_acc)) %>%
+  mutate(date = parse_date_time(paste0(year, "-", month,"-1"),"ymd")) %>%
+  mutate(monthyear = format(as.Date(date), "%b %Y"))
+
+#Adding housing type
+town$type <- case_when(
+    town$dwelling_type %in% c('Private Apartments and Condominiums',
+                                 'Landed Properties', 'Others') ~ "Private",
+    town$dwelling_type %in% c('1-room / 2-room','3-room','4-room',
+                                  '5-room and Executive') ~ "Public")
+```
+
+Region Data Preparation
+
+```{r}
+region <- subset(town, select = -c(Description)) %>%
+  group_by(Region, monthyear) %>%
+  mutate(consumption = sum(kwh_per_acc))
+```
+
+# Final (Intro): Toggle between Dwelling and Town
+
+```{r}
+dwelling_tog <- dwelling %>%
+  mutate(type = DWELLING_TYPE) %>%
+  mutate(consumption = consumption_GWh) %>%
+  mutate(title = 'Dwelling Type') %>%
+  select(c('year','month','date','type','consumption','class', 'title'))
+
+town_tog <- town %>%
+  mutate(type = Description) %>%
+  mutate(consumption = kwh_per_acc) %>%
+  mutate(title = 'Town') %>%
+  select(c('year','month','date','type','consumption','title'))
+
+region_tog <- town %>%
+  group_by(Region, monthyear) %>%
+  mutate(consumption = sum(kwh_per_acc))
+#  mutate(type = Region) %>%
+#  mutate(title = 'Region') %>%
+#  select(c('year','month','date','type','consumption','title'))
 ```
 
 # Final (Dwelling): Line Chart
