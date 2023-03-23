@@ -1734,6 +1734,12 @@ town$type <- case_when(
 
 Region Data Preparation
 
+```{r Tasa add this}
+region <- town %>% 
+  group_by(Region, monthyear) %>% 
+  summarise(consumption = sum(kwh_per_acc))
+```
+
 ```{r}
 region <- subset(town, select = -c(Description)) %>%
   group_by(Region, monthyear) %>%
