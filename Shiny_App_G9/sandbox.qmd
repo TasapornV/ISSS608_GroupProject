@@ -1721,29 +1721,27 @@ town <- subset(T3.5, Description != 'Overall' & Description !='Central Region' &
                  kwh_per_acc != 's' & dwelling_type != 'Private Housing' &
                  dwelling_type != 'Public Housing' & month != 'Annual') %>%
   mutate(kwh_per_acc = as.numeric(kwh_per_acc)) %>%
-  mutate(date = parse_date_time(paste0(year, "-", month,"-1"),"ymd")) %>%
-  mutate(monthyear = format(as.Date(date), "%b %Y"))
+  mutate(date = parse_date_time(paste0(year, "-", month,"-1"),"ymd"))
 
 #Adding housing type
-town$type <- case_when(
-    town$dwelling_type %in% c('Private Apartments and Condominiums',
-                                 'Landed Properties', 'Others') ~ "Private",
-    town$dwelling_type %in% c('1-room / 2-room','3-room','4-room',
-                                  '5-room and Executive') ~ "Public")
+#town$type <- case_when(
+#    town$dwelling_type %in% c('Private Apartments and Condominiums',
+#                                 'Landed Properties', 'Others') ~ "Private",
+#    town$dwelling_type %in% c('1-room / 2-room','3-room','4-room',
+#                                  '5-room and Executive') ~ "Public")
+
+#Group by town only
+town_final <- town %>% 
+  group_by(date, Description) %>%
+  summarise(consumption = sum(kwh_per_acc)/1000)
 ```
 
 Region Data Preparation
 
-```{r Tasa add this}
-region <- town %>% 
-  group_by(Region, monthyear) %>% 
-  summarise(consumption = sum(kwh_per_acc))
-```
-
 ```{r}
-region <- subset(town, select = -c(Description)) %>%
-  group_by(Region, monthyear) %>%
-  mutate(consumption = sum(kwh_per_acc))
+region <- town %>% 
+  group_by(date, Region) %>% 
+  summarise(consumption = sum(kwh_per_acc)/1000)
 ```
 
 # Final (Intro): Toggle between Dwelling and Town
@@ -1755,50 +1753,64 @@ dwelling_tog <- dwelling %>%
   mutate(title = 'Dwelling Type') %>%
   select(c('year','month','date','type','consumption','class', 'title'))
 
-town_tog <- town %>%
+town_tog <- town_final %>%
   mutate(type = Description) %>%
-  mutate(consumption = kwh_per_acc) %>%
   mutate(title = 'Town') %>%
+  mutate(year = year(date)) %>%
+  mutate (month = month(date)) %>%
   select(c('year','month','date','type','consumption','title'))
 
-region_tog <- town %>%
-  group_by(Region, monthyear) %>%
-  mutate(consumption = sum(kwh_per_acc))
-#  mutate(type = Region) %>%
-#  mutate(title = 'Region') %>%
-#  select(c('year','month','date','type','consumption','title'))
+region_tog <- region %>%
+  mutate(type = Region) %>%
+  mutate(title = 'Region') %>%
+  mutate(year = year(date)) %>%
+  mutate (month = month(date)) %>%
+  mutate(unit = 'kWh') %>%
+  select(c('year','month','date','type','consumption','title'))
 ```
 
-# Final (Dwelling): Line Chart
+# Final (Overview): Line Chart
+
+Specifying the dataset and time period
+
+```{r}
+#choose between dwelling_tog, town_tog, region_tog
+chosendata <- town_tog
+
+#choosing the time period
+startyear <- 2005
+endyear <- 2021
+```
 
 ```{r}
 #linechart # backup
-ggplot(data = dwelling, aes(x = date)) +
-  geom_line(aes(y = consumption_GWh, colour = DWELLING_TYPE)) + 
-  labs(title = "Electricity Consumption by Dwelling Type",
-      x = "Year", y = "Consumption (GWh)") +
+ggplot(data = chosendata, aes(x = date)) +
+  geom_line(aes(y = consumption, colour = type)) + 
+  labs(title = paste0("Electricity Consumption by ",chosendata[1,6]),
+      x = "Year", y = paste0("Consumption, GWh ")) +
   scale_color_discrete(name="") +
   theme(legend.position="bottom")
 ```
 
-# Final (Dwelling): Cycle Plot for a dwelling type
+# Final (Overview): Cycle Plot
 
 ```{r}
-# cycleplot for each dwelling type
-select_type <- 'Private Apartments and Condominiums'
-select_dwelling <- dwelling %>% 
-  filter(DWELLING_TYPE %in% c(select_type)) %>%
+# cycleplot
+select_type <- 'Bishan'
+select_cycle <- chosendata %>% 
+  filter(type %in% c(select_type)) %>%
   mutate(year = factor(year, levels = 2005:2022),
          month = factor(month, levels = 1:12))
+
 #Computing year average by months
-hline.data <- select_dwelling %>%
+hline.data <- select_cycle %>%
   group_by(month) %>%
-  summarise(avg_cons = mean(consumption_GWh))
+  summarise(avg_cons = mean(consumption))
 
 #Plotting cycle plot for electricity consumption per dwelling type
 ggplot() + 
-  geom_line(data = select_dwelling,
-            aes(x=year,y=consumption_GWh, group=month), colour = "black") +
+  geom_line(data = select_cycle,
+            aes(x=year,y=consumption, group=month), colour = "black") +
   geom_hline(data = hline.data,
              aes(yintercept=avg_cons),
              linetype=6, 
@@ -1806,35 +1818,32 @@ ggplot() +
              linewidth=0.5) +
   facet_grid(~month) +
   theme(axis.text.x = element_text(angle=90, vjust=1, hjust=1)) +
-  labs(title = "Cycleplot for household electricity consumption (GWh), Jan 2005-Jun 2022",
-       subtitle = paste0('Dwelling Type: ',select_type)) +
+  labs(title = paste0("Cycleplot for Chosen ",chosendata[1,6],"'s Consumption (GWh) , Jan 2005-Jun 2022"),
+       subtitle = paste0(chosendata[1,6],": ",select_type)) +
   scale_x_discrete(breaks=c("2005","2010","2015","2020")) +
   xlab("") +
-  ylab("GWh")
+  ylab("Consumption, GWh")
 ```
 
-# Final (Dwelling): Slopegraph between any two years
+# Final (Overview): Slopegraph between any two years
 
 ```{r}
 #Display rate of change using Slopegraph
-#User can choose any 2 years for comparison
-startyear <- 2005
-endyear <- 2021
-cons_yr <- dwelling
-cons_year <- cons_yr %>%
-  group_by(DWELLING_TYPE, year) %>%
-  summarise(mean_cons=round(mean(consumption_GWh),2))
+#Give user choice of mean, median, sum, min or max
+cons_year <- chosendata %>%
+  group_by(type, year) %>%
+  summarise(mean_cons=round(mean(consumption),2))
 p_slopegraph <- cons_year %>% 
   mutate(year = factor(year)) %>%
   filter(year %in% c(startyear,endyear)) %>%
-  newggslopegraph(year, mean_cons, DWELLING_TYPE)
-p_slopegraph1 <- p_slopegraph + labs(title = "Monthly Household Electricity Consumption between 2 years",
+  newggslopegraph(year, mean_cons, type)
+p_slopegraph1 <- p_slopegraph + labs(title = "Average Monthly Electricity Consumption between 2 years",
                 subtitle = "",
-                caption = "Source:ema.gov.sg")
+                caption = "Source: ema.gov.sg")
 p_slopegraph1
 ```
 
-# Final (Dwelling): Interactive Sparklines for a time period -Bandline
+Backup: Interactive Sparklines for a time period -Bandline
 
 ```{r}
 #data formatting
@@ -1863,7 +1872,7 @@ reactable(
 )
 ```
 
-# Final (Dwelling): Interactive Sparklines for a time period (Mean)
+Backup: Interactive Sparklines for a time period (Mean)
 
 ```{r}
 #Allow users to switch between bandline and mean statline
@@ -1884,7 +1893,7 @@ reactable(
 )       
 ```
 
-# Final (Dwelling): Report+Sparkline based on same timeframe as the chart
+# Final (Overview): Report+Sparkline based on same timeframe as the chart
 
 ```{r}
 library(svglite)
@@ -1892,23 +1901,23 @@ library(svglite)
 
 ```{r}
 #Preparing the data for report 
-d_report <- dwelling %>%   
+d_report <- chosendata %>%   
   filter(year %in% c(startyear:endyear)) %>%   
-  mutate(`Dwelling Type`= DWELLING_TYPE) %>%   
-  group_by(`Dwelling Type`) %>%   
-  summarise("Min" = min(consumption_GWh, na.rm = T),             
-            "Max" = max(consumption_GWh, na.rm = T),
-            "Average" = mean(consumption_GWh, na.rm = T)) 
+  mutate(`Category`= type) %>%   
+  group_by(`Category`) %>%   
+  summarise("Min" = min(consumption, na.rm = T),             
+            "Max" = max(consumption, na.rm = T),
+            "Average" = mean(consumption, na.rm = T)) 
 
-d_sparks <- dwelling %>%   
+d_sparks <- chosendata %>%   
   filter(year %in% c(startyear:endyear)) %>%   
-  mutate(`Dwelling Type`= DWELLING_TYPE) %>%   
-  group_by(`Dwelling Type`) %>%   
-  summarize(`Monthly Consumption` = list(consumption_GWh))
+  mutate(`Category`= type) %>%   
+  group_by(`Category`) %>%   
+  summarize(`Monthly Consumption` = list(consumption))
 
-dwelling_data = left_join(d_report, d_sparks) 
+report_data = left_join(d_report, d_sparks) 
 
-dwelling_data %>% 
+report_data %>% 
   gt() %>% 
   gt_plt_sparkline('Monthly Consumption')
 ```
