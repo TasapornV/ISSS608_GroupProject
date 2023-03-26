@@ -79,15 +79,15 @@ ui = dashboardPage(
                    ),
   dashboardBody(
     tabItems(
-      ## OVERVIEW --------------------------------------------------------------
+      ## 1 OVERVIEW --------------------------------------------------------------
       tabItem(
         tabName = "overview",
         navbarPage( "OVERVIEW",
                    
-                   ### introduction --------------------------------------------
+                   ### 1.1 introduction --------------------------------------------
                    tabPanel("Introduction",introtext),
                    
-                   ### geofacet ------------------------------------------------
+                   ### 1.2 geofacet ------------------------------------------------
                    tabPanel("Consumption by Planning Area & Dwelling Type",
                             fluidPage(
                               radioButtons("axis", label = "select axis control",
@@ -98,7 +98,7 @@ ui = dashboardPage(
                               plotOutput("geo", height = 800)
                             )),
                    
-                   ### peak system demand --------------------------------------
+                   ### 1.3 peak system demand --------------------------------------
                    tabPanel("Consumption by Dwelling type and Town",
                             fluidRow(
                               column(4, sliderInput("slider_year", "Select year",min = 2005,
@@ -120,11 +120,11 @@ ui = dashboardPage(
         )
       ),
       
-      ## CLUSTERING ----------------------------------------------------------------
+      ## 2 CLUSTERING ----------------------------------------------------------------
       tabItem(
         tabName = "clustering",
         navbarPage("CLUSTERING",
-                   ### hierachical Clustering ----------------------------
+                   ### 2.1 hierachical Clustering ----------------------------
                    tabPanel("Hierachical Clustering",
                             fluidPage(
                               fluidRow(
@@ -152,7 +152,7 @@ ui = dashboardPage(
                             )
                    ),
                    
-                   ### Time Series Clustering ----------------------------------
+                   ### 2.2 Time Series Clustering ----------------------------------
                    tabPanel("Time Series Clustering",
                             fluidPage(
                               fluidRow(
@@ -171,11 +171,11 @@ ui = dashboardPage(
         )
       ),
       
-      ## INFERENTIAL STATISTICS ------------------------------------------------
+      ## 3 INFERENTIAL STATISTICS ------------------------------------------------
       tabItem(tabName = "inferential",
               navbarPage("INFERENTIAL STATISTICS", 
                          
-                         ### anova ---------------------------------------------
+                         ### 3.1 anova ---------------------------------------------
                          tabPanel("ANOVA",
                                   fluidPage(
                                     fluidRow(
@@ -199,7 +199,7 @@ ui = dashboardPage(
                                     )
                          )),
 
-                         ### correlation ---------------------------------------
+                         ### 3.2 correlation ---------------------------------------
                           tabPanel("Correlation Analysis",
                                    fluidPage(
                                      fluidRow(
@@ -209,12 +209,12 @@ ui = dashboardPage(
               )
       ),
       
-      ## TIME SERIES FORECASTING------------------------------------------------
+      ## 4 TIME SERIES FORECASTING------------------------------------------------
       
       tabItem(tabName = "time_series",
               navbarPage("TIME SERIES FORECASTING",
 
-                         ### arima ---------------------------------------------
+                         ### 4.1 arima ---------------------------------------------
                          tabPanel("ARIMA",
                                   fluidPage(
                                     fluidRow(
@@ -503,8 +503,6 @@ server = function(input, output, session) {
   #   gt() %>%
   #   fmt_number(columns = 4,
   #              decimals = 2)
-  
-  
   
   
   # anova -----------------------------------------------------------------

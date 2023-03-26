@@ -5,10 +5,10 @@ account: tasapornv
 server: shinyapps.io
 hostUrl: https://api.shinyapps.io/v1
 appId: 8289619
-bundleId: 6979925
+bundleId: 7006022
 url: https://tasapornv.shinyapps.io/Shiny_App_G9/
-when: 1679271849.62147
-lastSyncTime: 1679271849.62148
+when: 1679728126.22877
+lastSyncTime: 1679728126.22878
 asMultiple: FALSE
 asStatic: FALSE
-ignoredFiles: gganim.gif|Rplot001.jpg|sandbox.qmd|sandbox_files
+ignoredFiles: gganim.gif|Rplot001.jpg|sandbox.qmd
