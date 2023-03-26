@@ -10,15 +10,13 @@ website:
     logo: "nav_logo.png"
     background: "#AF8D2F"
     left:
-    - icon: "house-fill"
-      href: "index.html"
-    - text: "Proposal"
-      href: "proposal.html"
-    - text: "Poster"
-    - text: "Shiny App"
-      href: https://tasapornv.shinyapps.io/Shiny_App_G9/
-    - text: "Meeting Minutes"
-      href: MOM.qmd
+      - icon: "house-fill"
+        href: "index.html"
+      - text: "Project Snapshot"
+        href: "proposal.html"
+      - text: "Poster"
+      - text: "RShiny App"
+        href: https://tasapornv.shinyapps.io/Shiny_App_G9/
     right:
       - icon: github
         href: https://github.com/TasapornV/ISSS608_GroupProject
