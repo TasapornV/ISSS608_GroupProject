@@ -1,5 +1,5 @@
 ---
-title: "Proposal"
+title: "Project Snapshot"
 author: "**Group 9**"
 date: 5 February 2023
 date-format: medium
@@ -13,22 +13,22 @@ format:
     title-block-banner: true
 ---
 
-## Introduction
+## Objective
 
 Singapore has progressively moved towards an open electricity market since 2001 to ensure a reliable energy supply and promote effective competition in the energy market.
 
-However, it is challenging to analyze the energy market and make informed decisions due to several variable components that could influence the market. First, the price of electricity in the wholesale market fluctuates depending on the electricity demand and supply, which are dependent on consumption patterns as well as gas industry respectively. About 95% of electricity is generated using natural gas. Next, there are also multiple parties (Electricity Market Authority, Power generation companies, Electricity Retailers, etc) involved in the electricity market.
+With growing competition in the market, it becomes increasingly important for market players such as regulators, suppliers and retailers to understand the electricity consumption pattern in Singapore to ensure adequate supply planning and pricing structure. 
 
-To address this challenge, we build this RShinny app to provide relevant stakeholders with means to analyse and understand the data with applicable analytics models. Also, we want to help the users explore more information about the Singapore energy market easily through visualizations.
+To assist relevant market players in analyzing electricity consumption data effectively, we created this RShinny App to visualize Singapore electricity consumption pattern and trend, perform statistical analysis as well as forecast the future trends.
 
-## Proposed Scope
+## Scope
 
 Our RShinny app allows users to interact with the data to:
 
-1.  Gain an overview of the current electricity and gas market in Singapore,
+1.  Explore the electricity consumption patterns and trends in Singapore,
 2.  Cluster planning areas based on similarities in consumption patterns,
 3.  Perform inferential statistical analysis, and
-4.  Perform time series forecasting.
+4.  Forecast future consumption trend.
 
 A detailed description and sketch of the proposed analyses and visualizations are presented in section 4 of this proposal.
 
@@ -44,54 +44,44 @@ The data used in this project is extracted from [Energy Market Authority (EMA) S
 6.  Solar
 7.  Manpower
 
-For this project, we will be focusing on electricity and gas consumption, supply and prices.
+For this project, we will be focusing on household electricity consumption.
 
 ## Visualization and Analysis
 
 ### Overview Dashboard
 
-To provide users some basic insights on the Singapore energy market, an Overview tab is built for users to explore the electricity and gas supply, prices and consumption by areas, regions and dwelling types. Changes over time are also visualized to provide users a more comprehensive view.
+To provide users some basic insights on the Singapore electricity consumption, an *Overview* tab is built for users to explore the electricity consumption by regions, planning areas and dwelling types. Changes over time are also visualized to provide users a more comprehensive view.
 
-#### Main R Packages
+#### Main R Packages & Functions
 
 -   **ggplot2:** for descriptive visualization such as boxplots
--   **ggiraph:** for interactive visualization
+-   **ggiraph/plotly:** for interactive visualization
 -   **geofacet:** for visualization laid out according to the geographic topology
 -   **timetk:** for time series visualization
 
-#### Proposed Visual Design
+#### Application Design
 
-![](images/DesignDraft1.png)
-
-![](images/DesignDraft2.png)
-
-![](images/DesignDraft3.png)
-
-![](images/DesignDraft5.png)
-
-![](images/DesignDraft4.png)
+INSERT SCREENSHOT
 
 ### Clustering Analysis
 
-Clustering analysis is performed to help users identify clusters with different consumption patterns. The clustering analysis is done using the consumption data for each planning area and dwelling type over time. This analysis will help stakeholders in future strategic planning activities such as supply planning and pricing.
+Clustering analysis is performed to help users identify clusters with distinct consumption patterns. The clustering analysis is done using the consumption data for each planning area and dwelling type over time. This analysis will help stakeholders in future strategic planning activities such as supply planning and pricing.
 
 #### Main R Packages & Functions
 
 -   **dtwclust:** for time series clustering
--   **dendextend:** to visualize and compare hierarchical clustering's dendogram
+-   **dendextend:** to visualize and compare hierarchical clustering's dendrogram
 -   **tmap:** representing clusters on interactive map visual
 
-#### Porposed Visual Design
+#### Application Design
 
-![](images/DesignDraft6.png)
-
-![](images/DesignDraft6.5.png)
+INSERT SCREENSHOT
 
 ### Inferential Analysis
 
-When we have more than two sample groups, we utilize ANOVA (Analysis of Variance) to see if there are any statistically significant differences between the means of two or more independent sample groups. In other words, it compares the means of different samples to determine the influence of one or more factors.
+When there are more than two sample groups, ANOVA (Analysis of Variance) is used to test if there are statistically significant differences between the means of these independent sample groups. In other words, it compares the means of different samples to determine the influence of one or more factors.
 
-Correlation plots, also known as correlograms for more than two variables, facilitate the visualization of the correlation between continuous variables.
+[TBC] Correlation plots, also known as correlograms for more than two variables, facilitate the visualization of the correlation between continuous variables.[TBC]
 
 #### Main R Packages & Functions
 
@@ -99,24 +89,22 @@ Correlation plots, also known as correlograms for more than two variables, facil
 -   **ggbetweenstats:** A combination of box and violin plots along with jittered data points for between-subjects designs with statistical details included in the plot as a subtitle
 -   **ggcorrplot:** Visualize a correlation matrix using ggplot2. It provides a solution for reordering the correlation matrix and displays the significance level on the correlogram. It includes also a function for computing a matrix of correlation p-values.
 
-#### Porposed Visual Design
+#### Application Design
 
-![](images/DesignDraft8.png)
+INSERT SCREENSHOT
 
-![](images/DesignDraft7.png)
+### Time Series Forecasting
 
-### Forecasting
-
-The objective of the forecasting visualization is to develop a tool that allows the user to select different data tables via data exploration and display the resulting forecast. Different predictive models would be run and the model accuracy and confidence level would be make available to the users. The best performing model is recommended.
+Various predictive models are built onto the app for users to forecast the future consumption trends. The model accuracy and confidence level are also made available for users.
 
 #### Main R Packages & Functions
 
 -   **modeltime:** The time series forecasting framework for use with the 'tidymodels' ecosystem. Models considered include ARIMA, Exponential Smoothing, SARIMA, Long Short-Term Memory and additional time series models from the 'forecast', 'tseries' and 'prophet' packages.
 -   **tidymodels:** a collection of packages for modeling and machine learning using [**tidyverse**](https://www.tidyverse.org/) principles.
 
-#### Proposed Visual Design
+#### Application Design
 
-![](images/DesignDraft9.png)
+INSERT SCREENSHOT
 
 ### Data
 
@@ -126,6 +114,6 @@ A data view is introduced to provide the user with an overview of how the data a
 
 ![](images/DesignDraft10.png)
 
-## Proposed Project Timeline
+## Project Timeline
 
 ![](images/Project%20timeline.png)
