@@ -145,9 +145,6 @@ ui = dashboardPage(
                                column(3, pickerInput("towns", "Select town", choices = towns,
                                                      selected = c("Ang Mo Kio", "Clementi"),
                                                      multiple = TRUE)),
-                               column(3, radioButtons("type", "Select parameter",
-                                                      choices = c("By town", "By dwelling type"),
-                                                      inline = TRUE)),
                                column(3, radioButtons("slope_value", "select value",
                                                       choices = c("sum", "average", "median" ),
                                                       inline = TRUE))
@@ -170,9 +167,6 @@ ui = dashboardPage(
                                column(3, pickerInput("towns2", "Select dwelling type", choices = dwellingtype,
                                                      selected = c("3-room", "4-room"),
                                                      multiple = TRUE)),
-                               column(3, radioButtons("type2", "Select parameter",
-                                                      choices = c("By town", "By dwelling type"),
-                                                      inline = TRUE)),
                                column(3, radioButtons("slope_value2", "select value",
                                                       choices = c("sum", "average", "median" ),
                                                       inline = TRUE))
@@ -424,7 +418,8 @@ server = function(input, output, session) {
           stat_summary(fun.y=mean, geom="point", color="red") +
           theme(legend.position="none") +
           theme(axis.text.x = element_text(angle = 45, vjust = 0.5, hjust=1)) +
-          ggtitle("Boxplot of consumption per Region")
+          ggtitle("Boxplot of consumption per Region") +
+          xlab('')
         
       })
       
@@ -480,7 +475,8 @@ server = function(input, output, session) {
         stat_summary(fun.y=mean, geom="point", color="red") +
         theme(legend.position="none") +
         theme(axis.text.x = element_text(angle = 45, vjust = 0.5, hjust=1)) +
-        ggtitle("Boxplot of consumption per Region")
+        ggtitle("Boxplot of consumption per Region") +
+        xlab('')
     })
     
     output$anovastat2 <- renderPrint({
