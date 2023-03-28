@@ -694,7 +694,7 @@ plot(forecast(arima_ts))
   arima_ts <- ts(data=arima$peak_system_demand_mw)
   arima_arima = auto.arima(arima_ts, d =1, D =1, allowdrift = FALSE)
 
-  # plot(forecast(arima_ts))
+  # plot(forecast(arima_arima))
 
 ```
 
