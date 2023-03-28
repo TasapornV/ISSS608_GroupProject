@@ -1,0 +1,14 @@
+name: Shiny_App_G9
+title: Shiny_App_G9
+username:
+account: tasatasa
+server: shinyapps.io
+hostUrl: https://api.shinyapps.io/v1
+appId: 8693145
+bundleId: 7017170
+url: https://tasatasa.shinyapps.io/Shiny_App_G9/
+when: 1679986741.79852
+lastSyncTime: 1679986741.79853
+asMultiple: FALSE
+asStatic: FALSE
+ignoredFiles: sandbox.qmd|Sandbox_cleaned.qmd|sandbox_files

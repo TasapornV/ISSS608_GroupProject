@@ -286,4 +286,295 @@ library(tidyquant)
 
 ```
 
-#### 
+### 2.2 Time Series clustering
+
+```{r 2.2 Time series clustering}
+library(dtwclust)
+library(tibble)
+library(ggdendro)
+
+# Clustering Method (type) ("partitional", "hierarchical", "tadpole", "fuzzy".) - fixed at hierarchical, otherwise need to change the quote because some parameters apply only to certain methods
+# parameter 1: Number of cluster (k)
+# parameter 2: Distance function (distance) (dtw_basic, dtw, dtw2, lbk, lbi, sbd, gak, sdtw) - full form can be found https://www.rdocumentation.org/packages/dtwclust/versions/5.5.12/topics/tsclust
+# parameter 3: hierarchical clustering method ("ward.D", "ward.D2", "single", "complete", "average", "mcquitty", "median" or "centroid" .)
+
+
+cluster_dtw <- tsclust(clus_matrix1[,-c(1)],
+                       type = "h", 
+                       k=2,
+                       distance="dtw",
+                       control = hierarchical_control(method = "ward.D"),
+                       preproc = NULL,
+                       args=tsclust_args(dist = list(window.size = 5L)))
+
+hclus_dtw <- cutree(cluster_dtw, k=4) %>%
+  as.data.frame(.) %>%
+  rename(.,cluster_group = .) %>%
+  rownames_to_column("type_col")
+
+# hcdata <- dendro_data(cluster_dtw)
+# names_order <- hcdata$labels$label
+
+library(ggplot2)
+library(ggiraph)
+library(timetk)
+
+# add the cluster number
+dtw_cluster <- clus_group1 %>%
+  left_join(hclus_dtw, by=c("Description" = "type_col")) 
+
+# change date columns into rows
+dtw_cluster_t <- dtw_cluster %>%
+  mutate_at(vars(contains("202")),as.numeric) %>%
+  gather(Date, value, 2:55)
+
+# Add the word "Cluster"
+dtw_cluster_t$cluster_group <- paste("Cluster", dtw_cluster_t$cluster_group)
+
+# convert Date into date format
+dtw_cluster_t$Date <- parse_date_time(dtw_cluster_t$Date, orders=c("%Y-%m-%d")) 
+
+# plot time series by cluster
+
+ts <- plot_time_series(.data=dtw_cluster_t,
+                 .date_var=Date, 
+                 .value=value,
+                 .color_var=Description,
+                 .facet_var=cluster_group,
+                 .facet_ncol=2,
+                 .facet_scales = "free_y",
+                 .smooth=FALSE,
+                 .line_size = 0.3,
+                 .plotly_slider = TRUE,
+                 .title = "Time Series Plot by cluster") 
+
+ts <- ts %>%
+  layout(hovermode="x",
+         hoverlabel=list(font=list(size=7)))
+ts
+
+# how to modify the tooltip? Town is being shown twice here...
+
+library(sf)
+# reading the map file
+mpsz <- st_read(dsn = 'master-plan-2014-subzone-boundary-web-shp',
+                layer = 'MP14_SUBZONE_WEB_PL',
+                crs = 3414) 
+
+singapore <- st_transform(mpsz, 4326)
+
+library(tmap)
+# change Description to upper case
+dtw_cluster_t$Description <- toupper(dtw_cluster_t$Description)
+
+# Preparing the choropleth map
+mpsz_clus_dtw <- left_join(singapore, dtw_cluster_t, by = c("PLN_AREA_N" = "Description"))
+tmap_mode("view")
+tm_shape(mpsz_clus_dtw)+
+  tmap_options(check.and.fix = TRUE)+
+  tm_fill("cluster_group", id=paste("PLN_AREA_N"),
+          style = "pretty",
+          palette = "Greens") +
+  tm_borders(alpha = 0.7)
+```
+
+## 3. Inferential - ANOVA
+
+```{r anova data, warning=FALSE, message=FALSE}
+T3.5 <- readRDS(file = "RDS/T3-5.rds")
+consumption <- T3.5
+consumption <- consumption %>% 
+  mutate(kwh_per_acc = as.numeric(kwh_per_acc)) %>% 
+  mutate(year = as.character(year))
+saveRDS(consumption, file = "RDS/anova.rds")
+```
+
+### 3.1 Box plot anova
+
+```{r anova box plot, warning=FALSE, message=FALSE}
+# LIBRARY -----------------------------------------------------------------
+
+packages = c('dplyr', 'ggplot2',
+             'ggstatsplot', 'ggrepel', 'ggridges', 'gt', 'gtExtras',
+             'knitr','plotly', 'lubridate', 'psych','ggstatsplot',
+             'reactablefmtr', 'readr', 'sf', 'shiny', 'shinydashboard',
+             'shinythemes', 'shinyWidgets', 'stats', 'tibble', 'tidymodels',
+             'tidyquant', 'tidyr', 'tidyverse'
+            )
+
+for(p in packages){
+  if(!require(p,character.only = T)){
+    install.packages(p)
+  }
+  library(p,character.only = T)
+}
+
+# READ DATA ---------------------------------------------------------------
+## Read compressed data file
+T2.3 <- readRDS(file = "RDS/T2-3.rds") # Peak System Demand
+T3.4 <- readRDS(file = "RDS/T3-4.rds") # Total Household Electricity Consumption by Dwelling Type
+T3.5 <- readRDS(file = "RDS/T3-5.rds") # Average Monthly Household Electricity Consumption by Planning Area & Dwelling Type
+dwelling <- readRDS(file = "RDS/dwelling.rds")
+town <- readRDS(file = "RDS/town.rds")
+
+# reading the map file
+mpsz <- st_read(dsn = 'master-plan-2014-subzone-boundary-web-shp',
+                layer = 'MP14_SUBZONE_WEB_PL',
+                crs = 3414)
+
+# Import the area grid data.
+area_grid <- read_csv("data/areagrid.csv")
+singapore <- st_transform(mpsz, 4326)
+
+
+# PARAMETER ---------------------------------------------------------------
+years <- c("2022","2021", "2020", "2019", "2018", "2017")
+regions <- c( "Central Region", "North East Region", "East Region", "North Region", "West Region")
+
+
+# UI ----------------------------------------------------------------------
+ui = dashboardPage(
+  dashboardHeader(title = 'Singapore Energy Consumption', titleWidth = 400),
+  
+  dashboardSidebar(width = 210,
+                   sidebarMenu(
+                     menuItem(" INFERENTIAL STATISTICS",  
+                              tabName = "inferential", 
+                              icon = icon("magnifying-glass-chart")
+                              )
+                   )
+  ),
+  dashboardBody(
+    tabItems(
+      
+      ## 3 INFERENTIAL STATISTICS ------------------------------------------------
+      tabItem(
+        tabName = "inferential",
+        navbarPage("INFERENTIAL STATISTICS", 
+                   
+                   ### 3.1 anova ---------------------------------------------
+                   tabPanel("ANOVA",
+                            fluidPage(
+                              fluidRow(
+                                column(5,
+                                       pickerInput(inputId = "anovainput", 
+                                                   label = "Select Parameter",
+                                                   choices = c("dwelling_type", "Region", "year"), 
+                                                   selected = "dwelling_type",
+                                                   options = list(`actions-box` = TRUE), 
+                                                   multiple = F),
+                                       verbatimTextOutput("anovastat")
+                                ),
+                                column(7, plotOutput("dwellingstat"))
+                              ),
+                              
+                              fluidRow(
+                                column(5,
+                                       pickerInput(inputId = "region", 
+                                                   label = "Select Region",
+                                                   choices = regions, 
+                                                   selected = "Central Region",
+                                                   options = list(`actions-box` = TRUE), 
+                                                   multiple = F),
+                                       verbatimTextOutput("anovastat2")
+                                ),
+                                column(7, plotOutput("dwellingstat2"))
+                              )
+                            ))
+        ))
+    ) #close tabItems
+  ) #close dashboard body
+) #close UI
+
+# SERVER ------------------------------------------------------------------
+
+server = function(input, output, session) {
+  
+  # anova -----------------------------------------------------------------
+  consumption <- T3.5
+  consumption <- consumption %>% 
+    mutate(kwh_per_acc = as.numeric(kwh_per_acc)) %>% 
+    mutate(year = as.character(year))
+  
+  observeEvent(input$anovainput,{
+    if(input$anovainput == "Region"){output$dwellingstat <- renderPlot({
+      consumption %>%
+        mutate(class = fct_reorder(Region, kwh_per_acc, .fun='mean')) %>%
+        ggplot( aes(x=reorder(Region, kwh_per_acc), y=kwh_per_acc)) +
+        geom_boxplot() +
+        stat_summary(fun.y=mean, geom="point", color="red") +
+        theme(legend.position="none") +
+        theme(axis.text.x = element_text(angle = 45, vjust = 0.5, hjust=1)) +
+        ggtitle("Boxplot of consumption per planning area")
+    })
+    }
+    if(input$anovainput == "year") {
+  output$dwellingstat <- renderPlot({
+    ggbetweenstats(
+  data = consumption,
+  x = year,
+  y = kwh_per_acc,
+  # type = "np",
+  messages = FALSE
+)
+})}
+    if(input$anovainput == "dwelling_type"){output$dwellingstat <- renderPlot({
+      consumption %>%
+        mutate(class = fct_reorder(dwelling_type, kwh_per_acc, .fun='mean')) %>%
+        ggplot( aes(x=reorder(dwelling_type, kwh_per_acc), y=kwh_per_acc)) +
+        geom_boxplot() +
+        stat_summary(fun.y=mean, geom="point", color="red") +
+        theme(legend.position="none") +
+        theme(axis.text.x = element_text(angle = 45, vjust = 0.5, hjust=1)) +
+        ggtitle("Boxplot of consumption per planning area")
+    })}
+    if(input$anovainput == "dwelling_type"){
+      output$anovastat <- renderPrint({
+        summary(aov(kwh_per_acc ~ dwelling_type, data = consumption))
+      })}
+    if(input$anovainput == "Region"){
+      output$anovastat <- renderPrint({
+        summary(aov(kwh_per_acc ~ Region, data = consumption))
+      })}
+    if(input$anovainput == "year"){
+      output$anovastat <- renderPrint({
+        summary(aov(kwh_per_acc ~ year, data = consumption))
+      })}
+  })
+  
+  # anova2 ---------------------------------------------------------------------
+  observeEvent(input$region,{
+    output$dwellingstat2 <- renderPlot({
+      consumption %>%
+        filter(Region==input$region) %>% 
+        mutate(class = fct_reorder(Description, kwh_per_acc, .fun='mean')) %>%
+        ggplot( aes(x=reorder(Description, kwh_per_acc), y=kwh_per_acc)) +
+        geom_boxplot() +
+        stat_summary(fun.y=mean, geom="point", color="red") +
+        theme(legend.position="none") +
+        theme(axis.text.x = element_text(angle = 45, vjust = 0.5, hjust=1)) +
+        ggtitle("Boxplot of consumption per planning area")
+    })
+    
+    output$anovastat2 <- renderPrint({
+      consumption %>% 
+        filter(Region == input$region)
+      summary(aov(kwh_per_acc ~ Description, data = consumption))
+    })
+  })
+}
+
+shinyApp(ui = ui, server = server)
+```
+
+### 3.2 Betweenstats plot anova
+
+```{r anova betweenstats, message=FALSE, warning=FALSE}
+
+```
+
+## 4. Time series forecasting
+
+```{r}
+
+```
