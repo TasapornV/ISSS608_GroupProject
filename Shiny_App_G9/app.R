@@ -63,7 +63,7 @@ library(tidyverse)
 library(timetk)
 library(tmap)
 # library(treemap)
-# library(TSclust)
+library(TSclust)
 # library(tseries)
 # library(tsibble)
 # library(tsibbletalk)
@@ -569,7 +569,7 @@ server = function(input, output, session) {
   # cycle plot -----------------------------------------------------------------
     
     select_cycle <- chosendata %>% 
-      filter(type %in% c(select_type)) %>%
+      filter(type %in% input$towns) %>%
       mutate(year = factor(year, levels = startyear:endyear),
              month = factor(month, levels = 1:12))
     
@@ -645,7 +645,37 @@ server = function(input, output, session) {
     startyear <- input$slider_year2[1]
     endyear <- input$slider_year2[2]
     
-    ## spark table 2--------------------------------------------------------------
+    ## cycle plot2 -----------------------------------------------------------------
+    
+    select_cycle <- chosendata %>% 
+      filter(type %in% input$towns) %>%
+      mutate(year = factor(year, levels = startyear:endyear),
+             month = factor(month, levels = 1:12))
+    
+    #Computing year average by months
+    hline.data <- select_cycle %>%
+      group_by(month) %>%
+      summarise(avg_cons = mean(consumption))
+    output$cycleplot <- renderPlotly({
+      #Plotting cycle plot for electricity consumption per dwelling type
+      ggplot() + 
+        geom_line(data = select_cycle,
+                  aes(x=year,y=consumption, group=month), colour = "black") +
+        geom_hline(data = hline.data,
+                   aes(yintercept=avg_cons),
+                   linetype=6, 
+                   colour="red", 
+                   linewidth=0.5) +
+        facet_grid(~month) +
+        theme(axis.text.x = element_text(angle=90, vjust=1, hjust=1)) +
+        labs(title = paste0("Cycleplot for Chosen towns Consumption (GWh)" , startyear,"-",endyear),
+             subtitle = paste0(chosendata[1,6],": ",input$towns)) +
+        scale_x_discrete(breaks=c("2005","2010","2015","2020")) +
+        xlab("") +
+        ylab("Consumption, GWh")
+    })
+    
+    # spark table 2--------------------------------------------------------------
     output$sparktable2 <- renderTable(dwelling %>%
                                         filter(year %in% c(startyear:endyear)) %>%
                                         group_by(DWELLING_TYPE) %>%
@@ -699,6 +729,7 @@ server = function(input, output, session) {
     output$slope2 <- renderPlot({p_slopegraph1})
     
   })
+  
   #  dtw ------------------------------------------------------------------------
   observeEvent(c(input$k2, input$method2),{
     cluster_dtw <- tsclust(clus_matrix1[,-c(1)],
