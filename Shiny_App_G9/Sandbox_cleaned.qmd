@@ -30,7 +30,7 @@ for(p in packages){
 ## Read data and compress in RDS file
 
 ```{r read data, warning=FALSE, message=FALSE}
-library(readr)
+#library(readr)
 
 # Peak System Demand
 T2.3 <- read_csv("data/T2-3.csv")
@@ -209,6 +209,7 @@ library(tidyquant)
       labs(title = "Monthly Peak System Demand (MW)",
            x = "", y = "MW") +
       theme_tq() +
+      #    scale_x_date(expand=c(0,0), date_breaks = "3 month", date_labels = "%b%y") +
       theme(legend.position="none")
     p_line
 ```
@@ -239,7 +240,10 @@ library(tidyquant)
     labs(title = "Cycleplot of Peak System Demand (MW), 2005 to 2021") +
     xlab("") +
     ylab("MW")
-  p_cycleplot
+  
+  output$cycleplot <- renderPlotly({
+    p_cycleplot
+  })
 ```
 
 #### Plot 3 - Sparkline Table
@@ -251,121 +255,29 @@ library(tidyquant)
 #### Plot 4 - Slopegraph
 
 ```{r 1.3.4 Slope graph, warning=FALSE, message=FALSE}
-#Display rate of change using Slopegraph
-#Give user choice of mean, median, sum, min or max
-cons_year <- chosendata %>%
-  group_by(type, year) %>%
-  summarise(mean_cons=round(mean(consumption),2))
-p_slopegraph <- cons_year %>% 
-  mutate(year = factor(year)) %>%
-  filter(year %in% c(startyear,endyear)) %>%
-  newggslopegraph(year, mean_cons, type)
-p_slopegraph1 <- p_slopegraph + labs(title = "Average Monthly Electricity Consumption between 2 years",
-                subtitle = "",
-                caption = "Source: ema.gov.sg")
-p_slopegraph1
+
 ```
 
 ## 2. Clustering
 
 ### 2.1 Hierachical clustering
 
-#### Clustering data preparation
-
-```{r 2.1.1 Method selection table, warning=FALSE, message=FALSE}
-# Filter the required data for clustering
-
-# remove month = "Annual"
-# remove dewlling_type/description = Overall
-# year 2018 and onwards due to missing data
-# exclude "%region" in description
-# Exclude Pioneer as data is incomplete
-
-clus_data <- T3.5 %>% 
-  filter(month != "Annual" & 
-           year > 2017 & 
-           dwelling_type != "Overall" &
-           !str_detect(Description,"Region|Pioneer|Overall"))
-
-# transform dataset
-# convert kwh into numbers
-clus_data$kwh_per_acc <- as.numeric(clus_data$kwh_per_acc)
-# join month and year into a date
-clus_data$date <- parse_date_time(paste(clus_data$year, clus_data$month), orders=c("%Y %m")) 
-
-# drop month and year column
-clus_data <- subset(clus_data, select=-c(month, year, Region)) %>%
-  arrange(date)
-
-# pivot wider
-clus <- clus_data %>%
-  pivot_wider(names_from=date, values_from=kwh_per_acc) 
-
-# omit na
-clus <- na.omit(clus)
-clus <- clus %>% relocate(Description, .before = dwelling_type)
-```
-
 #### Plot 1 - Method selection table
 
-```{r}
-# parameter: method 
-# user will need to input the distance calculated method here to determine which clustering method is optimal
+```{r 2.1.1 Method selection table, warning=FALSE, message=FALSE}
 
-library(dendextend)
-clustering <- dist(normalize(clus_group1,-c(1)),  method = "euclidean")
-dend_expend(clustering)[[3]]
 ```
 
 #### Plot 2 - Heatmap
 
 ```{r 2.1.2 Heatmap, warning=FALSE, message=FALSE}
-library(heatmaply)
 
-# parameter 1: distance method ("euclidean", "maximum", "manhattan", "canberra", "binary" or "minkowski")
-# parameter 2: hclust method ("ward.D", "ward.D2","single","complete","average", "mcquitty", "median" or "centroid")
-# parameter 3: number of clusters
-# parameter 4: seriate (Optimal leaf ordering, Gruvaeus and Wainer, mean, none)
-# parameter 5: scale / normalize / percentize (the code for this part is different)
-
-# Remove dwelling type
-clus_group1 <- clus[,-c(2)] %>%
-  group_by(Description) %>%
-  summarise_each(list(sum))
-
-# making "Description" the row name (index)
-row.names(clus_group1) <- clus_group1$Description
-
-# Making it into a matrix
-clus_matrix1 <- data.matrix(clus_group1)
-
-# plot
-heatmaply(clus_matrix1[,-c(1)],
-          scale = "column",
-          dist_method = "euclidean",
-          hclust_method = "average",
-          Colv=NA,
-          seriate = "none",
-          k_row = 3,
-          margins = c(NA,200,50,NA),
-          colors = viridis(
-            n= 256, alpha=1, 
-            begin=0, end=1,
-            option="viridis"),
-          fontsize_row = 5,
-          fontsize_col = 5,
-          main="Hierarchical Clustering",
-          ylab = "Towns",
-          xlab = "Time")
 ```
 
 #### Plot 3 - Number of cluster plot
 
 ```{r 2.1.3 Number of cluster plot, warning=FALSE, message=FALSE}
-# once user have gotten the clustering method from above, they need to input that to find the optimal number of k
-clust2 <- hclust(clustering, method = "mcquitty")
-num_k <- find_k(clust2)
-plot(num_k)
+
 ```
 
 #### Plot 4 - Map
