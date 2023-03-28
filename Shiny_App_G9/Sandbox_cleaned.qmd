@@ -339,7 +339,9 @@ heatmaply(clus_matrix1[,-c(1)],
 #### Plot 3 - Number of cluster plot
 
 ```{r 2.1.3 Number of cluster plot, warning=FALSE, message=FALSE}
-
+library(dendextend)
+clustering <- dist(normalize(clus_group1,-c(1)),  method = "euclidean")
+dend_expend(clustering)[[3]]
 ```
 
 #### Plot 4 - Map
