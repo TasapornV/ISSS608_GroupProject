@@ -100,6 +100,7 @@ tables <- c("Peak System Demand" = "T2.3",
             "Average Monthly Household Electricity Consumption by Planning Area & Dwelling Type" = "T3.5")
 type <- c("parametric", "nonparametric", "robust", "bayes")
 towns <- unique(chosendata$type)
+dwellingtype <- unique(dwelling$DWELLING_TYPE)
 introtext <- "Welcome to our Singapore Electricity Consumption Visualization Application. This interactive tool allows you to explore and analyze the electricity consumption patterns in Singapore over the past decade. With data sourced from official government records, our application presents a range of visually appealing and informative charts and graphs, providing insights into trends and patterns in energy consumption across various sectors, including residential, commercial, and industrial. Whether you're a policy maker, a researcher, or a concerned citizen, our tool provides a powerful platform to understand and interpret the dynamics of energy use in Singapore, and to make informed decisions that can shape a sustainable future for all."
 # UI ----------------------------------------------------------------------
 ui = dashboardPage(
@@ -135,8 +136,8 @@ ui = dashboardPage(
                                plotOutput("geo", height = 800)
                              )),
                     
-                    ### 1.3 Consumption by Dwelling type and Town -------------------
-                    tabPanel("Consumption by Dwelling type and Town",
+                    ### 1.3 Consumption by Town -----------------------------------
+                    tabPanel("Consumption by Town",
                              fluidRow(
                                column(3, sliderInput("slider_year", "Select year",min = 2005,
                                                      max = 2022, step = 1, round = FALSE,
@@ -150,7 +151,6 @@ ui = dashboardPage(
                                column(3, radioButtons("slope_value", "select value",
                                                       choices = c("sum", "average", "median" ),
                                                       inline = TRUE))
-                               
                              ),
                              fluidRow(
                                column(6, plotOutput("dwelling", height = 400)),
@@ -159,6 +159,31 @@ ui = dashboardPage(
                              fluidRow(
                                column(6, plotlyOutput("cycleplot")),
                                column(6, tableOutput("sparktable"))
+                             )
+                    ),
+                    ### 1.4 Consumption by Dwelling type and dwelling type -------
+                    tabPanel("Consumption by Dwelling type",
+                             fluidRow(
+                               column(3, sliderInput("slider_year2", "Select year",min = 2005,
+                                                     max = 2022, step = 1, round = FALSE,
+                                                     value =  c(2005, 2022))),
+                               column(3, pickerInput("towns2", "Select dwelling type", choices = dwellingtype,
+                                                     selected = c("3-room", "4-room"),
+                                                     multiple = TRUE)),
+                               column(3, radioButtons("type2", "Select parameter",
+                                                      choices = c("By town", "By dwelling type"),
+                                                      inline = TRUE)),
+                               column(3, radioButtons("slope_value2", "select value",
+                                                      choices = c("sum", "average", "median" ),
+                                                      inline = TRUE))
+                             ),
+                             fluidRow(
+                               column(6, plotOutput("dwelling2", height = 400)),
+                               column(6, plotOutput("slope2",height=400))
+                             ),
+                             fluidRow(
+                               column(6, plotlyOutput("cycleplot2")),
+                               column(6, tableOutput("sparktable2"))
                              )
                     )
         )
@@ -379,7 +404,7 @@ server = function(input, output, session) {
   # arima ----------------------------------------------------------------------
   
   
-
+  
   
   # cycle plot -----------------------------------------------------------------
   
@@ -543,62 +568,109 @@ server = function(input, output, session) {
       )
     ))
     
-  # spark table --------------------------------------------------------------
-  output$sparktable <- renderTable(dwelling %>%
-                                     filter(year %in% c(startyear:endyear)) %>%
-                                     group_by(DWELLING_TYPE) %>%
-                                     summarise("Min" = min(consumption_GWh, na.rm = T),
-                                               "Max" = max(consumption_GWh, na.rm = T),
-                                               "Average" = mean(consumption_GWh, na.rm = T)
-                                     ) %>%
-                                     gt() %>%
-                                     fmt_number(columns = 4,
-                                                decimals = 2))
-  
-  # slope graph---------------------------------------------------------------
-  cons_yr <- dwelling
-  
-  if (input$slope_value == "sum") {
-    cons_year <- cons_yr %>%
-      group_by(DWELLING_TYPE, year) %>%
-      summarise(mean_cons=round(sum(consumption_GWh),2))}
-  if (input$slope_value == "average") {
-    cons_year <- cons_yr %>%
-      group_by(DWELLING_TYPE, year) %>%
-      summarise(mean_cons=round(mean(consumption_GWh),2))}
-  
-  if (input$slope_value == "median") {
-    cons_year <- cons_yr %>%
-      group_by(DWELLING_TYPE, year) %>%
-      summarise(mean_cons=round(median(consumption_GWh),2))}
-  
-  p_slopegraph <- cons_year %>% 
-    mutate(year = factor(year)) %>%
-    filter(year %in% c(startyear,endyear)) %>%
-    newggslopegraph(year, mean_cons, DWELLING_TYPE)
-  
-  p_slopegraph1 <- p_slopegraph + labs(title = "Monthly Household Electricity Consumption between 2 points of time",
-                                       subtitle = "",
-                                       caption = "Source:EMA.gov.sg")
-  
-  output$slope <- renderPlot({p_slopegraph1})
-  
-  # line ----------------------------------------------------------------------
-  chosendata <- chosendata %>%
-    filter(year %in% c(startyear:endyear)) %>% 
-    filter(type %in% input$towns)
+    # spark table --------------------------------------------------------------
+    output$sparktable <- renderTable(dwelling %>%
+                                       filter(year %in% c(startyear:endyear)) %>%
+                                       group_by(DWELLING_TYPE) %>%
+                                       summarise("Min" = min(consumption_GWh, na.rm = T),
+                                                 "Max" = max(consumption_GWh, na.rm = T),
+                                                 "Average" = mean(consumption_GWh, na.rm = T)
+                                       ) %>%
+                                       gt() %>%
+                                       fmt_number(columns = 4,
+                                                  decimals = 2))
     
-  output$dwelling <- renderPlot({
-    ggplot(data = chosendata, aes(x = date)) +
-      geom_line(aes(y = consumption, colour = type)) + 
-      labs(title = paste0("Electricity Consumption by ",chosendata[1,6]),
-           x = "Year", y = paste0("Consumption, GWh ")) +
-      scale_color_discrete(name="") +
-      theme(legend.position="bottom")
+    # line ----------------------------------------------------------------------
+    chosendata <- chosendata %>%
+      filter(year %in% c(startyear:endyear)) %>% 
+      filter(type %in% input$towns)
+    
+    output$dwelling <- renderPlot({
+      ggplot(data = chosendata, aes(x = date)) +
+        geom_line(aes(y = consumption, colour = type)) + 
+        labs(title = paste0("Electricity Consumption by ",chosendata[1,6]),
+             x = "Year", y = paste0("Consumption, GWh ")) +
+        scale_color_discrete(name="") +
+        theme(legend.position="bottom")
+    })
+    
+    # slope graph---------------------------------------------------------------
+    cons_yr <- chosendata
+    
+    if (input$slope_value == "sum") {
+      cons_year <- cons_yr %>%
+        group_by(type, year) %>%
+        summarise(mean_cons=round(sum(consumption),2))}
+    if (input$slope_value == "average") {
+      cons_year <- cons_yr %>%
+        group_by(type, year) %>%
+        summarise(mean_cons=round(mean(consumption),2))}
+    
+    if (input$slope_value == "median") {
+      cons_year <- cons_yr %>%
+        group_by(type, year) %>%
+        summarise(mean_cons=round(median(consumption),2))}
+    
+    p_slopegraph <- cons_year %>% 
+      mutate(year = factor(year)) %>%
+      filter(year %in% c(startyear,endyear)) %>%
+      newggslopegraph(year, mean_cons, type)
+    
+    p_slopegraph1 <- p_slopegraph + labs(title = "Monthly Household Electricity Consumption between 2 points of time",
+                                         subtitle = "",
+                                         caption = "Source:EMA.gov.sg")
+    
+    output$slope <- renderPlot({p_slopegraph1})
   })
   
-})
+  # sparklines -----------------------------------------------------------------
   
+  observeEvent(c(input$slider_year2, input$slope_value2, input$towns2),{
+    startyear <- input$slider_year2[1]
+    endyear <- input$slider_year2[2]
+    
+    # line 2----------------------------------------------------------------------
+    cons_yr <- dwelling %>% 
+      filter(year %in% c(startyear:endyear)) %>% 
+      filter(DWELLING_TYPE %in% input$towns2)
+    
+    output$dwelling2 <- renderPlot({
+      ggplot(data = cons_yr, aes(x = date)) +
+        geom_line(aes(y = consumption_GWh, colour = DWELLING_TYPE)) + 
+        labs(title = paste0("Electricity Consumption by dwelling type"),
+             x = "Year", y = paste0("Consumption, GWh ")) +
+        scale_color_discrete(name="") +
+        theme(legend.position="bottom")
+    })
+    
+    # slope graph 2---------------------------------------------------------------
+    
+    if (input$slope_value2 == "sum") {
+      cons_year <- cons_yr %>%
+        group_by(DWELLING_TYPE, year) %>%
+        summarise(mean_cons=round(sum(consumption_GWh),2))}
+    if (input$slope_value2 == "average") {
+      cons_year <- cons_yr %>%
+        group_by(DWELLING_TYPE, year) %>%
+        summarise(mean_cons=round(mean(consumption_GWh),2))}
+    
+    if (input$slope_value2 == "median") {
+      cons_year <- cons_yr %>%
+        group_by(DWELLING_TYPE, year) %>%
+        summarise(mean_cons=round(median(consumption_GWh),2))}
+    
+    p_slopegraph <- cons_year %>% 
+      mutate(year = factor(year)) %>%
+      filter(year %in% c(startyear,endyear)) %>%
+      newggslopegraph(year, mean_cons, DWELLING_TYPE)
+    
+    p_slopegraph1 <- p_slopegraph + labs(title = "Monthly Household Electricity Consumption between 2 points of time",
+                                         subtitle = "",
+                                         caption = "Source:EMA.gov.sg")
+    
+    output$slope2 <- renderPlot({p_slopegraph1})
+    
+  })
   #  dtw ------------------------------------------------------------------------
   observeEvent(c(input$k2, input$method2),{
     cluster_dtw <- tsclust(clus_matrix1[,-c(1)],
@@ -608,29 +680,29 @@ server = function(input, output, session) {
                            control = hierarchical_control(method = input$method2),
                            preproc = NULL,
                            args=tsclust_args(dist = list(window.size = 5L)))
-
+    
     hclus_dtw <- cutree(cluster_dtw, k=input$k2) %>%
       as.data.frame(.) %>%
       rename(.,cluster_group = .) %>%
       rownames_to_column("type_col")
-
+    
     # add the cluster number
     dtw_cluster <- clus_group1 %>%
       left_join(hclus_dtw, by=c("Description" = "type_col"))
-
+    
     # change date columns into rows
     dtw_cluster_t <- dtw_cluster %>%
       mutate_at(vars(contains("202")),as.numeric) %>%
       gather(Date, value, 2:55)
-
+    
     # Add the word "Cluster"
     dtw_cluster_t$cluster_group <- paste("Cluster", dtw_cluster_t$cluster_group)
-
+    
     # convert Date into date format
     dtw_cluster_t$Date <- parse_date_time(dtw_cluster_t$Date, orders=c("%Y-%m-%d"))
-
+    
     # plot time series by cluster
-
+    
     ts <- plot_time_series(.data=dtw_cluster_t,
                            .date_var=Date,
                            .value=value,
@@ -642,11 +714,11 @@ server = function(input, output, session) {
                            .line_size = 0.3,
                            .plotly_slider = TRUE,
                            .title = "Time Series Plot by cluster")
-
+    
     ts <- ts %>%
       layout(hovermode="x",
              hoverlabel=list(font=list(size=7)))
-
+    
     output$dtw <- renderPlotly( ts )
   })
   
@@ -684,29 +756,29 @@ server = function(input, output, session) {
                 xlab = "Time")
     })
     clustering <- dist(normalize(clus_group1[, -1]), method=input$distance)
-
+    
     # clustering dendex --------------------------------------------------------
     output$dendextend <- renderDataTable(
       dend_expend(clustering)[[3]]
     )
-
+    
     # clustering number k ------------------------------------------------------
     clust2 <- hclust(clustering, method = input$method)
     num_k <- find_k(clust2)
     output$numberk <- renderPlot(
       plot(num_k)
     )
-
+    
     # clustering map -----------------------------------------------------------
     num_clus <- cutree(clust2, k=input$k)
     clus_hc <- cbind(clus_group1, cluster = as.factor(num_clus))
-
+    
     clus_hc$Description <- toupper(clus_hc$Description)
-
+    
     # Preparing the choropleth map
     mpsz_clus <- left_join(singapore, clus_hc, by = c("PLN_AREA_N" = "Description"))
     output$map <- renderTmap(
-
+      
       tm_shape(mpsz_clus)+
         tmap_options(check.and.fix = TRUE)+
         tm_fill("cluster", id=paste("PLN_AREA_N"),
