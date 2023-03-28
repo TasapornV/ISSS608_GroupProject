@@ -189,28 +189,64 @@ shinyApp(ui = ui, server = server)
 
 ### 1.3 Consumption by Dwelling type and Town
 
+```{r introduction dataprep, warning=FALSE, message=FALSE}
+
+dwelling <- T3.4 %>%
+  filter(year %in% c(2005:2022)) %>%
+  filter(month %in% c(1:12)) %>%
+  filter(DWELLING_TYPE %in% c('1-room / 2-room','3-room','4-room',
+                              '5-room and Executive',
+                              'Private Apartments and Condominiums',
+                              'Landed Properties', 'Others')) %>%
+  mutate(date = parse_date_time(paste0(year, "-", month,"-1"),"ymd"))
+
+#Add Private vs Public Classification
+dwelling$class <- case_when(
+    dwelling$DWELLING_TYPE %in% c('Private Apartments and Condominiums',
+                                 'Landed Properties', 'Others') ~ "Private",
+    dwelling$DWELLING_TYPE %in% c('1-room / 2-room','3-room','4-room',
+                                  '5-room and Executive') ~ "Public")
+
+saveRDS(dwelling, file = "RDS/dwelling.rds")
+
+
+
+dwelling <- readRDS(file = "RDS/dwelling.rds") # intro
+```
+
+```{r data prep2, warning=FALSE, message=FALSE}
+town <- subset(T3.5, Description != 'Overall' & Description !='Central Region' & 
+                 Description !='East Region' & Description !='North East Region' &
+                 Description !='North Region' & Description !='West Region' &
+                 kwh_per_acc != 's' & dwelling_type != 'Private Housing' &
+                 dwelling_type != 'Public Housing' & month != 'Annual') %>%
+  mutate(kwh_per_acc = as.numeric(kwh_per_acc)) %>%
+  mutate(date = parse_date_time(paste0(year, "-", month,"-1"),"ymd"))
+
+town_final <- town %>% 
+  group_by(date, Description) %>%
+  summarise(consumption = sum(kwh_per_acc)/1000)
+
+chosendata <- town_final %>%
+  mutate(type = Description) %>%
+  mutate(title = 'Town') %>%
+  mutate(year = year(date)) %>%
+  mutate (month = month(date)) %>%
+  select(c('year','month','date','type','consumption','title'))
+saveRDS(chosendata, file = "RDS/chosendata.rds")
+
+```
+
 #### Plot 1 - Line plot
 
 ```{r 1.3.1 Line plot, warning=FALSE, message=FALSE}
-library(tidyquant)
-
-  sysdemand <- T2.3 %>%
-    mutate(date = parse_date_time(paste0(year, "-", mth,"-1"),"ymd")) %>%
-    mutate(monthyear = format(as.Date(date), "%b'%Y"))
-  
-
-    p_line <- sysdemand %>%
-      mutate(text = paste(monthyear,
-                          "<br>System Demand (NW):", peak_system_demand_mw)) %>%
-      ggplot(aes(x = date, y = peak_system_demand_mw)) +
-      geom_line() +
-      geom_point() +
-      labs(title = "Monthly Peak System Demand (MW)",
-           x = "", y = "MW") +
-      theme_tq() +
-      #    scale_x_date(expand=c(0,0), date_breaks = "3 month", date_labels = "%b%y") +
-      theme(legend.position="none")
-    p_line
+chosendata <- readRDS(file = "RDS/chosendata.rds") # intro
+ggplot(data = chosendata, aes(x = date)) +
+  geom_line(aes(y = consumption, colour = type)) + 
+  labs(title = paste0("Electricity Consumption by ",chosendata[1,6]),
+      x = "Year", y = paste0("Consumption, GWh ")) +
+  scale_color_discrete(name="") +
+  theme(legend.position="bottom")
 ```
 
 #### Plot 2 - Cycle plot
