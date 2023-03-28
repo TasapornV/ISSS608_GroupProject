@@ -157,7 +157,7 @@ ui = dashboardPage(
                                column(6, plotOutput("slope",height=400))
                              ),
                              fluidRow(
-                               column(6, plotlyOutput("cycleplot")),
+                               column(12, plotlyOutput("cycleplot")),
                                column(6, tableOutput("sparktable"))
                              )
                     ),
@@ -253,7 +253,7 @@ ui = dashboardPage(
                                              pickerInput(inputId = "anovainput",
                                                          label = "Select Parameter",
                                                          choices = c("dwelling_type", "Region", "year"),
-                                                         selected = "dwelling_type",
+                                                         selected = "Region",
                                                          options = list(`actions-box` = TRUE),
                                                          multiple = F),
                                              verbatimTextOutput("anovastat")
@@ -266,7 +266,7 @@ ui = dashboardPage(
                                              pickerInput(inputId = "region",
                                                          label = "Select Region",
                                                          choices = regions,
-                                                         selected = "Central Region",
+                                                         selected = "East Region",
                                                          options = list(`actions-box` = TRUE),
                                                          multiple = F),
                                              verbatimTextOutput("anovastat2")
@@ -283,7 +283,7 @@ ui = dashboardPage(
                                         inputId = "anovainput2",
                                         label = "Select Parameter",
                                         choices = c("dwelling_type", "Region", "year"),
-                                        selected = "dwelling_type",
+                                        selected = "Region",
                                         options = list(`actions-box` = TRUE),
                                         multiple = F),
                                       "Please wait for a moment as this page may take some time to process."
@@ -293,7 +293,7 @@ ui = dashboardPage(
                                       pickerInput(inputId = "region2",
                                                   label = "Select Region",
                                                   choices = regions,
-                                                  selected = "Central Region",
+                                                  selected = "East Region",
                                                   options = list(`actions-box` = TRUE),
                                                   multiple = F)
                                     ),
@@ -406,9 +406,7 @@ server = function(input, output, session) {
   
   
   
-  # cycle plot -----------------------------------------------------------------
-  
-  
+
   # ----------------- consumption by dwelling type ------------------ #
   
   
@@ -537,13 +535,13 @@ server = function(input, output, session) {
         )
     })
   })
+  # consumption by town --------------------------------------------------------
   
-  # sparklines -----------------------------------------------------------------
   
   observeEvent(c(input$slider_year, input$slope_value, input$towns),{
     startyear <- input$slider_year[1]
     endyear <- input$slider_year[2]
-    
+  ## sparklines -----------------------------------------------------------------
     d_sparks <- dwelling %>%
       filter(year %in% c(startyear:endyear)) %>%
       mutate(`Dwelling Type` = DWELLING_TYPE) %>%
@@ -567,18 +565,36 @@ server = function(input, output, session) {
         )
       )
     ))
+ 
+  # cycle plot -----------------------------------------------------------------
     
-    # spark table --------------------------------------------------------------
-    output$sparktable <- renderTable(dwelling %>%
-                                       filter(year %in% c(startyear:endyear)) %>%
-                                       group_by(DWELLING_TYPE) %>%
-                                       summarise("Min" = min(consumption_GWh, na.rm = T),
-                                                 "Max" = max(consumption_GWh, na.rm = T),
-                                                 "Average" = mean(consumption_GWh, na.rm = T)
-                                       ) %>%
-                                       gt() %>%
-                                       fmt_number(columns = 4,
-                                                  decimals = 2))
+    select_cycle <- chosendata %>% 
+      filter(type %in% c(select_type)) %>%
+      mutate(year = factor(year, levels = startyear:endyear),
+             month = factor(month, levels = 1:12))
+    
+    #Computing year average by months
+    hline.data <- select_cycle %>%
+      group_by(month) %>%
+      summarise(avg_cons = mean(consumption))
+    output$cycleplot <- renderPlotly({
+      #Plotting cycle plot for electricity consumption per dwelling type
+      ggplot() + 
+        geom_line(data = select_cycle,
+                  aes(x=year,y=consumption, group=month), colour = "black") +
+        geom_hline(data = hline.data,
+                   aes(yintercept=avg_cons),
+                   linetype=6, 
+                   colour="red", 
+                   linewidth=0.5) +
+        facet_grid(~month) +
+        theme(axis.text.x = element_text(angle=90, vjust=1, hjust=1)) +
+        labs(title = paste0("Cycleplot for Chosen towns Consumption (GWh)" , startyear,"-",endyear),
+             subtitle = paste0(chosendata[1,6],": ",input$towns)) +
+        scale_x_discrete(breaks=c("2005","2010","2015","2020")) +
+        xlab("") +
+        ylab("Consumption, GWh")
+    })
     
     # line ----------------------------------------------------------------------
     chosendata <- chosendata %>%
@@ -623,11 +639,23 @@ server = function(input, output, session) {
     output$slope <- renderPlot({p_slopegraph1})
   })
   
-  # sparklines -----------------------------------------------------------------
+  # consumption by dwelling type -------------------------------------------------
   
   observeEvent(c(input$slider_year2, input$slope_value2, input$towns2),{
     startyear <- input$slider_year2[1]
     endyear <- input$slider_year2[2]
+    
+    ## spark table 2--------------------------------------------------------------
+    output$sparktable2 <- renderTable(dwelling %>%
+                                        filter(year %in% c(startyear:endyear)) %>%
+                                        group_by(DWELLING_TYPE) %>%
+                                        summarise("Min" = min(consumption_GWh, na.rm = T),
+                                                  "Max" = max(consumption_GWh, na.rm = T),
+                                                  "Average" = mean(consumption_GWh, na.rm = T)
+                                        ) %>%
+                                        gt() %>%
+                                        fmt_number(columns = 4,
+                                                   decimals = 2))
     
     # line 2----------------------------------------------------------------------
     cons_yr <- dwelling %>% 
