@@ -5,10 +5,10 @@ account: tasatasa
 server: shinyapps.io
 hostUrl: https://api.shinyapps.io/v1
 appId: 8693145
-bundleId: 7017535
+bundleId: 7017917
 url: https://tasatasa.shinyapps.io/Shiny_App_G9/
-when: 1679993808.55391
-lastSyncTime: 1679993808.55392
+when: 1680001448.27898
+lastSyncTime: 1680001448.27899
 asMultiple: FALSE
 asStatic: FALSE
 ignoredFiles: sandbox.qmd|Sandbox_cleaned.qmd|sandbox_files
