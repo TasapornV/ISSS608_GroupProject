@@ -192,17 +192,21 @@ ui = dashboardPage(
                    tabPanel("Hierachical Clustering",
                             fluidPage(
                               fluidRow(
-                                column(3,pickerInput("method", "Choose Clustering Method",
+                                column(2,pickerInput("method", "Choose Clustering Method",
                                                      choices = c("ward.D", "ward.D2", "single",
                                                                  "complete", "average", "mcquitty",
                                                                  "median", "centroid"),
                                                      selected = "complete")),
                                 
-                                column(3,pickerInput("distance", "Choose Distance Method",
+                                column(2,pickerInput("distance", "Choose Distance Method",
                                                      choices = c("euclidean", "maximum", "manhattan",
                                                                  "canberra", "binary", "minkowski"))),
                                 
-                                column(3,numericInput("k", "Choose number of cluster",
+                                column(2, pickerInput("seriate", "Choose seriate",
+                                                      choices = c("Optimal leaf ordering" = "OLO", "Gruvaeus and Wainer" = "GW", "mean", "none"))),
+                                
+                                
+                                column(2,numericInput("k", "Choose number of cluster",
                                                       min = 1, max = 10, value = 2))
                               ),
                               
@@ -400,7 +404,7 @@ server = function(input, output, session) {
   
   
   
-
+  
   # ----------------- consumption by dwelling type ------------------ #
   
   
@@ -533,16 +537,17 @@ server = function(input, output, session) {
   })
   # consumption by town --------------------------------------------------------
   
-  
   observeEvent(c(input$slider_year, input$slope_value, input$towns),{
     startyear <- input$slider_year[1]
     endyear <- input$slider_year[2]
-  ## sparklines -----------------------------------------------------------------
+    
+    ## sparklines -----------------------------------------------------------------
     d_sparks <- dwelling %>%
       filter(year %in% c(startyear:endyear)) %>%
       mutate(`Dwelling Type` = DWELLING_TYPE) %>%
       group_by(`Dwelling Type`) %>%
       summarize(`Monthly Consumption` = list(consumption_GWh))
+    
     #react_sparkline
     output$sparkline <- renderReactable(reactable(
       d_sparks,
@@ -561,8 +566,8 @@ server = function(input, output, session) {
         )
       )
     ))
- 
-  # cycle plot -----------------------------------------------------------------
+    
+    # cycle plot -----------------------------------------------------------------
     
     select_cycle <- chosendata %>% 
       filter(type %in% input$towns) %>%
@@ -789,7 +794,7 @@ server = function(input, output, session) {
   clus_matrix1 <- data.matrix(clus_group1)
   
   # plot
-  observeEvent(c(input$k, input$method, input$distance),{
+  observeEvent(c(input$k, input$method, input$distance, input$seriate),{
     
     output$dendro <- renderPlotly({
       heatmaply(clus_matrix1[,-c(1)],
@@ -797,7 +802,7 @@ server = function(input, output, session) {
                 dist_method = input$distance,
                 hclust_method = input$method,
                 Colv=NA,
-                seriate = "none",
+                seriate = input$seriate,
                 k_row = input$k,
                 margins = c(NA,200,50,NA),
                 colors = viridis(
@@ -832,14 +837,18 @@ server = function(input, output, session) {
     
     # Preparing the choropleth map
     mpsz_clus <- left_join(singapore, clus_hc, by = c("PLN_AREA_N" = "Description"))
+    map <- tm_shape(mpsz_clus)+
+      tmap_options(check.and.fix = TRUE)+
+      tm_fill("cluster", id=paste("PLN_AREA_N"),
+              style = "pretty",
+              palette = viridis(input$k)) +
+      tm_borders(alpha = 0.7)
+    
+    current.mode <- tmap_mode("plot")
+    
+    tmap_mode("view")
     output$map <- renderTmap(
-      
-      tm_shape(mpsz_clus)+
-        tmap_options(check.and.fix = TRUE)+
-        tm_fill("cluster", id=paste("PLN_AREA_N"),
-                style = "pretty",
-                palette = viridis(input$k)) +
-        tm_borders(alpha = 0.7)
+      map+ tm_view(set.view = c(103.851959, 1.370270,11))
     )
   })
   
