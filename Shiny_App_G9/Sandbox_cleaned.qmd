@@ -479,6 +479,12 @@ tm_shape(mpsz_clus)+
 
 ### 2.2 Time Series clustering
 
+This code performs time series clustering analysis and visualization for Singapore's subzones based on the Dynamic Time Warping (DTW) algorithm. The data is preprocessed and clustered using the **`tsclust`** function from the **`dtwclust`** package, where the input parameters include the type of clustering method, the number of clusters, distance function, hierarchical clustering method, and additional arguments for distance function. The resulting clusters are added to the original data frame using **`left_join`**.
+
+The time series data is transformed from wide to long format using the **`gather`** function and plotted using the **`plot_time_series`** function from the **`timetk`** package. The time series plot is faceted by cluster and includes a plotly slider for interactive visualization.
+
+The resulting clusters are visualized using a choropleth map of Singapore's subzones. The map is created using the **`tmap`** package, where the subzones are joined with the clustered data using **`left_join`** and then plotted using the **`tm_fill`** function. The subzones are colored according to the cluster group using a green color palette, and subzone borders are added with an alpha value of 0.7.
+
 ```{r 2.2 Time series clustering}
 library(dtwclust)
 library(tibble)
@@ -570,6 +576,14 @@ tm_shape(mpsz_clus_dtw)+
 ```
 
 ## 3. Inferential - ANOVA
+
+The first part of the code reads data from several RDS files, including T3-5.rds that contains monthly household electricity consumption data by planning area and dwelling type. The data is saved into a new variable named consumption, which is then modified using mutate to convert kwh_per_acc to a numeric variable and year to a character variable. The modified consumption data is then saved into an RDS file named anova.rds.
+
+The next part of the code installs and loads several packages using a for loop that checks whether each package is installed and installs it if it is not.
+
+The UI section of the code creates a dashboard with a sidebar menu and a tab for inferential statistics. The inferential statistics tab has a sub-menu with a single option for ANOVA. The ANOVA tab has two rows, each with two columns. The left column in the first row contains a pickerInput element that allows the user to select a parameter (dwelling_type, Region, or year) and a verbatimTextOutput element that displays ANOVA statistics for the selected parameter. The right column in the first row contains a plotOutput element that displays a boxplot of kwh_per_acc by planning area. The left column in the second row contains a pickerInput element that allows the user to select a region (Central Region, North East Region, East Region, North Region, or West Region) and a verbatimTextOutput element that displays ANOVA statistics for the selected region. The right column in the second row contains a plotOutput element that displays a boxplot of kwh_per_acc by dwelling type.
+
+The server section of the code defines the behavior of the dashboard. It starts by loading the consumption data from the anova.rds file and modifying it as described earlier. The server then defines an observeEvent function that listens for changes in the anovainput pickerInput element. Depending on the selected parameter, the function generates a boxplot of kwh_per_acc by planning area or dwelling type, or ANOVA statistics for the selected parameter. The output is displayed in the corresponding plotOutput or verbatimTextOutput element.
 
 ```{r anova data, warning=FALSE, message=FALSE}
 T3.5 <- readRDS(file = "RDS/T3-5.rds")
@@ -765,11 +779,68 @@ shinyApp(ui = ui, server = server)
 ### 3.2 Betweenstats plot anova
 
 ```{r anova betweenstats, message=FALSE, warning=FALSE}
+library(ggstatsplot)
+consumption <- readRDS(file = "RDS/anova.rds")
 
+ggbarstats(
+  data = consumption,
+  x = Region,
+  y = kwh_per_acc,
+  messages = FALSE
+)
 ```
 
 ## 4. Time series forecasting
 
+```{r arima, message=FALSE, warning=FALSE}
+arima_tsbl  = as_tsibble(arima)
+full_arima = arima_tsbl %>%
+  fill_gaps() %>% 
+  tidyr::fill(peak_system_demand_mw, .direction = "down")
+
+head(arima_tsbl)
+head(full_arima)
+```
+
+```{r}
+library(timetk)
+# arima_tsbl$Date <- as.Date(arima_tsbl$Date)
+
+arima_tsbl %>%
+  plot_time_series(Date, peak_system_demand_mw, .facet_ncol = 2,.interactive = TRUE)
+```
+
+```{r}
+full_arima_stl=full_arima %>% 
+  summarise(peak_system_demand_mw = sum(peak_system_demand_mw)) %>% 
+  model(STL(peak_system_demand_mw ~ season(window = 5))) %>% 
+  components()
+```
+
 ```{r}
 
+full_arima_stl %>% 
+  summarise(peak_system_demand_mw = sum(peak_system_demand_mw)) %>% 
+  model(STL(peak_system_demand_mw ~ season(window = 5))) %>% 
+  components() %>%
+  autoplot()+
+  labs(title = "",
+       y = "peak_system_demand_mw")
+```
+
+```{r, warning=FALSE, message=FALSE}
+arima_tsbl  = as_tsibble(arima)
+full_arima = arima_tsbl %>%
+  # filter(year==2017) %>% 
+  fill_gaps() %>% 
+  tidyr::fill(peak_system_demand_mw, .direction = "down")
+
+full_arima %>%
+  gg_tsdisplay(difference(peak_system_demand_mw), plot_type='partial')
+```
+
+```{r}
+arima%>%
+  group_by(symbol) %>%
+  plot_time_series(date, adjusted, .facet_ncol = 2, .title = "Selected Asia Pacific Airline stock price",.interactive = TRUE)
 ```
