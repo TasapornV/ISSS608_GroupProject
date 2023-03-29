@@ -5,10 +5,10 @@ account: tasatasa
 server: shinyapps.io
 hostUrl: https://api.shinyapps.io/v1
 appId: 8693145
-bundleId: 7022549
+bundleId: 7022794
 url: https://tasatasa.shinyapps.io/Shiny_App_G9/
-when: 1680082095.14409
-lastSyncTime: 1680082095.1441
+when: 1680086489.96183
+lastSyncTime: 1680086489.96183
 asMultiple: FALSE
 asStatic: FALSE
-ignoredFiles: Sandbox_cleaned.qmd|Sandbox_cleaned_files/figure-html/1.3.1 Line plot-1.png|Sandbox_cleaned_files/figure-html/1.3.2 Cycle plot-1.png|Sandbox_cleaned_files/figure-html/2.1.3 Number of cluster plot-1.png|sandbox_files
+ignoredFiles: Sandbox_cleaned.qmd|sandbox_files
