@@ -147,7 +147,8 @@ ui = dashboardPage(
                                                      multiple = TRUE)),
                                column(3, radioButtons("slope_value", "select value",
                                                       choices = c("sum", "average", "median" ),
-                                                      inline = TRUE))
+                                                      inline = TRUE,
+                                                      selected = "average"))
                              ),
                              fluidRow(
                                column(6, plotOutput("dwelling", height = 400)),
@@ -169,7 +170,8 @@ ui = dashboardPage(
                                                      multiple = TRUE)),
                                column(3, radioButtons("slope_value2", "select value",
                                                       choices = c("sum", "average", "median" ),
-                                                      inline = TRUE))
+                                                      inline = TRUE,
+                                                      selected = "average"))
                              ),
                              fluidRow(
                                column(6, plotOutput("dwelling2", height = 400)),
@@ -273,8 +275,8 @@ ui = dashboardPage(
                                     )
                                   )),
                          
-                         ### 3.2 ANOVA betweenstats ---------------------------------------
-                         tabPanel("ANOVA betweenstats",
+                         ### 3.2 ANOVA pairwise stat ---------------------------------------
+                         tabPanel("ANOVA pairwise",
                                   fluidPage(
                                     fluidRow(
                                       pickerInput(
@@ -567,36 +569,6 @@ server = function(input, output, session) {
       )
     ))
     
-    # cycle plot -----------------------------------------------------------------
-    
-    select_cycle <- chosendata %>% 
-      filter(type %in% input$towns) %>%
-      mutate(year = factor(year, levels = startyear:endyear),
-             month = factor(month, levels = 1:12))
-    
-    #Computing year average by months
-    hline.data <- select_cycle %>%
-      group_by(month) %>%
-      summarise(avg_cons = mean(consumption))
-    output$cycleplot <- renderPlotly({
-      #Plotting cycle plot for electricity consumption per dwelling type
-      ggplot() + 
-        geom_line(data = select_cycle,
-                  aes(x=year,y=consumption, group=month), colour = "black") +
-        geom_hline(data = hline.data,
-                   aes(yintercept=avg_cons),
-                   linetype=6, 
-                   colour="red", 
-                   linewidth=0.5) +
-        facet_grid(~month) +
-        theme(axis.text.x = element_text(angle=90, vjust=1, hjust=1)) +
-        labs(title = paste0("Cycleplot for Chosen towns Consumption (GWh)" , startyear,"-",endyear),
-             subtitle = paste0(chosendata[1,6],": ",input$towns)) +
-        scale_x_discrete(breaks=c("2005","2010","2015","2020")) +
-        xlab("") +
-        ylab("Consumption, GWh")
-    })
-    
     # line ----------------------------------------------------------------------
     chosendata <- chosendata %>%
       filter(year %in% c(startyear:endyear)) %>% 
@@ -611,22 +583,104 @@ server = function(input, output, session) {
         theme(legend.position="bottom")
     })
     
+    # cycle plot -----------------------------------------------------------------
+    
+    select_cycle <- chosendata %>% 
+      filter(type %in% input$towns) %>%
+      mutate(year = factor(year, levels = startyear:endyear),
+             month = factor(month, levels = 1:12))
+    
+   
+    
     # slope graph---------------------------------------------------------------
     cons_yr <- chosendata
     
     if (input$slope_value == "sum") {
       cons_year <- cons_yr %>%
         group_by(type, year) %>%
-        summarise(mean_cons=round(sum(consumption),2))}
+        summarise(mean_cons=round(sum(consumption),2))
+      
+      #Computing year average by months
+      hline.data <- select_cycle %>%
+        group_by(month) %>%
+        summarise(avg_cons = sum(consumption))
+      output$cycleplot <- renderPlotly({
+        #Plotting cycle plot for electricity consumption per dwelling type
+        ggplot() + 
+          geom_line(data = select_cycle,
+                    aes(x=year,y=consumption, group=month), colour = "black") +
+          geom_hline(data = hline.data,
+                     aes(yintercept=avg_cons),
+                     linetype=6, 
+                     colour="red", 
+                     linewidth=0.5) +
+          facet_grid(~month) +
+          theme(axis.text.x = element_text(angle=90, vjust=1, hjust=1)) +
+          labs(title = paste0("Cycleplot for Chosen towns Consumption (GWh)" , startyear,"-",endyear),
+               subtitle = paste0(chosendata[1,6],": ",input$towns)) +
+          scale_x_discrete(breaks=c("2005","2010","2015","2020")) +
+          xlab("") +
+          ylab("Consumption, GWh")
+      })
+    }
+    
     if (input$slope_value == "average") {
       cons_year <- cons_yr %>%
         group_by(type, year) %>%
-        summarise(mean_cons=round(mean(consumption),2))}
+        summarise(mean_cons=round(mean(consumption),2))
+      
+      #Computing year average by months
+      hline.data <- select_cycle %>%
+        group_by(month) %>%
+        summarise(avg_cons = mean(consumption))
+      output$cycleplot <- renderPlotly({
+        #Plotting cycle plot for electricity consumption per dwelling type
+        ggplot() + 
+          geom_line(data = select_cycle,
+                    aes(x=year,y=consumption, group=month), colour = "black") +
+          geom_hline(data = hline.data,
+                     aes(yintercept=avg_cons),
+                     linetype=6, 
+                     colour="red", 
+                     linewidth=0.5) +
+          facet_grid(~month) +
+          theme(axis.text.x = element_text(angle=90, vjust=1, hjust=1)) +
+          labs(title = paste0("Cycleplot for towns Consumption (GWh)" , startyear,"-",endyear),
+               subtitle = paste0(chosendata[1,6],": ",input$towns)) +
+          scale_x_discrete(breaks=c("2005","2010","2015","2020")) +
+          xlab("") +
+          ylab("Consumption, GWh")
+      })
+      }
     
     if (input$slope_value == "median") {
       cons_year <- cons_yr %>%
         group_by(type, year) %>%
-        summarise(mean_cons=round(median(consumption),2))}
+        summarise(mean_cons=round(median(consumption),2))
+      
+      #Computing year average by months
+      hline.data <- select_cycle %>%
+        group_by(month) %>%
+        summarise(avg_cons = median(consumption))
+      output$cycleplot <- renderPlotly({
+        #Plotting cycle plot for electricity consumption per dwelling type
+        ggplot() + 
+          geom_line(data = select_cycle,
+                    aes(x=year,y=consumption, group=month), colour = "black") +
+          geom_hline(data = hline.data,
+                     aes(yintercept=avg_cons),
+                     linetype=6, 
+                     colour="red", 
+                     linewidth=0.5) +
+          facet_grid(~month) +
+          theme(axis.text.x = element_text(angle=90, vjust=1, hjust=1)) +
+          labs(title = paste0("Cycleplot for Chosen towns Consumption (GWh)" , startyear,"-",endyear),
+               subtitle = paste0(chosendata[1,6],": ",input$towns)) +
+          scale_x_discrete(breaks=c("2005","2010","2015","2020")) +
+          xlab("") +
+          ylab("Consumption, GWh")
+      })
+      }
     
     p_slopegraph <- cons_year %>% 
       mutate(year = factor(year)) %>%
@@ -639,7 +693,7 @@ server = function(input, output, session) {
     
     output$slope <- renderPlot({p_slopegraph1})
   })
-  
+ 
   # consumption by dwelling type -------------------------------------------------
   
   observeEvent(c(input$slider_year2, input$slope_value2, input$towns2),{
@@ -848,7 +902,7 @@ server = function(input, output, session) {
     
     tmap_mode("view")
     output$map <- renderTmap(
-      map+ tm_view(set.view = c(103.851959, 1.370270,11))
+      map+ tm_view(set.view = c(103.851959, 1.350270,11))
     )
   })
   

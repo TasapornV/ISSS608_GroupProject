@@ -554,6 +554,9 @@ arima2 <- T3.4
 arima2$Date <- yearmonth(as.yearmon(paste(arima2$year, arima2$month), "%Y %m"))
 arima3 <- T3.5 
 arima3$Date <- yearmonth(as.yearmon(paste(arima3$year, arima3$month), "%Y %m"))
+# arima3 <- arima3 %>% 
+#   group_by(Date) %>% 
+#   summarise(avg = mean(kwh_per_acc))
 
 paged_table(arima)
 paged_table(arima2)
@@ -561,7 +564,7 @@ paged_table(arima3)
 ```
 
 ```{r}
-arima_tsbl  = as_tsibble(arima)
+arima_tsbl  = as_tsibble(arima3)
 
 head(arima_tsbl)
 
@@ -645,7 +648,7 @@ full_arima_stl %>%
 
 ### Timetk
 
-```{r}
+```{r, message=FALSE, warning=FALSE}
 packages = c('dplyr','tidyquant','tidyverse','tsibble','feasts','forecast','fable'
              ,'tsibbletalk','tidymodels','earth'
              ,'stats','lubridate','data.table','ggplot2','plotly'
