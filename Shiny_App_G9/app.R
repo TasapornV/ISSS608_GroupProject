@@ -124,7 +124,19 @@ ui = dashboardPage(
         navbarPage( "OVERVIEW",
                     
                     ### 1.1 introduction --------------------------------------------
-                    tabPanel("Introduction",introtext),
+                    tabPanel("Introduction",
+                             fluidPage(
+                               fluidRow(introtext),
+                               fluidRow(
+                                 column(4, imageOutput("page1")),
+                                 column(4, imageOutput("page2")),
+                                 column(4, imageOutput("page4")),
+                                 column(4, imageOutput("page5")),
+                                 column(4, imageOutput("page6")),
+                                 column(4, imageOutput("page7")),
+                                 column(4, imageOutput("page9"))
+                                 ))
+                             ),
                     
                     ### 1.2 geofacet ------------------------------------------------
                     tabPanel("Consumption by Planning Area & Dwelling Type",
@@ -236,7 +248,7 @@ ui = dashboardPage(
                                 column(3,numericInput("k2", "Choose number of cluster",
                                                       min = 1, max = 10, value = 2))
                               ),
-                              plotlyOutput("dtw", height =500)
+                              plotlyOutput("dtw", height =700)
                             ))
         )
       ),
@@ -615,7 +627,11 @@ server = function(input, output, session) {
                      colour="red", 
                      linewidth=0.5) +
           facet_grid(~month) +
-          theme(axis.text.x = element_text(angle=90, vjust=1, hjust=1)) +
+          theme(axis.text.x = element_text(angle=90, vjust=1, hjust=1, size=15), # Increase font size to 12
+                axis.text.y = element_text(size=15), # Increase font size to 12
+                axis.title = element_text(size=14), # Increase font size to 14
+                plot.title = element_text(size=16, face="bold")) + # Increase font size to 16 and make the title bold
+          
           labs(title = paste0("Cycleplot for Chosen towns Consumption (GWh)" , startyear,"-",endyear),
                subtitle = paste0(chosendata[1,6],": ",input$towns)) +
           scale_x_discrete(breaks=c("2005","2010","2015","2020")) +
@@ -905,6 +921,78 @@ server = function(input, output, session) {
       map+ tm_view(set.view = c(103.851959, 1.350270,11))
     )
   })
+  # images -----------------------------------------------------------
+  output$page1 <- renderImage({
+    
+    list(src = "page 1.png",
+         width = "100%",
+         height = 330)
+    
+  }, deleteFile = F)
+  
+  output$page2 <- renderImage({
+    
+    list(src = "page 2.png",
+         width = "100%",
+         height = 330)
+    
+  }, deleteFile = F)
+  
+  output$page3 <- renderImage({
+    
+    list(src = "page 3.png",
+         width = "100%",
+         height = 330)
+    
+  }, deleteFile = F)
+  
+  output$page4 <- renderImage({
+    
+    list(src = "page 4.png",
+         width = "100%",
+         height = 330)
+    
+  }, deleteFile = F)
+  
+  output$page5 <- renderImage({
+    
+    list(src = "page 5.png",
+         width = "100%",
+         height = 330)
+    
+  }, deleteFile = F)
+  
+  output$page6 <- renderImage({
+    
+    list(src = "page 6.png",
+         width = "100%",
+         height = 330)
+    
+  }, deleteFile = F)
+  
+  output$page7 <- renderImage({
+    
+    list(src = "page 7.png",
+         width = "100%",
+         height = 330)
+    
+  }, deleteFile = F)
+  
+  output$page8 <- renderImage({
+    
+    list(src = "page 8.png",
+         width = "100%",
+         height = 330)
+    
+  }, deleteFile = F)
+  
+  output$page9 <- renderImage({
+    
+    list(src = "page 9.png",
+         width = "100%",
+         height = 330)
+    
+  }, deleteFile = F)
   
 }
 

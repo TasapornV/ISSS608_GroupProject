@@ -1,11 +1,10 @@
 ---
 title: "Sandbox"
 author: "G9"
-format: 
-  html:
-    mainfont: system-ui
-    fontsize: medium
-    code-block-border-left: "#63B9A0"
+format: html
+mainfont: system-ui
+fontsize: medium
+code-block-border-left: "#63B9A0"
     code-overflow: wrap
     highlight-style: solarized
     page-layout: full

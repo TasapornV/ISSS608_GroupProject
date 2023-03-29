@@ -1,12 +1,19 @@
 ---
-title: "Sandbox_Cleaned"
+title: "Project sandbox"
+subtitle: "Uncover Singapore electricity consumption"
 author: "Tasaporn Visawameteekul, Law Shiang Row, Khoo Wei Lun"
-date: 29 March 2023
+date: "29 March 2023"
 date-modified: "`r Sys.Date()`"
+affiliation: "SMU MITB"
+execute:
+  warning: false
+  error: false
+  message: false
 format: 
   html:
     mainfont: system-ui
     fontsize: medium
+    code-fold: false
     code-block-border-left: "#63B9A0"
     code-overflow: wrap
     highlight-style: solarized
@@ -51,6 +58,12 @@ T3.5 <- read_csv("data/T3-5.csv")
 
 ### Data table
 
+This section provides a summary of the data tables utilized in the project, offering insight into the original data's appearance. The project employs three tables, namely
+
+-   T2.3 peak system demand
+-   T3.4 Total household electricity consumption by dwelling type
+-   T3.5 Average Monthly Household Electricity Consumption by Planning Area & Dwelling Type"
+
 T2.3 : Peak System Demand
 
 ```{r T2.3, echo=FALSE}
@@ -76,7 +89,7 @@ head(T3.5, 5)
 
 ### 1.1 Introduction
 
-```{r 1.1 Introduction, warning=FALSE, message=FALSE, echo=FALSE}
+```{r 1.1 Introduction, warning=FALSE, message=FALSE, output=FALSE}
 library(shiny)
 library(shinydashboard)
 
@@ -118,7 +131,13 @@ shinyApp(ui = ui, server = server)
 
 ### 1.2 Geofacet
 
-```{r 1.2 Geofacet, warning=FALSE, message=FALSE, echo=FALSE}
+This code visualizes data related to household electricity consumption in Singapore. The application imports data from the T3.5 table and subsets it to exclude certain regions and types of housing, as well as convert certain columns to appropriate data types. The code then reads a shapefile that represents Singapore's subzones and imports an area grid data file.
+
+The user interface (UI) of the application shows the average monthly household electricity consumption by planning area and dwelling type. The user can choose to fix or free the y-axis scale.
+
+The server function includes a reactive expression that groups the data by year, dwelling type, and planning area to compute the average electricity consumption per account. The data is then merged with the area grid data file to obtain the spatial information necessary for plotting. The output plot is generated using ggplot2 and geofacet packages, which enable the use of subplots based on a grid of geographic regions. The output plot is reactive to changes made in the user interface.
+
+```{r 1.2 Geofacet, warning=FALSE, message=FALSE, output=FALSE}
 library(shiny)
 library(shinydashboard)
 library(geofacet)
@@ -197,7 +216,15 @@ server = function(input, output, session) {
 shinyApp(ui = ui, server = server)
 ```
 
+![](page%201.png){fig-align="center"}
+
 ### 1.3 Consumption by Dwelling type and Town
+
+This code loads the data from a data frame "T3.4" and filters it based on certain conditions such as the year, month, and dwelling type. The resulting data frame is stored in a new variable called "dwelling".
+
+The code then adds a new column called "class" to the "dwelling" data frame based on whether the dwelling type is "Private Apartments and Condominiums", "Landed Properties", or "Others" or whether it is "1-room / 2-room", "3-room", "4-room", or "5-room and Executive". The values in the "class" column are set to "Private" or "Public" based on the dwelling type.
+
+Finally, the "dwelling" data frame is saved as an RDS file called "dwelling.rds" in the "RDS" folder and then read back into the R environment using the "readRDS" function. The first five rows of the resulting data frame are displayed using the "head" function.
 
 ```{r introduction dataprep, warning=FALSE, message=FALSE}
 
@@ -219,10 +246,22 @@ dwelling$class <- case_when(
 
 saveRDS(dwelling, file = "RDS/dwelling.rds")
 
-
-
 dwelling <- readRDS(file = "RDS/dwelling.rds") # intro
+
+head(dwelling, 5)
 ```
+
+This code is processing and filtering data related to electricity consumption in different towns, and then saving the selected data to an RDS file.
+
+The code starts by subsetting a data frame called T3.5 using the subset() function. The resulting data frame is called "town". The subset() function removes rows with certain conditions using logical operators. Rows where the "Description" column is equal to 'Overall', 'Central Region', 'East Region', 'North East Region', 'North Region', 'West Region' are removed. Rows with 's' in the "kwh_per_acc" column and rows where the "dwelling_type" column is equal to 'Private Housing' or 'Public Housing' are also removed. Finally, rows with the "month" column equal to 'Annual' are removed.
+
+The next step is to mutate the "town" data frame. First, the "kwh_per_acc" column is converted to numeric using the as.numeric() function. Next, a new "date" column is created by combining the "year" and "month" columns and converting it to a date using the parse_date_time() function.
+
+The "town" data frame is then grouped by "date" and "Description" columns and the "summarise" function is used to calculate the sum of "kwh_per_acc" divided by 1000. The resulting data frame is called "town_final".
+
+The "town_final" data frame is then manipulated using the pipe operator (%\>%) and several mutate() functions. First, a new column called "type" is created by copying the "Description" column. Then, a new column called "title" is created with the value 'Town'. The "year" and "month" columns are extracted from the "date" column using the year() and month() functions. Finally, a new data frame is created by selecting only certain columns.
+
+The resulting data frame is saved to an RDS file using the saveRDS() function. Finally, the first five rows of the resulting data frame are printed using the head() function.
 
 ```{r data prep2, warning=FALSE, message=FALSE}
 town <- subset(T3.5, Description != 'Overall' & Description !='Central Region' & 
@@ -245,9 +284,16 @@ chosendata <- town_final %>%
   select(c('year','month','date','type','consumption','title'))
 saveRDS(chosendata, file = "RDS/chosendata.rds")
 
+head(chosendata, 5)
 ```
 
 #### Plot 1 - Line plot
+
+This code creates a line plot using ggplot to show the electricity consumption over time for a chosen data set. The data is stored in the RDS file "chosendata.rds" and is loaded using the **`readRDS()`** function.
+
+The **`ggplot()`** function is called and the **`data`** argument is set to **`chosendata`**, which contains the data to be plotted. The **`aes()`** function is used to specify the aesthetics of the plot. The x-axis is set to **`date`** and the y-axis is set to **`consumption`**, with lines colored according to the **`type`** of consumption.
+
+The **`geom_line()`** function is called to add the lines to the plot. The **`labs()`** function is used to add a title to the plot, as well as labels for the x and y axes. The **`scale_color_discrete()`** function is used to change the name of the legend for the line colors, and the **`theme()`** function is used to change the position of the legend to the bottom of the plot.
 
 ```{r 1.3.1 Line plot, warning=FALSE, message=FALSE}
 chosendata <- readRDS(file = "RDS/chosendata.rds") # intro
@@ -262,7 +308,33 @@ ggplot(data = chosendata, aes(x = date)) +
 #### Plot 2 - Cycle plot
 
 ```{r 1.3.2 Cycle plot, warning=FALSE, message=FALSE}
-  
+select_type <- 'Bishan'
+select_cycle <- chosendata %>% 
+  filter(type %in% c(select_type)) %>%
+  mutate(year = factor(year, levels = 2005:2022),
+         month = factor(month, levels = 1:12))
+
+#Computing year average by months
+hline.data <- select_cycle %>%
+  group_by(month) %>%
+  summarise(avg_cons = mean(consumption))
+
+#Plotting cycle plot for electricity consumption per dwelling type
+ggplot() + 
+  geom_line(data = select_cycle,
+            aes(x=year,y=consumption, group=month), colour = "black") +
+  geom_hline(data = hline.data,
+             aes(yintercept=avg_cons),
+             linetype=6, 
+             colour="red", 
+             linewidth=0.5) +
+  facet_grid(~month) +
+  theme(axis.text.x = element_text(angle=90, vjust=1, hjust=1)) +
+  labs(title = paste0("Cycleplot for Chosen ",chosendata[1,6],"'s Consumption (GWh) , Jan 2005-Jun 2022"),
+       subtitle = paste0(chosendata[1,6],": ",select_type)) +
+  scale_x_discrete(breaks=c("2005","2010","2015","2020")) +
+  xlab("") +
+  ylab("Consumption, GWh")
 ```
 
 #### Plot 3 - Sparkline Table
@@ -314,8 +386,8 @@ saveRDS(clus, file = "RDS/clus.rds")
 
 clus_data <- readRDS(file = "RDS/clus_data.rds") # clustering
 clus <- readRDS(file = "RDS/clus.rds") # clustering
-# clus_data
-# clus
+head(clus_data, 5)
+head(clus, 5)
 ```
 
 #### Plot 1 - Method selection table
@@ -510,7 +582,7 @@ saveRDS(consumption, file = "RDS/anova.rds")
 
 ### 3.1 Box plot anova
 
-```{r anova box plot, warning=FALSE, message=FALSE}
+```{r anova box plot, warning=FALSE, message=FALSE, output=FALSE}
 # LIBRARY -----------------------------------------------------------------
 # library(forecast)
 # library(dplyr)

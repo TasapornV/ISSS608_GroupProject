@@ -15,8 +15,10 @@ website:
       - text: "Project Snapshot"
         href: "proposal.html"
       - text: "Poster"
+      - text: "sandbox"
+        href: "Shiny_App_G9/Sandbox_cleaned.html"
       - text: "RShiny App"
-        href: https://tasapornv.shinyapps.io/Shiny_App_G9/
+        href: https://tasatasa.shinyapps.io/Shiny_App_G9/
     right:
       - icon: github
         href: https://github.com/TasapornV/ISSS608_GroupProject
