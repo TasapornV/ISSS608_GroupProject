@@ -134,9 +134,9 @@ ui = dashboardPage(
                     ### 1.2 geofacet ------------------------------------------------
                     tabPanel("Consumption by Planning Area & Dwelling Type",
                              fluidPage(
-                               radioButtons("axis", label = "select axis control",
-                                            choices = c("fixed y-axis" = "fixed",
-                                                        "free y-axis" = "free_y"),
+                               radioButtons("axis", label = "Select Y-axis Control",
+                                            choices = c("Fixed y-axis" = "Fixed",
+                                                        "Free y-axis" = "free_y"),
                                             inline = T),
                                plotOutput("geo", height = 800)
                              )),
@@ -144,14 +144,14 @@ ui = dashboardPage(
                     ### 1.3 Consumption by Town -----------------------------------
                     tabPanel("Consumption by Town",
                              fluidRow(
-                               column(3, sliderInput("slider_year", "Select year",min = 2005,
+                               column(3, sliderInput("slider_year", "Select Year",min = 2005,
                                                      max = 2022, step = 1, round = FALSE,
                                                      value =  c(2005, 2021),
                                                      sep = "")),
-                               column(3, pickerInput("towns", "Select town", choices = towns,
+                               column(3, pickerInput("towns", "Select Town", choices = towns,
                                                      selected = c("Ang Mo Kio", "Clementi"),
                                                      multiple = TRUE)),
-                               column(2, radioButtons("slope_value", "select value",
+                               column(2, radioButtons("slope_value", "Select Slopegraph Value",
                                                       choices = c("sum", "average", "median" ),
                                                       inline = FALSE,
                                                       selected = "average")),
@@ -167,16 +167,16 @@ ui = dashboardPage(
                              )
                     ),
                     ### 1.4 Consumption by Dwelling type and dwelling type -------
-                    tabPanel("Consumption by Dwelling type",
+                    tabPanel("Consumption by Dwelling Type",
                              fluidRow(
-                               column(3, sliderInput("slider_year2", "Select year",min = 2005,
+                               column(3, sliderInput("slider_year2", "Year",min = 2005,
                                                      max = 2022, step = 1, round = FALSE,
                                                      value =  c(2005, 2021),
                                                      sep = "")),
-                               column(3, pickerInput("towns2", "Select dwelling type", choices = dwellingtype,
+                               column(3, pickerInput("towns2", "Select Dwelling Type", choices = dwellingtype,
                                                      selected = c("3-room", "4-room"),
                                                      multiple = TRUE)),
-                               column(3, radioButtons("slope_value2", "select value",
+                               column(3, radioButtons("slope_value2", "Select Slopegraph Value",
                                                       choices = c("sum", "average", "median" ),
                                                       inline = TRUE,
                                                       selected = "average"))
@@ -201,21 +201,21 @@ ui = dashboardPage(
                    tabPanel("Hierachical Clustering",
                             fluidPage(
                               fluidRow(
-                                column(2,pickerInput("method", "Choose Clustering Method",
+                                column(2,pickerInput("method", "Select Clustering Method",
                                                      choices = c("ward.D", "ward.D2", "single",
                                                                  "complete", "average", "mcquitty",
                                                                  "median", "centroid"),
                                                      selected = "complete")),
                                 
-                                column(2,pickerInput("distance", "Choose Distance Method",
+                                column(2,pickerInput("distance", "Select Distance Calculation",
                                                      choices = c("euclidean", "maximum", "manhattan",
                                                                  "canberra", "binary", "minkowski"))),
                                 
-                                column(2, pickerInput("seriate", "Choose seriate",
+                                column(2, pickerInput("seriate", "Select Seriation",
                                                       choices = c("Optimal leaf ordering" = "OLO", "Gruvaeus and Wainer" = "GW", "mean", "none"))),
                                 
                                 
-                                column(2,numericInput("k", "Choose number of cluster",
+                                column(2,numericInput("k", "Select Number of Cluster",
                                                       min = 1, max = 10, value = 2))
                               ),
                               
@@ -234,13 +234,13 @@ ui = dashboardPage(
                             fluidPage(
                               fluidRow(
                                 
-                                column(3,pickerInput("method2", "Choose Clustering Method",
+                                column(3,pickerInput("method2", "Select Clustering Method",
                                                      choices = c("ward.D", "ward.D2", "single",
                                                                  "complete", "average", "mcquitty",
                                                                  "median", "centroid"),
                                                      selected = "complete")),
                                 
-                                column(3,numericInput("k2", "Choose number of cluster",
+                                column(3,numericInput("k2", "Select Number of Cluster",
                                                       min = 1, max = 10, value = 2))
                               ),
                               plotlyOutput("dtw", height =500)
@@ -249,15 +249,15 @@ ui = dashboardPage(
       ),
       ## 3 INFERENTIAL STATISTICS ------------------------------------------------
       tabItem(tabName = "inferential",
-              navbarPage("INFERENTIAL STATISTICS",
+              navbarPage("INFERENTIAL ANALYSIS",
                          
                          ### 3.1 ANOVA boxplot ---------------------------------------------
-                         tabPanel("ANOVA boxplot",
+                         tabPanel("ANOVA: Boxplot",
                                   fluidPage(
                                     fluidRow(
                                       column(5,
                                              pickerInput(inputId = "anovainput",
-                                                         label = "Select Parameter",
+                                                         label = "Select Variable",
                                                          choices = c("dwelling_type", "Region", "year"),
                                                          selected = "Region",
                                                          options = list(`actions-box` = TRUE),
@@ -282,12 +282,12 @@ ui = dashboardPage(
                                   )),
                          
                          ### 3.2 ANOVA pairwise stat ---------------------------------------
-                         tabPanel("ANOVA pairwise",
+                         tabPanel("ANOVA: Pairwise Analysis",
                                   fluidPage(
                                     fluidRow(
                                       pickerInput(
                                         inputId = "anovainput2",
-                                        label = "Select Parameter",
+                                        label = "Select Variable",
                                         choices = c("dwelling_type", "Region", "year"),
                                         selected = "Region",
                                         options = list(`actions-box` = TRUE),
@@ -349,12 +349,12 @@ ui = dashboardPage(
       ## DATA TABLE ------------------------------------------------------------
       tabItem(tabName = "data",
               navbarPage("DATA",
-                         tabPanel("data table",
+                         tabPanel("Data Table",
                                   fluidPage(
                                     fluidRow(
                                       column(8, wellPanel(
                                         pickerInput("SelectTable",
-                                                    label = "Select Data",
+                                                    label = "Select Data Table To View",
                                                     choices = tables,
                                                     selected = "Electricity")
                                       )),
