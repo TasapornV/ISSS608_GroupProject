@@ -1,4 +1,3 @@
-
 # LIBRARY -----------------------------------------------------------------
 # remotes::install_github("timelyportfolio/dataui")
 # install.packages('PMCMRplus')
@@ -68,8 +67,6 @@ library(TSclust)
 # library(tsibble)
 # library(tsibbletalk)
 # library(zoo)
-
-
 # READ DATA ---------------------------------------------------------------
 ## Read compressed data file
 T2.3 <- readRDS(file = "RDS/T2-3.rds") # Peak System Demand
@@ -81,17 +78,13 @@ clus_data <- readRDS(file = "RDS/clus_data.rds") # clustering
 clus <- readRDS(file = "RDS/clus.rds") # clustering
 chosendata <- readRDS(file = "RDS/chosendata.rds") # intro
 dwelling <- readRDS(file = "RDS/dwelling.rds") #intro
-
-
 # reading the map file
 mpsz <- st_read(dsn = 'master-plan-2014-subzone-boundary-web-shp',
                 layer = 'MP14_SUBZONE_WEB_PL',
                 crs = 3414)
-
 # Import the area grid data.
 area_grid <- read_csv("data/areagrid.csv")
 singapore <- st_transform(mpsz, 4326)
-
 # PARAMETER ---------------------------------------------------------------
 years <- c("2022","2021", "2020", "2019", "2018", "2017")
 regions <- c("Central Region", "North East Region", "East Region", "North Region", "West Region")
@@ -124,7 +117,19 @@ ui = dashboardPage(
         navbarPage( "OVERVIEW",
                     
                     ### 1.1 introduction --------------------------------------------
-                    tabPanel("Introduction",introtext),
+                    tabPanel("Introduction",
+                             fluidPage(
+                               fluidRow(introtext),
+                               fluidRow(
+                                 column(4, imageOutput("page1")),
+                                 column(4, imageOutput("page2")),
+                                 column(4, imageOutput("page4")),
+                                 column(4, imageOutput("page5")),
+                                 column(4, imageOutput("page6")),
+                                 column(4, imageOutput("page7")),
+                                 column(4, imageOutput("page9"))
+                               ))
+                    ),
                     
                     ### 1.2 geofacet ------------------------------------------------
                     tabPanel("Consumption by Planning Area & Dwelling Type",
@@ -141,14 +146,16 @@ ui = dashboardPage(
                              fluidRow(
                                column(3, sliderInput("slider_year", "Select year",min = 2005,
                                                      max = 2022, step = 1, round = FALSE,
-                                                     value =  c(2005, 2022))),
+                                                     value =  c(2005, 2021),
+                                                     sep = "")),
                                column(3, pickerInput("towns", "Select town", choices = towns,
                                                      selected = c("Ang Mo Kio", "Clementi"),
                                                      multiple = TRUE)),
-                               column(3, radioButtons("slope_value", "select value",
+                               column(2, radioButtons("slope_value", "select value",
                                                       choices = c("sum", "average", "median" ),
-                                                      inline = TRUE,
-                                                      selected = "average"))
+                                                      inline = FALSE,
+                                                      selected = "average")),
+                               column(3, htmlOutput("remark"))
                              ),
                              fluidRow(
                                column(6, plotOutput("dwelling", height = 400)),
@@ -164,7 +171,8 @@ ui = dashboardPage(
                              fluidRow(
                                column(3, sliderInput("slider_year2", "Select year",min = 2005,
                                                      max = 2022, step = 1, round = FALSE,
-                                                     value =  c(2005, 2022))),
+                                                     value =  c(2005, 2021),
+                                                     sep = "")),
                                column(3, pickerInput("towns2", "Select dwelling type", choices = dwellingtype,
                                                      selected = c("3-room", "4-room"),
                                                      multiple = TRUE)),
@@ -185,7 +193,6 @@ ui = dashboardPage(
         )
       )
       ,
-      
       ## 2 CLUSTERING ----------------------------------------------------------------
       tabItem(
         tabName = "clustering",
@@ -240,7 +247,6 @@ ui = dashboardPage(
                             ))
         )
       ),
-      
       ## 3 INFERENTIAL STATISTICS ------------------------------------------------
       tabItem(tabName = "inferential",
               navbarPage("INFERENTIAL STATISTICS",
@@ -326,14 +332,15 @@ ui = dashboardPage(
                                              numericInput("arima_d2", "Order of seasonal differencing", value=2),
                                              checkboxInput("arima_d3", "Allow drift", value = FALSE)
                                       )
-                                    ),
-                                      column(12, plotlyOutput("arima_plot")),
-                                      column(5,
-                                             verbatimTextOutput("arimatext")),
-                                    fluidRow(
-                                      column(6, plotOutput("arima",height="500px")),
-                                      column(width = 6, plotOutput("arima_plot",height=400))
-                                      )
+                                    )
+                                    # ,
+                                    #   column(12, plotlyOutput("arima_plot")),
+                                    #   column(5,
+                                    #          verbatimTextOutput("arimatext")),
+                                    # fluidRow(
+                                    #   column(6, plotOutput("arima",height="500px")),
+                                    #   column(width = 6, plotOutput("arima_plot",height=400))
+                                    #   )
                                   )
                          )
               )
@@ -356,18 +363,15 @@ ui = dashboardPage(
                                   ))
               )
       ),
-      ## ABOUT -----------------------------------------------------------------
+      ## ABOUT ------------------------------------------------------------
       tabItem(tabName = "about")
     ) #close tabItems
   ) #close dashboard body
 ) #close UI
-
-# SERVER -----------------------------------------------------------------------
-
+# SERVER ------------------------------------------------------------------
 server = function(input, output, session) {
   
-  # geofacet -------------------------------------------------------------------
-  
+  # geofacet ----------------------------------------------------------------
   geofacet <- town %>% 
     group_by(year, dwelling_type, Description)  %>%
     summarise(average_consumption = mean(kwh_per_acc, na.rm = TRUE))%>%
@@ -393,7 +397,6 @@ server = function(input, output, session) {
   })
   
   # table ----------------------------------------------------------------------
-  
   observeEvent((input$SelectTable),{
     
     if(input$SelectTable == "T2.3")  {tabletext <- T2.3}
@@ -405,9 +408,7 @@ server = function(input, output, session) {
   # arima ----------------------------------------------------------------------
   
   
-  
-  # anova boxplot---------------------------------------------------------------
-  
+  # anova boxplot-----------------------------------------------------------------
   observeEvent(input$anovainput,{
     if(input$anovainput == "Region"){
       output$dwellingstat <- renderPlot({
@@ -466,8 +467,7 @@ server = function(input, output, session) {
     }
   })
   
-  # anova boxplot2 -------------------------------------------------------------
-  
+  # anova boxplot2 ---------------------------------------------------------------------
   observeEvent(input$region,{
     output$dwellingstat2 <- renderPlot({
       consumption %>%
@@ -489,8 +489,7 @@ server = function(input, output, session) {
     })
   })
   
-  # anova betweenstat ----------------------------------------------------------
-  
+  # anova betweenstat -----------------------------------------------------------
   observeEvent(input$anovainput2,{
     if(input$anovainput2 == "Region") {
       output$dwellingstat3 <- renderPlot({
@@ -523,8 +522,7 @@ server = function(input, output, session) {
       })}
   })
   
-  # anova betweenstat2 ---------------------------------------------------------
-  
+  # anova betweenstat2 ----------------------------------------------------------
   observeEvent(input$region2,{
     output$dwellingstat4 <- renderPlot({
       consumption %>%
@@ -536,15 +534,13 @@ server = function(input, output, session) {
         )
     })
   })
-  
   # consumption by town --------------------------------------------------------
   
   observeEvent(c(input$slider_year, input$slope_value, input$towns),{
     startyear <- input$slider_year[1]
     endyear <- input$slider_year[2]
     
-    ## sparklines --------------------------------------------------------------
-    
+    ## sparklines -----------------------------------------------------------------
     d_sparks <- dwelling %>%
       filter(year %in% c(startyear:endyear)) %>%
       mutate(`Dwelling Type` = DWELLING_TYPE) %>%
@@ -570,8 +566,7 @@ server = function(input, output, session) {
       )
     ))
     
-    # line ---------------------------------------------------------------------
-    
+    # line ----------------------------------------------------------------------
     chosendata <- chosendata %>%
       filter(year %in% c(startyear:endyear)) %>% 
       filter(type %in% input$towns)
@@ -585,15 +580,16 @@ server = function(input, output, session) {
         theme(legend.position="bottom")
     })
     
-    # cycle plot ---------------------------------------------------------------
+    # cycle plot -----------------------------------------------------------------
     
     select_cycle <- chosendata %>% 
       filter(type %in% input$towns) %>%
       mutate(year = factor(year, levels = startyear:endyear),
              month = factor(month, levels = 1:12))
     
-    # slope graph---------------------------------------------------------------
     
+    
+    # slope graph---------------------------------------------------------------
     cons_yr <- chosendata
     
     if (input$slope_value == "sum") {
@@ -653,12 +649,10 @@ server = function(input, output, session) {
           ylab("Consumption, GWh")
       })
     }
-    
     if (input$slope_value == "median") {
       cons_year <- cons_yr %>%
         group_by(type, year) %>%
         summarise(mean_cons=round(median(consumption),2))
-      
       #Computing year average by months
       hline.data <- select_cycle %>%
         group_by(month) %>%
@@ -682,16 +676,13 @@ server = function(input, output, session) {
           ylab("Consumption, GWh")
       })
     }
-    
     p_slopegraph <- cons_year %>% 
       mutate(year = factor(year)) %>%
       filter(year %in% c(startyear,endyear)) %>%
       newggslopegraph(year, mean_cons, type)
-    
     p_slopegraph1 <- p_slopegraph + labs(title = "Monthly Household Electricity Consumption between 2 points of time",
                                          subtitle = "",
                                          caption = "Source:EMA.gov.sg")
-    
     output$slope <- renderPlot({p_slopegraph1})
   })
   
@@ -757,7 +748,7 @@ server = function(input, output, session) {
         theme(legend.position="bottom")
     })
     
-    # slope graph 2-------------------------------------------------------------
+    # slope graph 2---------------------------------------------------------------
     
     if (input$slope_value2 == "sum") {
       cons_year <- cons_yr %>%
@@ -786,8 +777,7 @@ server = function(input, output, session) {
     
   })
   
-  #  dtw -----------------------------------------------------------------------
-  
+  #  dtw ------------------------------------------------------------------------
   observeEvent(c(input$k2, input$method2),{
     cluster_dtw <- tsclust(clus_matrix1[,-c(1)],
                            type = "h",
@@ -839,7 +829,6 @@ server = function(input, output, session) {
   })
   
   # clustering dendro ----------------------------------------------------------
-  
   clus_group1 <- clus[,-c(2)] %>%
     group_by(Description) %>%
     summarise_each(list(sum))
@@ -875,13 +864,11 @@ server = function(input, output, session) {
     clustering <- dist(normalize(clus_group1[, -1]), method=input$distance)
     
     # clustering dendex --------------------------------------------------------
-    
     output$dendextend <- renderDataTable(
       dend_expend(clustering)[[3]]
     )
     
     # clustering number k ------------------------------------------------------
-    
     clust2 <- hclust(clustering, method = input$method)
     num_k <- find_k(clust2)
     output$numberk <- renderPlot(
@@ -911,6 +898,87 @@ server = function(input, output, session) {
     )
   })
   
+  # images -----------------------------------------------------------
+  output$page1 <- renderImage({
+    
+    list(src = "page 1.png",
+         width = "100%",
+         height = 330)
+    
+  }, deleteFile = F)
+  
+  output$page2 <- renderImage({
+    
+    list(src = "page 2.png",
+         width = "100%",
+         height = 330)
+    
+  }, deleteFile = F)
+  
+  output$page3 <- renderImage({
+    
+    list(src = "page 3.png",
+         width = "100%",
+         height = 330)
+    
+  }, deleteFile = F)
+  
+  output$page4 <- renderImage({
+    
+    list(src = "page 4.png",
+         width = "100%",
+         height = 330)
+    
+  }, deleteFile = F)
+  
+  output$page5 <- renderImage({
+    
+    list(src = "page 5.png",
+         width = "100%",
+         height = 330)
+    
+  }, deleteFile = F)
+  
+  output$page6 <- renderImage({
+    
+    list(src = "page 6.png",
+         width = "100%",
+         height = 330)
+    
+  }, deleteFile = F)
+  
+  output$page7 <- renderImage({
+    
+    list(src = "page 7.png",
+         width = "100%",
+         height = 330)
+    
+  }, deleteFile = F)
+  
+  output$page8 <- renderImage({
+    
+    list(src = "page 8.png",
+         width = "100%",
+         height = 330)
+    
+  }, deleteFile = F)
+  
+  output$page9 <- renderImage({
+    
+    list(src = "page 9.png",
+         width = "100%",
+         height = 330)
+    
+  }, deleteFile = F)
+  
+  # text -----------------------------------------------------------------------
+  
+  output$remark <- renderText({
+    
+    paste("Please note that the data presented for the year 2022 only covers 
+          the period of January to June, and therefore may not reflect the full 
+          year's trends or statistics.")
+  })
+  
 }
-
 shinyApp(ui = ui, server = server)
