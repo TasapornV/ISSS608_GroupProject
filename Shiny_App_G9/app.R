@@ -97,7 +97,7 @@ dwellingtype <- unique(dwelling$DWELLING_TYPE)
 introtext <- "Welcome to our Singapore Electricity Consumption Visualization Application. This interactive tool allows you to explore and analyze the electricity consumption patterns in Singapore over the past decade. With data sourced from official government records, our application presents a range of visually appealing and informative charts and graphs, providing insights into trends and patterns in energy consumption across various sectors, including residential, commercial, and industrial. Whether you're a policy maker, a researcher, or a concerned citizen, our tool provides a powerful platform to understand and interpret the dynamics of energy use in Singapore, and to make informed decisions that can shape a sustainable future for all."
 # UI ----------------------------------------------------------------------
 ui = dashboardPage(
-  dashboardHeader(title = 'Singapore Energy Consumption', titleWidth = 400),
+  dashboardHeader(title = 'Singapore Electricity Consumption', titleWidth = 400),
   
   dashboardSidebar(width = 210,
                    sidebarMenu(
@@ -135,7 +135,7 @@ ui = dashboardPage(
                     tabPanel("Consumption by Planning Area & Dwelling Type",
                              fluidPage(
                                radioButtons("axis", label = "Select Y-axis Control",
-                                            choices = c("Fixed y-axis" = "Fixed",
+                                            choices = c("Fixed y-axis" = "fixed",
                                                         "Free y-axis" = "free_y"),
                                             inline = T),
                                plotOutput("geo", height = 800)
@@ -152,7 +152,7 @@ ui = dashboardPage(
                                                      selected = c("Ang Mo Kio", "Clementi"),
                                                      multiple = TRUE)),
                                column(2, radioButtons("slope_value", "Select Slopegraph Value",
-                                                      choices = c("sum", "average", "median" ),
+                                                      choices = c("Sum"="sum", "Average"="average", "Median"="median"),
                                                       inline = FALSE,
                                                       selected = "average")),
                                column(3, htmlOutput("remark"))
@@ -177,7 +177,7 @@ ui = dashboardPage(
                                                      selected = c("3-room", "4-room"),
                                                      multiple = TRUE)),
                                column(3, radioButtons("slope_value2", "Select Slopegraph Value",
-                                                      choices = c("sum", "average", "median" ),
+                                                      choices = c("Sum"="sum", "Average"="average", "Median"="median"),
                                                       inline = TRUE,
                                                       selected = "average"))
                              ),
@@ -212,7 +212,7 @@ ui = dashboardPage(
                                                                  "canberra", "binary", "minkowski"))),
                                 
                                 column(2, pickerInput("seriate", "Select Seriation",
-                                                      choices = c("Optimal leaf ordering" = "OLO", "Gruvaeus and Wainer" = "GW", "mean", "none"))),
+                                                      choices = c("Optimal Leaf Ordering" = "OLO", "Gruvaeus and Wainer" = "GW", "Mean"="mean", "None" = "none"))),
                                 
                                 
                                 column(2,numericInput("k", "Select Number of Cluster",
@@ -258,7 +258,7 @@ ui = dashboardPage(
                                       column(5,
                                              pickerInput(inputId = "anovainput",
                                                          label = "Select Variable",
-                                                         choices = c("dwelling_type", "Region", "year"),
+                                                         choices = c("Dwelling Type"="dwelling_type", "Region", "Year"="year"),
                                                          selected = "Region",
                                                          options = list(`actions-box` = TRUE),
                                                          multiple = F),
@@ -387,10 +387,15 @@ server = function(input, output, session) {
       ggplot(geofacet_gas_consump, aes(x = year, y = average_consumption)) +
         geom_line(aes(color = as.factor(dwelling_type))) +
         facet_geo(~Description, grid = common_grid, scales = input$axis) +
-        labs(title = "Average Monthly Household Electricity Consumption by Planning Area & Dwelling Type") +
-        theme(plot.title = element_text(size=22),
-              axis.text.x = element_text(size = 10, angle = 45),
-              axis.text.y = element_text(size = 10),
+        labs(title = "Average Monthly Household Electricity Consumption by Planning Area & Dwelling Type",
+             color = "Dwelling Type") +
+        xlab("Year") + 
+        ylab("Average \nConsumption") +
+        theme(plot.title = element_text(size=21, face="bold"),
+              axis.title.y = element_text(face="bold", angle=0, vjust=0.5, hjust=1),
+              axis.title.x = element_text(face="bold"),
+              axis.text.x = element_text(size = 8, angle = 45),
+              axis.text.y = element_text(size = 8),
               strip.text = element_text(size = 10),
               legend.position = "right")
     })
@@ -419,7 +424,8 @@ server = function(input, output, session) {
           stat_summary(fun.y=mean, geom="point", color="red") +
           theme(legend.position="none") +
           theme(axis.text.x = element_text(angle = 45, vjust = 0.5, hjust=1)) +
-          ggtitle("Boxplot of consumption per Region") +
+          ggtitle("Boxplot of Consumption by Region") +
+          ylab("Consumption")+
           xlab('')
         
       })
@@ -438,7 +444,8 @@ server = function(input, output, session) {
           stat_summary(fun.y=mean, geom="point", color="red") +
           theme(legend.position="none") +
           theme(axis.text.x = element_text(angle = 45, vjust = 0.5, hjust=1)) +
-          ggtitle("Boxplot of consumption per Year") +
+          ggtitle("Boxplot of Consumption by Year") +
+          ylab("Consumption")+
           xlab("")
       })
       
@@ -456,7 +463,8 @@ server = function(input, output, session) {
           stat_summary(fun.y=mean, geom="point", color="red") +
           theme(legend.position="none") +
           theme(axis.text.x = element_text(angle = 45, vjust = 0.5, hjust=1)) +
-          ggtitle("Boxplot of consumption per Dwelling type") +
+          ggtitle("Boxplot of Consumption by Dwelling type") +
+          ylab("Consumption")+
           xlab("")
       })
       
@@ -479,6 +487,7 @@ server = function(input, output, session) {
         theme(legend.position="none") +
         theme(axis.text.x = element_text(angle = 45, vjust = 0.5, hjust=1)) +
         ggtitle("Boxplot of consumption per Region") +
+        ylab("Consumption")+
         xlab('')
     })
     
@@ -574,7 +583,7 @@ server = function(input, output, session) {
     output$dwelling <- renderPlot({
       ggplot(data = chosendata, aes(x = date)) +
         geom_line(aes(y = consumption, colour = type)) + 
-        labs(title = paste0("Electricity Consumption by ",chosendata[1,6]),
+        labs(title = paste("Electricity Consumption by",chosendata[1,6]),
              x = "Year", y = paste0("Consumption, GWh ")) +
         scale_color_discrete(name="") +
         theme(legend.position="bottom")
@@ -613,11 +622,11 @@ server = function(input, output, session) {
                      linewidth=0.5) +
           facet_grid(~month) +
           theme(axis.text.x = element_text(angle=90, vjust=1, hjust=1)) +
-          labs(title = paste0("Cycleplot for Chosen towns Consumption (GWh)" , startyear,"-",endyear),
+          labs(title = paste("Cycleplot Shwoing Consumption (GWh) in Selected Towns" , startyear,"-",endyear),
                subtitle = paste0(chosendata[1,6],": ",input$towns)) +
           scale_x_discrete(breaks=c("2005","2010","2015","2020")) +
-          xlab("") +
-          ylab("Consumption, GWh")
+          xlab("Year") +
+          ylab("Consumption")
       })
     }
     
@@ -642,7 +651,7 @@ server = function(input, output, session) {
                      linewidth=0.5) +
           facet_grid(~month) +
           theme(axis.text.x = element_text(angle=90, vjust=1, hjust=1)) +
-          labs(title = paste0("Cycleplot for towns Consumption (GWh)" , startyear,"-",endyear),
+          labs(title = paste("Cycleplot Shwoing Consumption (GWh) in Selected Towns" , startyear,"-",endyear),
                subtitle = paste0(chosendata[1,6],": ",input$towns)) +
           scale_x_discrete(breaks=c("2005","2010","2015","2020")) +
           xlab("") +
@@ -669,20 +678,20 @@ server = function(input, output, session) {
                      linewidth=0.5) +
           facet_grid(~month) +
           theme(axis.text.x = element_text(angle=90, vjust=1, hjust=1)) +
-          labs(title = paste0("Cycleplot for Chosen towns Consumption (GWh)" , startyear,"-",endyear),
+          labs(title = paste("Cycleplot Shwoing Consumption (GWh) in Selected Towns" , startyear,"-",endyear),
                subtitle = paste0(chosendata[1,6],": ",input$towns)) +
           scale_x_discrete(breaks=c("2005","2010","2015","2020")) +
-          xlab("") +
-          ylab("Consumption, GWh")
+          xlab("Year") +
+          ylab("Consumption")
       })
     }
     p_slopegraph <- cons_year %>% 
       mutate(year = factor(year)) %>%
       filter(year %in% c(startyear,endyear)) %>%
       newggslopegraph(year, mean_cons, type)
-    p_slopegraph1 <- p_slopegraph + labs(title = "Monthly Household Electricity Consumption between 2 points of time",
+    p_slopegraph1 <- p_slopegraph + labs(title = "Household Electricity Consumption Between 2 Points of Time",
                                          subtitle = "",
-                                         caption = "Source:EMA.gov.sg")
+                                         caption = "")
     output$slope <- renderPlot({p_slopegraph1})
   })
   
@@ -715,7 +724,7 @@ server = function(input, output, session) {
                    linewidth=0.5) +
         facet_grid(~month) +
         theme(axis.text.x = element_text(angle=90, vjust=1, hjust=1)) +
-        labs(title = paste0("Cycleplot for Chosen towns Consumption (GWh)" , startyear,"-",endyear),
+        labs(title = paste("Cycleplot Shwoing Consumption (GWh) in Selected Towns" , startyear,"-",endyear),
              subtitle = paste0(chosendata[1,6],": ",input$towns)) +
         scale_x_discrete(breaks=c("2005","2010","2015","2020")) +
         xlab("") +
@@ -742,8 +751,8 @@ server = function(input, output, session) {
     output$dwelling2 <- renderPlot({
       ggplot(data = cons_yr, aes(x = date)) +
         geom_line(aes(y = consumption_GWh, colour = DWELLING_TYPE)) + 
-        labs(title = paste0("Electricity Consumption by dwelling type"),
-             x = "Year", y = paste0("Consumption, GWh ")) +
+        labs(title = paste0("Electricity Consumption by Dwelling Type"),
+             x = "Year", y = "Consumption, GWh ") +
         scale_color_discrete(name="") +
         theme(legend.position="bottom")
     })
@@ -818,7 +827,6 @@ server = function(input, output, session) {
                            .facet_scales = "free_y",
                            .smooth=FALSE,
                            .line_size = 0.3,
-                           .plotly_slider = TRUE,
                            .title = "Time Series Plot by cluster")
     
     ts <- ts %>%
