@@ -1,5 +1,27 @@
 ---
 title: "Minute of Meeting"
+subtitle: "Uncover Singapore electricity consumption"
+author: "Tasaporn Visawameteekul, Law Shiang Row, Khoo Wei Lun"
+date: "29 March 2023"
+date-modified: "`r Sys.Date()`"
+affiliation: "SMU MITB"
+execute:
+  warning: false
+  error: false
+  message: false
+format: 
+  html:
+    mainfont: system-ui
+    fontsize: medium
+    code-fold: false
+    code-block-border-left: "#63B9A0"
+    code-overflow: wrap
+    highlight-style: solarized
+    page-layout: full
+    number-sections: true
+    title-block-banner: true
+    fig-align: center
+    reader-mode: true
 ---
 
 ### **Meeting Minutes 1**

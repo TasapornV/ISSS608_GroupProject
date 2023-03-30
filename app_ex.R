@@ -84,7 +84,19 @@ ui = dashboardPage(
         navbarPage( "OVERVIEW",
                    
                    ### 1.1 introduction --------------------------------------------
-                   tabPanel("Introduction",introtext),
+                   tabPanel("Introduction",
+                            fluidPage(
+                              fluidRow(introtext),
+                              fluidRow(
+                                column(4, imageOutput("page1")),
+                                column(4, imageOutput("page2")),
+                                column(4, imageOutput("page4")),
+                                column(4, imageOutput("page5")),
+                                column(4, imageOutput("page6")),
+                                column(4, imageOutput("page7")),
+                                column(4, imageOutput("page9"))
+                              ))
+                   ),
                    
                    ### 1.2 geofacet ------------------------------------------------
                    tabPanel("Consumption by Planning Area & Dwelling Type",
@@ -798,7 +810,11 @@ server = function(input, output, session) {
 #                   palette = viridis(input$k)) +
 #           tm_borders(alpha = 0.7)
 #       )
+    
+    
   })
+  
+  
   
 }
 

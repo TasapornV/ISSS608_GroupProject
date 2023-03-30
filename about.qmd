@@ -1,5 +1,26 @@
 ---
-title: "About Our Team"
+title: "About Team"
+author: "Tasaporn Visawameteekul, Law Shiang Row, Khoo Wei Lun"
+date: "29 March 2023"
+date-modified: "`r Sys.Date()`"
+affiliation: "SMU MITB"
+execute:
+  warning: false
+  error: false
+  message: false
+format: 
+  html:
+    mainfont: system-ui
+    fontsize: medium
+    code-fold: false
+    code-block-border-left: "#63B9A0"
+    code-overflow: wrap
+    highlight-style: solarized
+    page-layout: full
+    number-sections: true
+    title-block-banner: true
+    fig-align: center
+    reader-mode: true
 ---
 
 -   Khoo Wei Lun [{{< fa brands linkedin >}}](https://www.linkedin.com/in/weilunkhoo/)
@@ -8,4 +29,4 @@ title: "About Our Team"
 
 -   Tasaporn Visawameteekul [{{< fa brands linkedin >}}](https://www.linkedin.com/in/tasaporn-visawameteekul-a8517550/)
 
-![](images/team.png)
+![](images/team.png){width="816"}
