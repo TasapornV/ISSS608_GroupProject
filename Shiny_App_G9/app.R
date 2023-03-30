@@ -778,9 +778,9 @@ server = function(input, output, session) {
       filter(year %in% c(startyear,endyear)) %>%
       newggslopegraph(year, mean_cons, DWELLING_TYPE)
     
-    p_slopegraph1 <- p_slopegraph + labs(title = "Monthly Household Electricity Consumption between 2 points of time",
+    p_slopegraph1 <- p_slopegraph + labs(title = "Household Electricity Consumption Between 2 Points of Time",
                                          subtitle = "",
-                                         caption = "Source:EMA.gov.sg")
+                                         caption = "")
     
     output$slope2 <- renderPlot({p_slopegraph1})
     
