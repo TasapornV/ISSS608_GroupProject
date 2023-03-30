@@ -141,7 +141,8 @@ ui = dashboardPage(
                              fluidRow(
                                column(3, sliderInput("slider_year", "Select year",min = 2005,
                                                      max = 2022, step = 1, round = FALSE,
-                                                     value =  c(2005, 2022))),
+                                                     value =  c(2005, 2022),
+                                                     sep = "")),
                                column(3, pickerInput("towns", "Select town", choices = towns,
                                                      selected = c("Ang Mo Kio", "Clementi"),
                                                      multiple = TRUE)),
@@ -164,7 +165,8 @@ ui = dashboardPage(
                              fluidRow(
                                column(3, sliderInput("slider_year2", "Select year",min = 2005,
                                                      max = 2022, step = 1, round = FALSE,
-                                                     value =  c(2005, 2022))),
+                                                     value =  c(2005, 2022),
+                                                     sep = "")),
                                column(3, pickerInput("towns2", "Select dwelling type", choices = dwellingtype,
                                                      selected = c("3-room", "4-room"),
                                                      multiple = TRUE)),
