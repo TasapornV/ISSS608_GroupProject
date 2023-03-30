@@ -792,40 +792,59 @@ ggbarstats(
 
 ## 4. Time series forecasting
 
-```{r arima, message=FALSE, warning=FALSE}
+```{r}
+arima <- town %>% 
+  group_by(date) %>% 
+  summarise(sum = sum(kwh_per_acc)) %>% 
+  mutate(month = month(date)) %>% 
+  mutate(year = year(date))
+
+arima$date <- yearmonth(as.yearmon(paste(arima$year, arima$month), "%Y %m"))
+
 arima_tsbl  = as_tsibble(arima)
+saveRDS(arima_tsbl, file = "RDS/arima_tsbl.rds")
+```
+
+```{r}
+
+```
+
+```{r arima, message=FALSE, warning=FALSE}
 full_arima = arima_tsbl %>%
   fill_gaps() %>% 
-  tidyr::fill(peak_system_demand_mw, .direction = "down")
+  tidyr::fill(sum, .direction = "down")
 
 head(arima_tsbl)
 head(full_arima)
+
+saveRDS(full_arima, file = "RDS/full_arima.rds")
 ```
 
 ```{r}
 library(timetk)
-# arima_tsbl$Date <- as.Date(arima_tsbl$Date)
+arima_tsbl$date <- as.Date(arima_tsbl$date)
 
 arima_tsbl %>%
-  plot_time_series(Date, peak_system_demand_mw, .facet_ncol = 2,.interactive = TRUE)
+  plot_time_series(date, sum, .facet_ncol = 2,.interactive = TRUE)
 ```
 
 ```{r}
-full_arima_stl=full_arima %>% 
-  summarise(peak_system_demand_mw = sum(peak_system_demand_mw)) %>% 
-  model(STL(peak_system_demand_mw ~ season(window = 5))) %>% 
-  components()
+full_arima_stl %>% 
+  summarise(sum = sum(sum)) %>%
+  model(STL(sum ~ season(window = 5))) %>% 
+  components() %>%
+  autoplot()+
+  labs(title = "",
+       y = "peak_system_demand_mw")
 ```
 
 ```{r}
 
 full_arima_stl %>% 
-  summarise(peak_system_demand_mw = sum(peak_system_demand_mw)) %>% 
-  model(STL(peak_system_demand_mw ~ season(window = 5))) %>% 
+  # summarise(peak_system_demand_mw = sum(peak_system_demand_mw)) %>% 
+  model(STL(sum ~ season(window = 5))) %>% 
   components() %>%
-  autoplot()+
-  labs(title = "",
-       y = "peak_system_demand_mw")
+  autoplot()
 ```
 
 ```{r, warning=FALSE, message=FALSE}
@@ -833,10 +852,10 @@ arima_tsbl  = as_tsibble(arima)
 full_arima = arima_tsbl %>%
   # filter(year==2017) %>% 
   fill_gaps() %>% 
-  tidyr::fill(peak_system_demand_mw, .direction = "down")
+  tidyr::fill(sum, .direction = "down")
 
 full_arima %>%
-  gg_tsdisplay(difference(peak_system_demand_mw), plot_type='partial')
+  gg_tsdisplay(difference(sum), plot_type='partial')
 ```
 
 ```{r}
