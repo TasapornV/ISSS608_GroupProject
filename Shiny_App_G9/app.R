@@ -862,10 +862,12 @@ server = function(input, output, session) {
                 xlab = "Time")
     })
     clustering <- dist(normalize(clus_group1[, -1]), method=input$distance)
-    
+    out <- dend_expend(clus, dist_methods = input$distance)
+    out <- out$performance
     # clustering dendex --------------------------------------------------------
     output$dendextend <- renderDataTable(
-      dend_expend(clustering)[[3]]
+      
+      out
     )
     
     # clustering number k ------------------------------------------------------
