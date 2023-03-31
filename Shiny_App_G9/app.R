@@ -256,12 +256,14 @@ ui = dashboardPage(
                                   fluidPage(
                                     fluidRow(
                                       column(5,
+                                             htmlOutput("description1"),
                                              pickerInput(inputId = "anovainput",
                                                          label = "Select Variable",
                                                          choices = c("Dwelling Type"="dwelling_type", "Region", "Year"="year"),
                                                          selected = "Region",
                                                          options = list(`actions-box` = TRUE),
                                                          multiple = F),
+                                             
                                              verbatimTextOutput("anovastat")
                                       ),
                                       column(7, plotOutput("dwellingstat"))
@@ -269,6 +271,7 @@ ui = dashboardPage(
                                     
                                     fluidRow(
                                       column(5,
+                                             htmlOutput("description2"),
                                              pickerInput(inputId = "region",
                                                          label = "Select Region",
                                                          choices = regions,
@@ -417,7 +420,7 @@ server = function(input, output, session) {
   observeEvent(input$anovainput,{
     if(input$anovainput == "Region"){
       output$dwellingstat <- renderPlot({
-        consumption %>%
+        town %>%
           mutate(class = fct_reorder(Region, kwh_per_acc, .fun='mean')) %>%
           ggplot( aes(x=reorder(Region, kwh_per_acc), y=kwh_per_acc)) +
           geom_boxplot() +
@@ -431,7 +434,7 @@ server = function(input, output, session) {
       })
       
       output$anovastat <- renderPrint({
-        summary(aov(kwh_per_acc ~ Region, data = consumption))
+        summary(aov(kwh_per_acc ~ Region, data = town))
       })
     }
     
@@ -450,13 +453,13 @@ server = function(input, output, session) {
       })
       
       output$anovastat <- renderPrint({
-        summary(aov(kwh_per_acc ~ year, data = consumption))
+        summary(aov(kwh_per_acc ~ year, data = town))
       })
     }
     
     if(input$anovainput == "dwelling_type"){
       output$dwellingstat <- renderPlot({
-        consumption %>%
+        town %>%
           mutate(class = fct_reorder(dwelling_type, kwh_per_acc, .fun='mean')) %>%
           ggplot( aes(x=reorder(dwelling_type, kwh_per_acc), y=kwh_per_acc)) +
           geom_boxplot() +
@@ -469,7 +472,7 @@ server = function(input, output, session) {
       })
       
       output$anovastat <- renderPrint({
-        summary(aov(kwh_per_acc ~ dwelling_type, data = consumption))
+        summary(aov(kwh_per_acc ~ dwelling_type, data = town))
       })
       
     }
@@ -478,7 +481,7 @@ server = function(input, output, session) {
   # anova boxplot2 ---------------------------------------------------------------------
   observeEvent(input$region,{
     output$dwellingstat2 <- renderPlot({
-      consumption %>%
+      town %>%
         filter(Region==input$region) %>% 
         mutate(class = fct_reorder(Description, kwh_per_acc, .fun='mean')) %>%
         ggplot( aes(x=reorder(Description, kwh_per_acc), y=kwh_per_acc)) +
@@ -492,9 +495,9 @@ server = function(input, output, session) {
     })
     
     output$anovastat2 <- renderPrint({
-      consumption %>% 
+      town %>% 
         filter(Region == input$region)
-      summary(aov(kwh_per_acc ~ Description, data = consumption))
+      summary(aov(kwh_per_acc ~ Description, data = town))
     })
   })
   
@@ -503,7 +506,7 @@ server = function(input, output, session) {
     if(input$anovainput2 == "Region") {
       output$dwellingstat3 <- renderPlot({
         ggbetweenstats(
-          data = consumption,
+          data = town,
           x = Region,
           y = kwh_per_acc,
           messages = FALSE
@@ -513,7 +516,7 @@ server = function(input, output, session) {
     if(input$anovainput2 == "year") {
       output$dwellingstat3 <- renderPlot({
         ggbetweenstats(
-          data = consumption,
+          data = town,
           x = year,
           y = kwh_per_acc,
           messages = FALSE
@@ -523,7 +526,7 @@ server = function(input, output, session) {
     if(input$anovainput2 == "Dwelling_type") {
       output$dwellingstat3 <- renderPlot({
         ggbetweenstats(
-          data = consumption,
+          data = town,
           x = Dwelling_type,
           y = kwh_per_acc,
           messages = FALSE
@@ -534,7 +537,7 @@ server = function(input, output, session) {
   # anova betweenstat2 ----------------------------------------------------------
   observeEvent(input$region2,{
     output$dwellingstat4 <- renderPlot({
-      consumption %>%
+      town %>%
         filter(Region == input$region2) %>%
         ggbetweenstats(
           x = Description,
@@ -990,5 +993,13 @@ server = function(input, output, session) {
           year's trends or statistics.")
   })
   
+  output$description1 <- renderText({
+    paste("Select a variable to study the differences of consumption between groups.")
+  })
+  
+  output$description2 <- renderText({
+    paste("Select a region to study the differences of consumption between towns located in the selected region.
+")
+  })
 }
 shinyApp(ui = ui, server = server)
