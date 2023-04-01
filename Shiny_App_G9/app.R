@@ -489,7 +489,7 @@ server = function(input, output, session) {
         stat_summary(fun.y=mean, geom="point", color="red") +
         theme(legend.position="none") +
         theme(axis.text.x = element_text(angle = 45, vjust = 0.5, hjust=1)) +
-        ggtitle("Boxplot of consumption per Region") +
+        ggtitle("Boxplot of consumption by Town in Selected Region") +
         ylab("Consumption")+
         xlab('')
     })
