@@ -233,6 +233,10 @@ ui = dashboardPage(
                    tabPanel("Time Series Clustering",
                             fluidPage(
                               fluidRow(
+                                column(2, pickerInput("distance_func", "Select Distance Function",
+                                                      choices = c("dtw_basic", "dtw", "dtw2", "lbk", 
+                                                                  "lbi", "sbd", "gak", "sdtw"),
+                                                      selected = "dtw")),
                                 
                                 column(3,pickerInput("method2", "Select Clustering Method",
                                                      choices = c("ward.D", "ward.D2", "single",
@@ -790,11 +794,11 @@ server = function(input, output, session) {
   })
   
   #  dtw ------------------------------------------------------------------------
-  observeEvent(c(input$k2, input$method2),{
+  observeEvent(c(input$k2, input$method2, input$distance_func),{
     cluster_dtw <- tsclust(clus_matrix1[,-c(1)],
                            type = "h",
                            k=input$k2,
-                           distance="dtw",
+                           distance=input$distance_func,
                            control = hierarchical_control(method = input$method2),
                            preproc = NULL,
                            args=tsclust_args(dist = list(window.size = 5L)))
