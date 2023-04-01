@@ -322,33 +322,18 @@ ui = dashboardPage(
               navbarPage("TIME SERIES FORECASTING",
                          
                          ### 4.1 arima ---------------------------------------------
-                         tabPanel("ARIMA",
+                         tabPanel("Trend Prediction",
                                   fluidPage(
                                     fluidRow(
-                                      column(3,
-                                             pickerInput(inputId = "timemodel",
-                                                         label = "Select Model",
-                                                         choices = c("ARIMA", "ETS", "TSLM", "AR"),
-                                                         selected = "ARIMA",
-                                                         multiple = F),
-                                             numericInput("year", "Months to forecast ahead",
-                                                          min = 1, max = 24, step=1, value = 3)
-                                      ),
-                                      column(3,
-                                             numericInput("arima_d", "Order of differencing", value=1),
-                                             numericInput("arima_d2", "Order of seasonal differencing", value=2),
-                                             checkboxInput("arima_d3", "Allow drift", value = FALSE)
-                                      )
-                                    )
-                                    # ,
-                                    #   column(12, plotlyOutput("arima_plot")),
-                                    #   column(5,
-                                    #          verbatimTextOutput("arimatext")),
-                                    # fluidRow(
-                                    #   column(6, plotOutput("arima",height="500px")),
-                                    #   column(width = 6, plotOutput("arima_plot",height=400))
-                                    #   )
-                                  )
+                                      column(width = 5, 
+                                             numericInput("arima_d", "input order of differencing", value=1),
+                                             numericInput("arima_d2", "input order of seasonal differencing", value=2),
+                                             checkboxInput("arima_d3", "allow drift", value = FALSE),
+                                             sliderInput("year", "Select year", min = 2005, max = 2022, step=1, round=TRUE, value = 2022),
+                                             verbatimTextOutput("arimatext")),
+                                      column(width = 7, plotOutput("arima",height=350)),
+                                      column(width = 12, plotOutput("arima_plot",height=400))
+                                    ) )
                          )
               )
       ),
@@ -418,7 +403,27 @@ server = function(input, output, session) {
   })
   
   # arima ----------------------------------------------------------------------
-  
+  arima <- T2.3
+  arima$Date <- yearmonth(as.yearmon(paste(arima$year, arima$mth), "%Y %m"))
+  arima_ts <- ts(data=arima$peak_system_demand_mw)
+ 
+   observeEvent(c(input$arima_d,input$arima_d2, input$arima_d3, input$year), {
+    output$arima <- renderPlot({
+      arima_arima = auto.arima(arima_ts, d = input$arima_d, D = input$arima_d2, allowdrift = input$arima_d3)
+      plot(forecast(arima_arima))
+    })
+    output$arimatext <- renderPrint(arima_arima)
+    arima_tsbl  = as_tsibble(arima)
+    full_arima = arima_tsbl %>%
+      filter(year==input$year) %>% 
+      fill_gaps() %>% 
+      tidyr::fill(peak_system_demand_mw, .direction = "down")
+    output$arima_plot <- renderPlot({
+      full_arima %>%
+        gg_tsdisplay(difference(peak_system_demand_mw), plot_type='partial')
+    })
+  })
+
   
   # anova boxplot-----------------------------------------------------------------
   observeEvent(input$anovainput,{

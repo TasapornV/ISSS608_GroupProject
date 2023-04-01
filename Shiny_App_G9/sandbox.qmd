@@ -676,6 +676,42 @@ plot.ts(arima_ts2, plot.type=('single'))
 ```
 
 ```{r}
+library(forecast)
+
+# Fit ARIMA model
+fit <- arima(arima_ts, order = c(1,0,1))
+
+# Compute forecast
+fc <- forecast(fit)
+
+# Plot forecast and state estimates
+plot(fc, plot.conf = FALSE)
+lines(fit$states[, 1], col = 'red')
+
+```
+
+```{r}
+# fit <- ets(window(arima_ts))
+# fit2 <- ets(window(arima_ts2))
+# fit2 <- arima(window(arima_ts))
+# fit3 <- tslm(window(arima_ts))
+# Generate forecasts using the ARIMA method
+# plot(forecast(fit))
+# plot(forecast(arima_ts, h =10, model = fit2))
+
+```
+
+```{r}
+# fit <- ets(y = selectedData1(),model = switch(input$models,
+#                                                    ANN = "ANN",
+#                                                    ANA = "ANA",
+#                                                    AMM = "AMM",
+#                                                    AAN = "AAN",
+#                                                    AAA = "AAA",
+#                                                    MMM = "MMM")
+```
+
+```{r}
 arima_ds = diff(arima_ts, differences = 2)
 ggplotly(plot(arima_ds))
 
@@ -1560,7 +1596,7 @@ library(zoo)
   
 # arima_ts <- ts(data=a$avgcon, start = c(2005,1), end = c(2022,6), frequency=12)
 
-# fit <- ets(window(arima_ts))
+fit <- ets(window(arima_ts))
 # fit2 <- arima(window(arima_ts))
 # fit3 <- tslm(window(arima_ts))
 # Generate forecasts using the ARIMA method
