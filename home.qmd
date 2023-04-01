@@ -1,0 +1,45 @@
+---
+title: "Home"
+subtitle: "Uncover Singapore electricity consumption"
+author: "Tasaporn Visawameteekul, Law Shiang Row, Khoo Wei Lun"
+date: "2 April 2023"
+date-modified: "`r Sys.Date()`"
+affiliation: "SMU MITB"
+execute:
+  warning: false
+  error: false
+  message: false
+format: 
+  html:
+    mainfont: system-ui
+    fontsize: medium
+    code-fold: false
+    code-block-border-left: "#63B9A0"
+    code-overflow: wrap
+    highlight-style: solarized
+    page-layout: full
+    number-sections: true
+    title-block-banner: true
+    fig-align: center
+    reader-mode: true
+---
+
+## Uncover patterns in Singapore electricity consumption
+
+Looking for insights into Singapore's electricity consumption pattern? Our visual analytics can help you uncover valuable patterns and insights that will revolutionize the way you analyse structured data.
+
+With our inbuilt data analysis, you'll be able to perform exploratory data related to dwelling types and planning area, segment market into distinct clusters and even project future consumption using machine learning techniques.
+
+Whether you're a government representative, electricity retailer or a concerned citizen, our innovative solution will give you the tools you need to make smarter energy choices and create a more sustainable future. So why wait? Start uncovering the patterns of Singapore's electricity consumption today and make informed decisions like never before!
+
+## Dashboard Features
+
+![](images/image-1088599432.png)
+
+## Background
+
+Singapore has progressively moved towards an open electricity market since 2001 to ensure a reliable energy supply and promote effective competition in the energy market.
+
+With growing competition in the market, it becomes increasingly important for market players such as regulators, suppliers and retailers to understand the electricity consumption pattern in Singapore to ensure adequate supply planning and pricing structure.
+
+To assist relevant market players in analyzing electricity consumption data effectively, we created this RShinny App to visualize Singapore electricity consumption pattern and trend, perform statistical analysis as well as forecast the future trends.

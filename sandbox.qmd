@@ -42,14 +42,14 @@ This section of code is used to compress the file so that it will not load too s
 
 ```{r read data, warning=FALSE, message=FALSE}
 library(readr)
-T2.3 <- read_csv("data/T2-3.csv")
-saveRDS(T2.3, file = "RDS/T2-3.rds")
+#T2.3 <- read_csv("data/T2-3.csv")
+#saveRDS(T2.3, file = "RDS/T2-3.rds")
 
-T3.4 <- read_csv("data/T3-4.csv")
-saveRDS(T3.4, file = "RDS/T3-4.rds")
+T3.4 <- read_csv("C:/weilunkhoo/ISSS608_GroupProject/Shiny_App_G9/data/T3-4.csv")
+#saveRDS(T3.4, file = "RDS/T3-4.rds")
 
-T3.5 <- read_csv("data/T3-5.csv")
-saveRDS(T3.5, file = "RDS/T3-5.rds")
+T3.5 <- read_csv("C:/weilunkhoo/ISSS608_GroupProject/Shiny_App_G9/data/T3-5.csv")
+#saveRDS(T3.5, file = "RDS/T3-5.rds")
 
 ```
 

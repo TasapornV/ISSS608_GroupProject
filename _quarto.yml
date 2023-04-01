@@ -12,7 +12,9 @@ website:
     left:
       - icon: "house-fill"
         href: "index.html"
-      - text: "Project proposal"
+      - text: "Home"
+        href: "home.html"
+      - text: "Project prototype"
         href: "proposal.html"
       - text: "Poster"
       - text: "developer guideline - code explanation"
