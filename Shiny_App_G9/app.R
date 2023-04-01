@@ -291,7 +291,7 @@ ui = dashboardPage(
                                       pickerInput(
                                         inputId = "anovainput2",
                                         label = "Select Variable",
-                                        choices = c("dwelling_type", "Region", "year"),
+                                        choices = c("Dwelling Type"="dwelling_type", "Region","Year"="year"),
                                         selected = "Region",
                                         options = list(`actions-box` = TRUE),
                                         multiple = F),
@@ -994,11 +994,11 @@ server = function(input, output, session) {
   })
   
   output$description1 <- renderText({
-    paste("Select a variable to study the differences of consumption between groups.")
+    paste("Select a variable below to study the differences of consumption between groups.")
   })
   
   output$description2 <- renderText({
-    paste("Select a region to study the differences of consumption between towns located in the selected region.
+    paste("Select a region below to study the differences of consumption between towns located in the selected region.
 ")
   })
 }
