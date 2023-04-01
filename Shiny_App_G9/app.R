@@ -50,6 +50,7 @@ library(reactable)
 library(readr)
 library(sf)
 library(shiny)
+library(shinycssloaders)
 library(shinydashboard)
 library(shinythemes)
 library(shinyWidgets)
@@ -66,7 +67,7 @@ library(TSclust)
 # library(tseries)
 # library(tsibble)
 # library(tsibbletalk)
-# library(zoo)
+library(zoo)
 # READ DATA ---------------------------------------------------------------
 ## Read compressed data file
 T2.3 <- readRDS(file = "RDS/T2-3.rds") # Peak System Demand
@@ -96,7 +97,7 @@ towns <- unique(chosendata$type)
 dwellingtype <- unique(dwelling$DWELLING_TYPE)
 introtext <- "Welcome to our Singapore Electricity Consumption Visualization Application. This interactive tool allows you to explore and analyze the electricity consumption patterns in Singapore over the past decade. With data sourced from official government records, our application presents a range of visually appealing and informative charts and graphs, providing insights into trends and patterns in energy consumption across various sectors, including residential, commercial, and industrial. Whether you're a policy maker, a researcher, or a concerned citizen, our tool provides a powerful platform to understand and interpret the dynamics of energy use in Singapore, and to make informed decisions that can shape a sustainable future for all."
 # UI ----------------------------------------------------------------------
-ui = dashboardPage(
+ui = dashboardPage(skin = "yellow",
   dashboardHeader(title = 'Singapore Electricity Consumption', titleWidth = 400),
   
   dashboardSidebar(width = 210,
@@ -138,7 +139,7 @@ ui = dashboardPage(
                                             choices = c("Fixed y-axis" = "fixed",
                                                         "Free y-axis" = "free_y"),
                                             inline = T),
-                               plotOutput("geo", height = 800)
+                               withSpinner(plotOutput("geo", height = 800))
                              )),
                     
                     ### 1.3 Consumption by Town -----------------------------------
@@ -222,7 +223,7 @@ ui = dashboardPage(
                               fluidRow(
                                 column(4, dataTableOutput("dendextend"),
                                        plotOutput("numberk", height = "350px")),
-                                column(8, plotlyOutput("dendro", height = "400px"),
+                                column(8, withSpinner(plotlyOutput("dendro", height = "400px")),
                                        tmapOutput("map")
                                 )
                               )
@@ -270,7 +271,7 @@ ui = dashboardPage(
                                              
                                              verbatimTextOutput("anovastat")
                                       ),
-                                      column(7, plotOutput("dwellingstat"))
+                                      column(7, withSpinner(plotOutput("dwellingstat")))
                                     ),
                                     
                                     fluidRow(
@@ -284,7 +285,7 @@ ui = dashboardPage(
                                                          multiple = F),
                                              verbatimTextOutput("anovastat2")
                                       ),
-                                      column(7, plotOutput("dwellingstat2"))
+                                      column(7, withSpinner(plotOutput("dwellingstat2")))
                                     )
                                   )),
                          
@@ -298,10 +299,10 @@ ui = dashboardPage(
                                         choices = c("Dwelling Type"="dwelling_type", "Region","Year"="year"),
                                         selected = "Region",
                                         options = list(`actions-box` = TRUE),
-                                        multiple = F),
-                                      "Please wait for a moment as this page may take some time to process."
+                                        multiple = F)
+                                      
                                     ),
-                                    fluidRow(plotOutput("dwellingstat3")),
+                                    fluidRow(withSpinner(plotOutput("dwellingstat3"))),
                                     fluidRow(
                                       pickerInput(inputId = "region2",
                                                   label = "Select Region",
@@ -310,7 +311,7 @@ ui = dashboardPage(
                                                   options = list(`actions-box` = TRUE),
                                                   multiple = F)
                                     ),
-                                    fluidRow(plotOutput("dwellingstat4", height = "1000px"))
+                                    fluidRow(withSpinner(plotOutput("dwellingstat4", height = "1000px")))
                                   )
                          )
               )
@@ -403,6 +404,7 @@ server = function(input, output, session) {
   })
   
   # arima ----------------------------------------------------------------------
+  
   arima <- T2.3
   arima$Date <- yearmonth(as.yearmon(paste(arima$year, arima$mth), "%Y %m"))
   arima_ts <- ts(data=arima$peak_system_demand_mw)
