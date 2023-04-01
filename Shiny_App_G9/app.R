@@ -258,7 +258,7 @@ ui = dashboardPage(
                                       column(5,
                                              htmlOutput("description1"),
                                              pickerInput(inputId = "anovainput",
-                                                         label = "Select Variable",
+                                                         label = "Select Factor",
                                                          choices = c("Dwelling Type"="dwelling_type", "Region", "Year"="year"),
                                                          selected = "Region",
                                                          options = list(`actions-box` = TRUE),
@@ -290,7 +290,7 @@ ui = dashboardPage(
                                     fluidRow(
                                       pickerInput(
                                         inputId = "anovainput2",
-                                        label = "Select Variable",
+                                        label = "Select Factor",
                                         choices = c("Dwelling Type"="dwelling_type", "Region","Year"="year"),
                                         selected = "Region",
                                         options = list(`actions-box` = TRUE),
@@ -994,11 +994,11 @@ server = function(input, output, session) {
   })
   
   output$description1 <- renderText({
-    paste("Select a variable below to study the differences of consumption between groups.")
+    paste("Select a factor below to study the differences in mean consumption between the variables in the selected factor.")
   })
   
   output$description2 <- renderText({
-    paste("Select a region below to study the differences of consumption between towns located in the selected region.
+    paste("Select a region below to study the differences in mean consumption between towns located in the selected region.
 ")
   })
 }
