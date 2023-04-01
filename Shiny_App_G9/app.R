@@ -71,7 +71,7 @@ library(TSclust)
 ## Read compressed data file
 T2.3 <- readRDS(file = "RDS/T2-3.rds") # Peak System Demand
 T3.4 <- readRDS(file = "RDS/T3-4.rds") # Total Household Electricity Consumption by Dwelling Type
-T3.5 <- readRDS(file = "RDS/T3-5.rds") # Average Monthly Household Electricity Consumption by Planning Area & Dwelling Type
+T3.5 <- readRDS(file = "RDS/T3-5.rds") # Average Monthly Household Electricity Consumption by Town & Dwelling Type
 consumption <- readRDS(file = "RDS/anova.rds") # Anova
 town <- readRDS(file = "RDS/town.rds") # Geofacet
 clus_data <- readRDS(file = "RDS/clus_data.rds") # clustering
@@ -90,7 +90,7 @@ years <- c("2022","2021", "2020", "2019", "2018", "2017")
 regions <- c("Central Region", "North East Region", "East Region", "North Region", "West Region")
 tables <- c("Peak System Demand" = "T2.3",
             "Total Household Electricity Consumption by Dwelling Type" = "T3.4",
-            "Average Monthly Household Electricity Consumption by Planning Area & Dwelling Type" = "T3.5")
+            "Average Monthly Household Electricity Consumption by Town & Dwelling Type" = "T3.5")
 type <- c("parametric", "nonparametric", "robust", "bayes")
 towns <- unique(chosendata$type)
 dwellingtype <- unique(dwelling$DWELLING_TYPE)
@@ -132,7 +132,7 @@ ui = dashboardPage(
                     ),
                     
                     ### 1.2 geofacet ------------------------------------------------
-                    tabPanel("Consumption by Planning Area & Dwelling Type",
+                    tabPanel("Consumption by Town & Dwelling Type",
                              fluidPage(
                                radioButtons("axis", label = "Select Y-axis Control",
                                             choices = c("Fixed y-axis" = "fixed",
@@ -390,7 +390,7 @@ server = function(input, output, session) {
       ggplot(geofacet_gas_consump, aes(x = year, y = average_consumption)) +
         geom_line(aes(color = as.factor(dwelling_type))) +
         facet_geo(~Description, grid = common_grid, scales = input$axis) +
-        labs(title = "Average Monthly Household Electricity Consumption by Planning Area & Dwelling Type",
+        labs(title = "Average Monthly Household Electricity Consumption by Town & Dwelling Type",
              color = "Dwelling Type") +
         xlab("Year") + 
         ylab("Average \nConsumption") +
