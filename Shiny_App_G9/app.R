@@ -725,7 +725,7 @@ server = function(input, output, session) {
                      linewidth=0.5) +
           facet_grid(~month) +
           theme(axis.text.x = element_text(angle=90, vjust=1, hjust=1)) +
-          labs(title = paste("Cycleplot Shwoing Consumption (GWh) in Selected Towns" , startyear,"-",endyear),
+          labs(title = paste("Cycleplot Showing Consumption (GWh) in Selected Towns" , startyear,"-",endyear),
                subtitle = paste0(chosendata[1,6],": ",input$towns)) +
           scale_x_discrete(breaks=c("2005","2010","2015","2020")) +
           xlab("Year") +
@@ -745,6 +745,7 @@ server = function(input, output, session) {
     report_data <- report_data %>% 
       filter(Category %in% input$towns)
     #react_sparkline
+    
     output$sparktable <- renderReactable(reactable(
       report_data,
       defaultPageSize = 10,
@@ -794,7 +795,7 @@ server = function(input, output, session) {
                    linewidth=0.5) +
         facet_grid(~month) +
         theme(axis.text.x = element_text(angle=90, vjust=1, hjust=1)) +
-        labs(title = paste("Cycleplot Shwoing Consumption (GWh) in Selected Towns" , startyear,"-",endyear),
+        labs(title = paste("Cycleplot Showing Consumption (GWh) in Selected Towns" , startyear,"-",endyear),
              subtitle = paste0(chosendata[1,6],": ",input$towns)) +
         scale_x_discrete(breaks=c("2005","2010","2015","2020")) +
         xlab("") +

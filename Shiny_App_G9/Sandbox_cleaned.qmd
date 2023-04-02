@@ -432,6 +432,9 @@ d_sparks <- chosendata %>%
 saveRDS(d_sparks, file = "RDS/d_sparks.rds")
 
 report_data = left_join(d_report, d_sparks)
+report_data$Average <- round(report_data$Average , 2)
+report_data$Min <- round(report_data$Min , 2)
+report_data$Max <- round(report_data$Max , 2)
 saveRDS(report_data, file = "RDS/report_data.rds")
 
 head(report_data, 5)
