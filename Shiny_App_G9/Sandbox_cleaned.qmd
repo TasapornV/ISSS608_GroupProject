@@ -443,6 +443,19 @@ head(report_data, 5)
 
 ```{r 1.3.4 Slope graph, warning=FALSE, message=FALSE}
 
+ startyear <- 2005
+    endyear <- 2012
+
+cons_yr <- readRDS(file = "RDS/chosendata.rds")
+ cons_year <- cons_yr %>%
+        group_by(type, year) %>%
+        summarise(mean_cons=round(sum(consumption),2))
+ 
+ p_slopegraph <- cons_year %>% 
+      mutate(year = factor(year)) %>%
+      filter(year %in% c(startyear,endyear)) %>%
+      newggslopegraph(year, mean_cons, type)
+ p_slopegraph
 ```
 
 ## 2. Clustering
@@ -573,7 +586,7 @@ This code is creating a plot to determine the optimal number of clusters (k) bas
 
 The first line creates a hierarchical clustering object using the **`hclust`** function, with the distance matrix obtained from **`dist`** and the McQuitty linkage method.
 
-The second line uses the **`find_k`** function from the **`BBmisc`** package to calculate the optimal number of clusters based on the within-cluster sum of squares (WSS) method. This function takes the hierarchical clustering object as input and returns the optimal number of clusters.
+The second line uses the **`find_k`** function from the **`Dendextend`** package to calculate the optimal number of clusters based on the within-cluster sum of squares (WSS) method. This function takes the hierarchical clustering object as input and returns the optimal number of clusters.
 
 Finally, the third line creates a plot of the number of clusters against the WSS values using the **`plot`** function. The **`warning`** and **`message`** arguments are set to **`FALSE`** to suppress any warnings or messages that might be produced during the plot creation.
 
