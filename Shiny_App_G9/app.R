@@ -1,20 +1,26 @@
 # LIBRARY -----------------------------------------------------------------
-# remotes::install_github("timelyportfolio/dataui")
-# install.packages('PMCMRplus')
-# packages = c('CGPfunctions', 'cluster', 'data.table', 'dataui','dendextend', 
-#              'devtools','DT', 'dplyr', 'dtwclust', 'earth', 'fable', 'feasts', 
-#              'forecast','fpc', 'geofacet', 'ggdendro', 'ggiraph', 'ggplot2', 
-#              'ggstatsplot', 'ggrepel', 'ggridges', 'gt', 'gtExtras', 'heatmaply', 
-#              'knitr','plotly', 'lubridate', 'psych', 'RColorBrewer', 'reactable', 
-#              'reactablefmtr', 'readr', 'sf', 'shiny', 'shinydashboard', 
-#              'shinythemes', 'shinyWidgets', 'stats', 'tibble', 'tidymodels', 
-#              'tidyquant', 'tidyr', 'tidyverse', 'timetk', 'tmap', 'treemap', 
-#              'TSclust', 'tseries', 'tsibble', 'tsibbletalk', 'zoo')
 # 
+# packages = c('CGPfunctions', 'cluster', 'data.table', 'dataui','dendextend',
+#              'dplyr', 'dtwclust', 'feasts', 'forecast', 'geofacet', 'ggdendro',
+#              'ggplot2', 'ggstatsplot', 'gt', 'gtExtras', 'heatmaply',
+#              'plotly', 'PMCMRplus', 'lubridate', 'reactable',
+#              'reactablefmtr', 'readr', 'sf', 'shiny', 'shinycssloaders', 'shinydashboard',
+#              'shinythemes', 'shinyWidgets', 'sparkline',  'stats',
+#              'tidyr', 'tidyverse', 'timetk', 'tmap',
+#              'TSclust', 'tsibble', 'zoo')
+# library(stats)
+# library(svglite)
+# library(tidyr)
+# library(tidyverse)
+# library(timetk)
+# library(tmap)
+# library(TSclust)
+# library(tsibble)
+# library(zoo)
 # for(p in packages){
 #   library(p,character.only = T)
 # }
-# 
+
 library(CGPfunctions)
 library(cluster)
 library(data.table)
