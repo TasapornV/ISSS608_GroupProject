@@ -2,11 +2,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
 
 <meta charset="utf-8">
-<<<<<<< HEAD
 <meta name="generator" content="quarto-1.2.269">
-=======
-<meta name="generator" content="quarto-1.2.313">
->>>>>>> 664063d40138842cbe0d986b7c61a213983925d1
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
@@ -135,15 +131,7 @@ ul.task-list li input[type="checkbox"] {
 <header id="title-block-header" class="quarto-title-block default page-columns page-full">
   <div class="quarto-title-banner page-columns page-full">
     <div class="quarto-title column-page-left">
-<<<<<<< HEAD
-<<<<<<<< HEAD:home.html
       <h1 class="title">Home</h1>
-========
-      <h1 class="title">Project Snapshot</h1>
->>>>>>>> 664063d40138842cbe0d986b7c61a213983925d1:_site/Proposal.html
-=======
-      <h1 class="title">Home</h1>
->>>>>>> 664063d40138842cbe0d986b7c61a213983925d1
             <p class="subtitle lead">Visualise &amp; Analyse Singapore Electricity Consumption with RShiny App</p>
                       </div>
   </div>
@@ -209,120 +197,7 @@ ul.task-list li input[type="checkbox"] {
 <h2 data-number="3" class="anchored" data-anchor-id="background"><span class="header-section-number">3</span> Background</h2>
 <p>Singapore has progressively moved towards an open electricity market since 2001 to ensure a reliable energy supply and promote effective competition in the energy market.</p>
 <p>With growing competition in the market, it becomes increasingly important for market players such as regulators, suppliers and retailers to understand the electricity consumption pattern in Singapore to ensure adequate supply planning and pricing structure.</p>
-<<<<<<< HEAD
 <p>To assist relevant market players in analyzing electricity consumption data effectively, we created this RShiny App to visualize Singapore electricity consumption pattern and trend, perform statistical analysis as well as forecast the future trends.</p>
-<<<<<<<< HEAD:home.html
-========
-</section>
-<section id="scope" class="level2" data-number="2">
-<h2 data-number="2" class="anchored" data-anchor-id="scope"><span class="header-section-number">2</span> Scope</h2>
-<p>Our RShiny app allows users to interact with the data to:</p>
-<ol type="1">
-<li>Explore the electricity consumption patterns and trends in Singapore,</li>
-<li>Cluster planning areas based on similarities in consumption patterns,</li>
-<li>Perform inferential statistical analysis, and</li>
-<li>Forecast future consumption trend.</li>
-</ol>
-<p>A detailed description and sketch of the proposed analyses and visualizations are presented in section 4 of this proposal.</p>
-</section>
-<section id="data" class="level2" data-number="3">
-<h2 data-number="3" class="anchored" data-anchor-id="data"><span class="header-section-number">3</span> Data</h2>
-<p>The data used in this project is extracted from <a href="https://www.ema.gov.sg/Singapore_Energy_Statistics.aspx">Energy Market Authority (EMA) Singapore</a>. It contains data between year 2005 and 2022, with a total of 35 tabs. The tabs are broadly categorized into 7 sections, namely:</p>
-<ol type="1">
-<li>Energy Supply</li>
-<li>Energy Transformation</li>
-<li>Energy Consumption</li>
-<li>Energy Balances</li>
-<li>Energy Prices</li>
-<li>Solar</li>
-<li>Manpower</li>
-</ol>
-<p>For this project, we will be focusing on household electricity consumption.</p>
-</section>
-<section id="visualization-and-analysis" class="level2" data-number="4">
-<h2 data-number="4" class="anchored" data-anchor-id="visualization-and-analysis"><span class="header-section-number">4</span> Visualization and Analysis</h2>
-<section id="overview-dashboard" class="level3" data-number="4.1">
-<h3 data-number="4.1" class="anchored" data-anchor-id="overview-dashboard"><span class="header-section-number">4.1</span> Overview Dashboard</h3>
-<p>To provide users some basic insights on the Singapore electricity consumption, an <em>Overview</em> tab is built for users to explore the electricity consumption by regions, planning areas and dwelling types. Changes over time are also visualized to provide users a more comprehensive view.</p>
-<section id="main-r-packages-functions" class="level4" data-number="4.1.1">
-<h4 data-number="4.1.1" class="anchored" data-anchor-id="main-r-packages-functions"><span class="header-section-number">4.1.1</span> Main R Packages &amp; Functions</h4>
-<ul>
-<li><strong>ggplot2:</strong> for descriptive visualization such as boxplots</li>
-<li><strong>ggiraph/plotly:</strong> for interactive visualization</li>
-<li><strong>geofacet:</strong> for visualization laid out according to the geographic topology</li>
-<li><strong>timetk:</strong> for time series visualization</li>
-</ul>
-</section>
-<section id="application-design" class="level4" data-number="4.1.2">
-<h4 data-number="4.1.2" class="anchored" data-anchor-id="application-design"><span class="header-section-number">4.1.2</span> Application Design</h4>
-<p><img src="images/app1.png" class="img-fluid"></p>
-<p><img src="images/app2.png" class="img-fluid"></p>
-<p><img src="images/app3.png" class="img-fluid"></p>
-<p><img src="images/app4.png" class="img-fluid"></p>
-</section>
-</section>
-<section id="clustering-analysis" class="level3" data-number="4.2">
-<h3 data-number="4.2" class="anchored" data-anchor-id="clustering-analysis"><span class="header-section-number">4.2</span> Clustering Analysis</h3>
-<p>Clustering analysis is performed to help users identify clusters with distinct consumption patterns. The clustering analysis is done using the consumption data for each planning area and dwelling type over time. This analysis will help stakeholders in future strategic planning activities such as supply planning and pricing.</p>
-<section id="main-r-packages-functions-1" class="level4" data-number="4.2.1">
-<h4 data-number="4.2.1" class="anchored" data-anchor-id="main-r-packages-functions-1"><span class="header-section-number">4.2.1</span> Main R Packages &amp; Functions</h4>
-<ul>
-<li><strong>dtwclust:</strong> for time series clustering</li>
-<li><strong>dendextend:</strong> to visualize and compare hierarchical clustering’s dendrogram</li>
-<li><strong>tmap:</strong> representing clusters on interactive map visual</li>
-</ul>
-</section>
-<section id="application-design-1" class="level4" data-number="4.2.2">
-<h4 data-number="4.2.2" class="anchored" data-anchor-id="application-design-1"><span class="header-section-number">4.2.2</span> Application Design</h4>
-<p><img src="images/app5.png" class="img-fluid"></p>
-<p><img src="images/app6.png" class="img-fluid"></p>
-</section>
-</section>
-<section id="inferential-analysis" class="level3" data-number="4.3">
-<h3 data-number="4.3" class="anchored" data-anchor-id="inferential-analysis"><span class="header-section-number">4.3</span> Inferential Analysis</h3>
-<p>When there are more than two sample groups, ANOVA (Analysis of Variance) is used to test if there are statistically significant differences between the means of these independent sample groups. In other words, it compares the means of different samples to determine the influence of one or more factors.</p>
-<section id="main-r-packages-functions-2" class="level4" data-number="4.3.1">
-<h4 data-number="4.3.1" class="anchored" data-anchor-id="main-r-packages-functions-2"><span class="header-section-number">4.3.1</span> Main R Packages &amp; Functions</h4>
-<ul>
-<li><strong>ggplot2:</strong> for descriptive visualization such as boxplots</li>
-<li><strong>ggbetweenstats:</strong> A combination of box and violin plots along with jittered data points for between-subjects designs with statistical details included in the plot as a subtitle</li>
-<li><strong>ggcorrplot:</strong> Visualize a correlation matrix using ggplot2. It provides a solution for reordering the correlation matrix and displays the significance level on the correlogram. It includes also a function for computing a matrix of correlation p-values.</li>
-</ul>
-</section>
-<section id="application-design-2" class="level4" data-number="4.3.2">
-<h4 data-number="4.3.2" class="anchored" data-anchor-id="application-design-2"><span class="header-section-number">4.3.2</span> Application Design</h4>
-<p><img src="images/app7.png" class="img-fluid"></p>
-<p><img src="images/app8.png" class="img-fluid">Time Series Forecasting</p>
-<p>Various predictive models are built onto the app for users to forecast the future consumption trends. The model accuracy and confidence level are also made available for users.</p>
-</section>
-<section id="main-r-packages-functions-3" class="level4" data-number="4.3.3">
-<h4 data-number="4.3.3" class="anchored" data-anchor-id="main-r-packages-functions-3"><span class="header-section-number">4.3.3</span> Main R Packages &amp; Functions</h4>
-<ul>
-<li><strong>modeltime:</strong> The time series forecasting framework for use with the ‘tidymodels’ ecosystem. Models considered include ARIMA, Exponential Smoothing, SARIMA, Long Short-Term Memory and additional time series models from the ‘forecast’, ‘tseries’ and ‘prophet’ packages.</li>
-<li><strong>tidymodels:</strong> a collection of packages for modeling and machine learning using <a href="https://www.tidyverse.org/"><strong>tidyverse</strong></a> principles.</li>
-</ul>
-</section>
-<section id="application-design-3" class="level4" data-number="4.3.4">
-<h4 data-number="4.3.4" class="anchored" data-anchor-id="application-design-3"><span class="header-section-number">4.3.4</span> Application Design</h4>
-<p><img src="images/app9.png" class="img-fluid"></p>
-</section>
-</section>
-<section id="data-1" class="level3" data-number="4.4">
-<h3 data-number="4.4" class="anchored" data-anchor-id="data-1"><span class="header-section-number">4.4</span> Data</h3>
-<p>A data view is introduced to provide the user with an overview of how the data appears. Users will be able to choose which table and columns to display.</p>
-<section id="visual-design" class="level4" data-number="4.4.1">
-<h4 data-number="4.4.1" class="anchored" data-anchor-id="visual-design"><span class="header-section-number">4.4.1</span> Visual Design</h4>
-<p><img src="images/app10.png" class="img-fluid"></p>
-</section>
-</section>
-</section>
-<section id="project-timeline" class="level2" data-number="5">
-<h2 data-number="5" class="anchored" data-anchor-id="project-timeline"><span class="header-section-number">5</span> Project Timeline</h2>
-<p><img src="images/Project timeline.png" class="img-fluid"></p>
->>>>>>>> 664063d40138842cbe0d986b7c61a213983925d1:_site/Proposal.html
-=======
-<p>To assist relevant market players in analyzing electricity consumption data effectively, we created this RShinny App to visualize Singapore electricity consumption pattern and trend, perform statistical analysis as well as forecast the future trends.</p>
->>>>>>> 664063d40138842cbe0d986b7c61a213983925d1
 
 
 </section>
