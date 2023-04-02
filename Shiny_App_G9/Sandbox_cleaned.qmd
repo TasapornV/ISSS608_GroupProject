@@ -22,7 +22,7 @@ format:
     title-block-banner: true
     fig-align: center
     reader-mode: true
----oper
+
 ---
 
 ## Install and launching R packages
