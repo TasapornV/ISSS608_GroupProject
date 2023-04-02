@@ -488,7 +488,7 @@ server = function(input, output, session) {
     
     if(input$anovainput == "dwelling_type"){
       output$dwellingstat <- renderPlot({
-        town %>%
+        consumption %>%
           mutate(class = fct_reorder(dwelling_type, kwh_per_acc, .fun='mean')) %>%
           ggplot( aes(x=reorder(dwelling_type, kwh_per_acc), y=kwh_per_acc)) +
           geom_boxplot() +
@@ -562,7 +562,7 @@ server = function(input, output, session) {
     if(input$anovainput2 == "Dwelling_type") {
       output$dwellingstat3 <- renderPlot({
         ggbetweenstats(
-          data = town,
+          data = consumption,
           x = Dwelling_type,
           y = kwh_per_acc,
           conf.level = input$conf,
