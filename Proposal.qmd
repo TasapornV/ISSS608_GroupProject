@@ -72,7 +72,13 @@ To provide users some basic insights on the Singapore electricity consumption, a
 
 #### Application Design
 
-INSERT SCREENSHOT
+![](images/app1.png)
+
+### ![](images/app2.png)
+
+![](images/app3.png)
+
+![](images/app4.png)
 
 ### Clustering Analysis
 
