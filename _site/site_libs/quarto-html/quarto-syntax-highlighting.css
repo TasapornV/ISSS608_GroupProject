@@ -1,6 +1,9 @@
 /* quarto syntax highlight colors */
 :root {
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> parent of d409dc5 (Tidy up)
   --quarto-hl-kw-color: #859900;
   --quarto-hl-fu-color: #268bd2;
   --quarto-hl-va-color: #268bd2;
@@ -30,6 +33,7 @@
   --quarto-hl-wa-color: #cb4b16;
   --quarto-hl-al-color: #d33682;
   --quarto-hl-er-color: #dc322f;
+<<<<<<< HEAD
 =======
   --quarto-hl-ot-color: #003B4F;
   --quarto-hl-at-color: #657422;
@@ -61,6 +65,8 @@
   --quarto-hl-dv-color: #AD0000;
   --quarto-hl-kw-color: #003B4F;
 >>>>>>> de089071b19393a8e15c08c66545244e7b60ace3
+=======
+>>>>>>> parent of d409dc5 (Tidy up)
 }
 
 /* other quarto variables */
@@ -69,6 +75,7 @@
 }
 
 pre > code.sourceCode > span {
+<<<<<<< HEAD
 <<<<<<< HEAD
   color: #657b83;
 }
@@ -81,19 +88,27 @@ code.sourceCode > span {
   color: #657b83;
 =======
   color: #003B4F;
+=======
+  color: #657b83;
+>>>>>>> parent of d409dc5 (Tidy up)
 }
 
 code span {
-  color: #003B4F;
+  color: #657b83;
 }
 
 code.sourceCode > span {
+<<<<<<< HEAD
   color: #003B4F;
 >>>>>>> de089071b19393a8e15c08c66545244e7b60ace3
+=======
+  color: #657b83;
+>>>>>>> parent of d409dc5 (Tidy up)
 }
 
 div.sourceCode,
 div.sourceCode pre.sourceCode {
+<<<<<<< HEAD
 <<<<<<< HEAD
   color: #657b83;
 }
@@ -187,75 +202,109 @@ code span.co {
   color: #93a1a1;
 =======
   color: #003B4F;
+=======
+  color: #657b83;
+>>>>>>> parent of d409dc5 (Tidy up)
 }
 
-code span.ot {
-  color: #003B4F;
-}
-
-code span.at {
-  color: #657422;
-}
-
-code span.ss {
-  color: #20794D;
-}
-
-code span.an {
-  color: #5E5E5E;
+code span.kw {
+  color: #859900;
+  font-weight: bold;
 }
 
 code span.fu {
-  color: #4758AB;
-}
-
-code span.st {
-  color: #20794D;
-}
-
-code span.cf {
-  color: #003B4F;
-}
-
-code span.op {
-  color: #5E5E5E;
-}
-
-code span.er {
-  color: #AD0000;
-}
-
-code span.bn {
-  color: #AD0000;
-}
-
-code span.al {
-  color: #AD0000;
+  color: #268bd2;
 }
 
 code span.va {
-  color: #111111;
+  color: #268bd2;
+}
+
+code span.cf {
+  color: #859900;
+  font-weight: bold;
+}
+
+code span.op {
+  color: #859900;
+}
+
+code span.bu {
+  color: #cb4b16;
+}
+
+code span.ex {
+  color: #268bd2;
+  font-weight: bold;
 }
 
 code span.pp {
-  color: #AD0000;
+  color: #cb4b16;
 }
 
-code span.in {
-  color: #5E5E5E;
+code span.at {
+  color: #268bd2;
+}
+
+code span.ch {
+  color: #2aa198;
+}
+
+code span.sc {
+  color: #dc322f;
+}
+
+code span.st {
+  color: #2aa198;
 }
 
 code span.vs {
-  color: #20794D;
+  color: #2aa198;
 }
 
+<<<<<<< HEAD
 code span.wa {
   color: #5E5E5E;
 >>>>>>> de089071b19393a8e15c08c66545244e7b60ace3
+=======
+code span.ss {
+  color: #dc322f;
+}
+
+code span.im {
+  color: #2aa198;
+}
+
+code span.dt {
+  color: #b58900;
+  font-weight: bold;
+}
+
+code span.dv {
+  color: #2aa198;
+}
+
+code span.bn {
+  color: #2aa198;
+}
+
+code span.fl {
+  color: #2aa198;
+}
+
+code span.cn {
+  color: #2aa198;
+  font-weight: bold;
+}
+
+code span.co {
+  color: #93a1a1;
+>>>>>>> parent of d409dc5 (Tidy up)
   font-style: italic;
 }
 
 code span.do {
+<<<<<<< HEAD
 <<<<<<< HEAD
   color: #dc322f;
 }
@@ -291,48 +340,45 @@ code span.er {
 =======
   color: #5E5E5E;
   font-style: italic;
+=======
+  color: #dc322f;
+>>>>>>> parent of d409dc5 (Tidy up)
 }
 
-code span.im {
-  color: #00769E;
-}
-
-code span.ch {
-  color: #20794D;
-}
-
-code span.dt {
-  color: #AD0000;
-}
-
-code span.fl {
-  color: #AD0000;
-}
-
-code span.co {
-  color: #5E5E5E;
+code span.an {
+  color: #268bd2;
 }
 
 code span.cv {
-  color: #5E5E5E;
-  font-style: italic;
+  color: #2aa198;
 }
 
-code span.cn {
-  color: #8f5902;
+code span.re {
+  color: #268bd2;
 }
 
-code span.sc {
-  color: #5E5E5E;
+code span.in {
+  color: #b58900;
 }
 
-code span.dv {
-  color: #AD0000;
+code span.wa {
+  color: #cb4b16;
 }
 
+<<<<<<< HEAD
 code span.kw {
   color: #003B4F;
 >>>>>>> de089071b19393a8e15c08c66545244e7b60ace3
+=======
+code span.al {
+  color: #d33682;
+  font-weight: bold;
+}
+
+code span.er {
+  color: #dc322f;
+  text-decoration: underline;
+>>>>>>> parent of d409dc5 (Tidy up)
 }
 
 .prevent-inlining {
