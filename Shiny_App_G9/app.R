@@ -166,9 +166,7 @@ ui = dashboardPage(skin = "yellow",
                                               ),
                                               fluidRow(
                                                 column(12, plotlyOutput("cycleplot")),
-                                                column(12, sparklineOutput("d_sparks")),
-                                                
-                                                column(6, tableOutput("sparktable"))
+                                                column(12, reactableOutput("sparktable"))
                                               )
                                      ),
                                      ### 1.4 Consumption by Dwelling type and dwelling type -------
@@ -723,16 +721,27 @@ server = function(input, output, session) {
       group_by(`Category`) %>%   
       summarize(`Monthly Consumption` = list(consumption))
     
-    output$d_sparks <- renderSparkline({
-      d_sparks
-    })
+    #react_sparkline
+    output$sparktable <- renderReactable(reactable(
+      report_data,
+      defaultPageSize = 10,
+      columns = list(
+        `Category` = colDef(maxWidth = 200),
+        `Min` = colDef(maxWidth = 200),
+        `Max` = colDef(maxWidth = 200),
+        `Average` = colDef(maxWidth = 200),
+        `Monthly Consumption` = colDef(
+          cell = react_sparkline(
+            d_sparks,
+            highlight_points = highlight_points(
+              min = "red", max = "blue"),
+            line_width = 1,
+            bandline = "innerquartiles",
+            bandline_color = "green"
+          )
+        ))))
+
     
-    report_data = left_join(d_report, d_sparks) 
-    
-    output$sparktable <- renderTable({report_data %>% 
-      gt() %>% 
-      gt_plt_sparkline('Monthly Consumption')
-    })
   })
   
   # consumption by dwelling type -------------------------------------------------

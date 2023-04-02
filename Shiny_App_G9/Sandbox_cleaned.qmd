@@ -410,11 +410,14 @@ d_sparks <- chosendata %>%
   group_by(`Category`) %>%   
   summarize(`Monthly Consumption` = list(consumption))
 
-report_data = left_join(d_report, d_sparks) 
+report_data = left_join(d_report, d_sparks)
 
-report_data %>% 
-  gt() %>% 
-  gt_plt_sparkline('Monthly Consumption')
+head(d_report, 5)
+head(d_sparks)
+# 
+# report_data %>% 
+#   gt() %>% 
+#   gt_plt_sparkline('Monthly Consumption')
 ```
 
 #### Plot 4 - Slopegraph
