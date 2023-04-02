@@ -110,7 +110,7 @@ When there are more than two sample groups, ANOVA (Analysis of Variance) is used
 
 ![](images/app7.png)
 
-### ![](images/app8.png)Time Series Forecasting
+![](images/app8.png)Time Series Forecasting
 
 Various predictive models are built onto the app for users to forecast the future consumption trends. The model accuracy and confidence level are also made available for users.
 
