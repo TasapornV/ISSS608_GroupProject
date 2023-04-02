@@ -89,6 +89,16 @@ head(T3.5, 5)
 
 ### 1.1 Introduction
 
+The code uses the **`shiny`** and **`shinydashboard`** packages to create a web application to analyze and visualize data related to Singapore's energy consumption.
+
+The **`introtext`** variable contains a brief introduction to the Singaporean electricity market and the challenges in analyzing it.
+
+The **`ui`** function creates the user interface for the web application using **`dashboardPage`** and **`dashboardSidebar`**. The **`dashboardHeader`** function sets the title of the web app. The **`dashboardSidebar`** function creates a sidebar menu with a single menu item labeled "OVERVIEW".
+
+The **`dashboardBody`** function creates a body section with a single tab item labeled "overview". The **`navbarPage`** function creates a navigation bar with a single tab panel labeled "Introduction". The **`introtext`** variable is used as the content of this tab panel.
+
+The **`server`** function is empty in this code. Additional code would be added to the **`server`** function to create interactive features and to perform data analysis and visualization.
+
 ```{r 1.1 Introduction, warning=FALSE, message=FALSE, output=FALSE}
 library(shiny)
 library(shinydashboard)
@@ -307,6 +317,14 @@ ggplot(data = chosendata, aes(x = date)) +
 
 #### Plot 2 - Cycle plot
 
+The code creates a cycle plot for electricity consumption in a specific location and dwelling type using the **`ggplot2`** package.
+
+The first line of code defines a variable **`select_type`** that specifies the type of dwelling to be plotted. This is followed by a data manipulation pipeline using **`dplyr`** to filter the data for the specified dwelling type and format the year and month variables as factors with specific levels.
+
+The next section of code computes the average consumption per month across all years for the selected dwelling type and stores this in the **`hline.data`** variable.
+
+The final section of code creates the cycle plot using **`ggplot2`**. The **`geom_line`** function is used to plot the electricity consumption data over time for each month, with each month represented by a different color. The **`geom_hline`** function adds a horizontal line representing the average consumption for each month across all years. The **`facet_grid`** function is used to split the plot into individual panels for each month. The **`theme`** function is used to adjust the appearance of the plot, such as the angle of the x-axis text labels. The **`labs`** function is used to add a title and subtitle to the plot, with the subtitle indicating the specific dwelling type being plotted. Finally, the **`scale_x_discrete`** function is used to set the x-axis breaks to specific years and the **`xlab`** and **`ylab`** functions are used to label the x and y axes, respectively.
+
 ```{r 1.3.2 Cycle plot, warning=FALSE, message=FALSE}
 select_type <- 'Bishan'
 select_cycle <- chosendata %>% 
@@ -353,6 +371,18 @@ ggplot() +
 
 ### 2.1 Hierachical clustering
 
+This code reads in a CSV file named "T3-5.csv" using the **`read_csv`** function from the **`readr`** package. It then applies several data transformations to create a new data frame named **`clus`** and saves both the original and transformed data frames as RDS files.
+
+First, the code filters out any rows where the month is "Annual", the year is before 2018, the dwelling type is "Overall", or the description column contains the strings "Region", "Pioneer", or "Overall". The resulting data frame is stored in **`clus_data`**.
+
+Next, the code transforms the **`kwh_per_acc`** column from character to numeric format using **`as.numeric()`**. It also creates a new column named **`date`** by concatenating the **`year`** and **`month`** columns and parsing them as dates using the **`parse_date_time()`** function from the **`lubridate`** package. The **`month`** and **`year`** columns are then removed using the **`subset()`** function.
+
+The **`pivot_wider()`** function from the **`tidyr`** package is used to pivot the **`clus_data`** data frame wider so that the **`kwh_per_acc`** values for each date become their own column. The resulting data frame is stored in **`clus`**.
+
+Finally, any rows with missing values are removed using **`na.omit()`**, and the **`Description`** column is moved to be the first column in the data frame using the **`relocate()`** function from the **`dplyr`** package. The resulting data frames, **`clus_data`** and **`clus`**, are saved as RDS files.
+
+After saving the data frames, the code reads them back in using the **`readRDS()`** function and displays the first five rows of each data frame using **`head()`**.
+
 ```{r clustering data prep, warning=FALSE, message=FALSE}
 library(lubridate)
 
@@ -392,6 +422,8 @@ head(clus, 5)
 
 #### Plot 1 - Method selection table
 
+This code calculates the clustering distance matrix using the "maximum" method on a normalized data frame (**`clus_group1`**) which summarizes the electricity consumption data by **`Description`**. The **`dist()`** function computes the Euclidean distances between each pair of rows in the input matrix, which is then used to generate a hierarchical clustering using the **`hclust()`** function. The **`normalize()`** function is used to normalize the input data, so that each variable has zero mean and unit variance. The resulting clustering distance matrix is stored in the **`clustering`** variable, which will be used to find the optimal number of clusters using the elbow method. The **`dendextend`** and **`BBmisc`** packages are loaded, which provide functions to manipulate and plot dendrograms.
+
 ```{r 2.1.1 Method selection table, warning=FALSE, message=FALSE}
 # once user have gotten the clustering method from above, they need to input that to find the optimal number of k
 library(dendextend)
@@ -405,6 +437,25 @@ dend_expend(clustering)[[3]]
 ```
 
 #### Plot 2 - Heatmap
+
+This code generates a heatmaply visualization of the hierarchical clustering results for the energy consumption data of different towns over time. The data is first summarized by taking the sum of energy consumption for each town across time. The resulting data frame is then converted to a matrix, which is used to generate the heatmaply plot.
+
+The heatmaply function is called with several arguments, including:
+
+-   clus_matrix1: the matrix of energy consumption data to be visualized
+-   scale: the scaling method to be used (in this case, column scaling is used)
+-   dist_method: the distance metric to be used for clustering (in this case, Euclidean distance is used)
+-   hclust_method: the hierarchical clustering method to be used (in this case, average linkage is used)
+-   Colv: whether to show a column dendrogram (in this case, set to NA to not show)
+-   seriate: the seriation method to be used (in this case, set to "none" to not reorder rows and columns)
+-   k_row: the number of clusters to show in the row dendrogram (in this case, set to 3)
+-   margins: the size of the margins (in this case, set to c(NA,200,50,NA))
+-   colors: the color scheme to be used (in this case, viridis with 256 colors)
+-   fontsize_row: the font size for row labels
+-   fontsize_col: the font size for column labels
+-   main: the main title for the plot
+-   ylab: the y-axis label for the plot
+-   xlab: the x-axis label for the plot
 
 ```{r 2.1.2 Heatmap, warning=FALSE, message=FALSE}
 library(heatmaply)
@@ -439,6 +490,14 @@ heatmaply(clus_matrix1[,-c(1)],
 ```
 
 #### Plot 3 - Number of cluster plot
+
+This code is creating a plot to determine the optimal number of clusters (k) based on the hierarchical clustering method applied earlier.
+
+The first line creates a hierarchical clustering object using the **`hclust`** function, with the distance matrix obtained from **`dist`** and the McQuitty linkage method.
+
+The second line uses the **`find_k`** function from the **`BBmisc`** package to calculate the optimal number of clusters based on the within-cluster sum of squares (WSS) method. This function takes the hierarchical clustering object as input and returns the optimal number of clusters.
+
+Finally, the third line creates a plot of the number of clusters against the WSS values using the **`plot`** function. The **`warning`** and **`message`** arguments are set to **`FALSE`** to suppress any warnings or messages that might be produced during the plot creation.
 
 ```{r 2.1.3 Number of cluster plot, warning=FALSE, message=FALSE}
 clust2 <- hclust(clustering, method = "mcquitty")
@@ -791,6 +850,17 @@ ggbarstats(
 ```
 
 ## 4. Time series forecasting
+
+```{r timeseries_library}
+packages = c('tidyverse','tidyquant','tsibbledata','tsibble','feasts'
+             ,'stats','lubridate','data.table','rmarkdown','knitr')
+for (p in packages) {
+  if(!require(p,character.only = T)){
+    install.packages(p)
+  }
+  library(p,character.only = T)
+}
+```
 
 ```{r}
 arima <- town %>% 
