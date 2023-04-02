@@ -67,6 +67,8 @@ chosendata  <- readRDS(file = "RDS/chosendata.rds") # intro
 dwelling    <- readRDS(file = "RDS/dwelling.rds") #intro
 report_data <- readRDS(file = "RDS/report_data.rds") #sparktable
 d_sparks    <- readRDS(file = "RDS/d_sparks.rds")
+arima_arima <- readRDS(file = "RDS/arima_arima.rds")
+full_arima_stl <- readRDS(file = "RDS/full_arima_stl.rds")
 
 # reading the map file
 mpsz        <- st_read(dsn = 'master-plan-2014-subzone-boundary-web-shp',
@@ -155,8 +157,8 @@ ui = dashboardPage(skin = "yellow",
                                                 column(6, plotOutput("slope",height=400))
                                               ),
                                               fluidRow(
-                                                column(12, plotlyOutput("cycleplot")),
-                                                column(12, reactableOutput("sparktable"))
+                                                column(6, plotlyOutput("cycleplot")),
+                                                column(6, reactableOutput("sparktable"))
                                               )
                                      ),
                                      ### 1.4 Consumption by Dwelling type and dwelling type -------
@@ -337,9 +339,12 @@ ui = dashboardPage(skin = "yellow",
                                                               checkboxInput("arima_d3", "allow drift", value = FALSE),
                                                               sliderInput("year", "Select year", min = 2005, max = 2022, step=1, round=TRUE, value = 2022),
                                                               verbatimTextOutput("arimatext")),
-                                                       column(width = 7, withSpinner(plotOutput("arima",height=350))),
-                                                       column(width = 12, plotOutput("arima_plot",height=400))
-                                                     ) )
+                                                       column(width = 7, withSpinner(plotOutput("arima",height=350)))),
+                                                     fluidRow(
+                                                       column(width = 6, plotOutput("arima_plot",height=400)),
+                                                       column(width = 6, plotOutput("season"))
+                                                     )
+                                                   )
                                           )
                                )
                        ),
@@ -415,8 +420,9 @@ server = function(input, output, session) {
   arima_ts <- ts(data=arima$peak_system_demand_mw)
   
   observeEvent(c(input$arima_d,input$arima_d2, input$arima_d3, input$year), {
+    # arima_arima = auto.arima(arima_ts, d = input$arima_d, D = input$arima_d2, allowdrift = input$arima_d3)
     output$arima <- renderPlot({
-      arima_arima = auto.arima(arima_ts, d = input$arima_d, D = input$arima_d2, allowdrift = input$arima_d3)
+     
       plot(forecast(arima_arima))
     })
     output$arimatext <- renderPrint(arima_arima)
@@ -429,6 +435,14 @@ server = function(input, output, session) {
       full_arima %>%
         gg_tsdisplay(difference(peak_system_demand_mw), plot_type='partial')
     })
+    
+    output$season <- renderPlot(({
+      full_arima_stl %>% 
+        summarise(sum = sum(sum)) %>%
+        model(STL(sum ~ season(window = 5))) %>% 
+        components() %>%
+        autoplot()
+    }))
   })
   
   # anova boxplot-----------------------------------------------------------------
@@ -698,7 +712,7 @@ server = function(input, output, session) {
                                          caption = "")
     output$slope <- renderPlot({p_slopegraph1})
     ## sparkline -------------------------------------------------
-
+    
     report_data <- report_data %>% 
       filter(Category %in% input$towns)
     #react_sparkline
@@ -719,8 +733,8 @@ server = function(input, output, session) {
             bandline = "innerquartiles",
             bandline_color = "green"
           ))
-        )))
-    })
+      )))
+  })
   
   # consumption by dwelling type -------------------------------------------------
   
@@ -815,7 +829,7 @@ server = function(input, output, session) {
     
   })
   #  clustering ------------------------------------------------------------------------ 
-
+  
   observeEvent(c(input$k2, input$method2, input$distance_func),{
     ##  dtw ------------------------------------------------------------------------
     cluster_dtw <- tsclust(clus_matrix1[,-c(1)],
@@ -938,7 +952,7 @@ server = function(input, output, session) {
     
     clus_hc$Description <- toupper(clus_hc$Description)
     
-   ## Preparing the choropleth map
+    ## Preparing the choropleth map
     mpsz_clus <- left_join(singapore, clus_hc, by = c("PLN_AREA_N" = "Description"))
     map <- tm_shape(mpsz_clus)+
       tmap_options(check.and.fix = TRUE)+

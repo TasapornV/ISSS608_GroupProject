@@ -354,6 +354,21 @@ startyear <- 2005
 endyear <- 2021
 ```
 
+```{r, warning=FALSE}
+
+library(ggstatsplot)
+town <- readRDS(file = "RDS/town.rds") 
+
+ ggbetweenstats(
+ data = town |> filter(town$Region %in% c("Central Region")),
+ x = Description,
+ y = kwh_per_acc,
+ type = "nonparametric",
+ p.adjust.method = "fdr",
+messages = FALSE
+ )
+```
+
 #### Plot 2 - Cycle plot
 
 The code creates a cycle plot for electricity consumption in a specific location and dwelling type using the **`ggplot2`** package.
@@ -1036,6 +1051,8 @@ full_arima_stl2=full_arima2 %>%
   model(STL(sum ~ season(window = 5))) %>% 
   components()
 
+saveRDS(full_arima_stl, file = "RDS/full_arima_stl.rds")
+
 head(full_arima_stl)
 head(full_arima_stl2)
 ```
@@ -1058,4 +1075,16 @@ full_arima = arima_tsbl %>%
 
 full_arima %>%
   gg_tsdisplay(difference(sum), plot_type='partial')
+```
+
+```{r}
+arima_ts <- ts(data=arima$sum, start = c(2005,1), end = c(2022, 6), frequency=12)
+plot.ts(arima_ts, plot.type=('single'))    
+arima_arima <- auto.arima(arima_ts)
+
+saveRDS(arima_arima, file = "RDS/arima_arima.rds")
+```
+
+```{r}
+plot(forecast(arima_arima))
 ```
