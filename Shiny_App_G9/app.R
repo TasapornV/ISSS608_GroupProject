@@ -1,25 +1,4 @@
 # LIBRARY -----------------------------------------------------------------
-# 
-# packages = c('CGPfunctions', 'cluster', 'data.table', 'dataui','dendextend',
-#              'dplyr', 'dtwclust', 'feasts', 'forecast', 'geofacet', 'ggdendro',
-#              'ggplot2', 'ggstatsplot', 'gt', 'gtExtras', 'heatmaply',
-#              'plotly', 'PMCMRplus', 'lubridate', 'reactable',
-#              'reactablefmtr', 'readr', 'sf', 'shiny', 'shinycssloaders', 'shinydashboard',
-#              'shinythemes', 'shinyWidgets', 'sparkline',  'stats',
-#              'tidyr', 'tidyverse', 'timetk', 'tmap',
-#              'TSclust', 'tsibble', 'zoo')
-# library(stats)
-# library(svglite)
-# library(tidyr)
-# library(tidyverse)
-# library(timetk)
-# library(tmap)
-# library(TSclust)
-# library(tsibble)
-# library(zoo)
-# for(p in packages){
-#   library(p,character.only = T)
-# }
 
 library(CGPfunctions)
 library(cluster)
