@@ -19,6 +19,8 @@ website:
         href: "Shiny_App_G9/Sandbox_cleaned.html"
       - text: "RShiny App"
         href: https://teampoweranalytics.shinyapps.io/Shiny_App_G9/
+      - text: "User Guideline for App"
+        href: "User guide.html"
     right:
       - icon: github
         href: https://github.com/TasapornV/ISSS608_GroupProject

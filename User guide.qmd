@@ -1,0 +1,33 @@
+---
+title: "Power Analytics User guide"
+# author: "Shiang Row, Tasaporn Visawameteekul, Khoo Wei Lun"
+format: revealjs
+---
+
+![](images/UG0.png){fig-align="center"}
+
+![](images/UG1.png){fig-align="center"}
+
+![](images/UG2.png){fig-align="center"}
+
+![](images/UG3.png){fig-align="center"}
+
+![](images/UG4.png){fig-align="center"}
+
+![](images/UG5.png){fig-align="center"}
+
+![](images/UG6.png){fig-align="center"}
+
+![](images/UG7.png){fig-align="center"}
+
+![](images/UG8.png){fig-align="center"}
+
+![](images/UG9.png){fig-align="center"}
+
+![](images/UG10.png){fig-align="center"}
+
+![](images/UG11.png){fig-align="center"}
+
+![](images/UG12.png){fig-align="center"}
+
+![](images/UG13.png){fig-align="center"}
