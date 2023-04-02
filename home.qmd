@@ -1,6 +1,6 @@
 ---
 title: "Home"
-subtitle: "Visualise & Analyse Singapore Electricity Consumption with RShinny App"
+subtitle: "Visualise & Analyse Singapore Electricity Consumption with RShiny App"
 author: "Tasaporn Visawameteekul, Law Shiang Row, Khoo Wei Lun"
 date: "2 April 2023"
 date-modified: "`r Sys.Date()`"
