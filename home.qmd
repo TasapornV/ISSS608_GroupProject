@@ -28,9 +28,9 @@ format:
 
 Looking for insights into Singapore's electricity consumption pattern? Our visual analytics can help you uncover valuable patterns and insights that will revolutionize the way you analyse structured data.
 
-With our inbuilt data analysis, you'll be able to perform exploratory data related to dwelling types and planning area, segment market into distinct clusters and even project future consumption using machine learning techniques.
+With our inbuilt data analysis, you'll be able to perform exploratory data related to dwelling types and town, segment market into distinct clusters and even predict future consumption using various analytical tools.
 
-Whether you're a government representative, electricity retailer or a concerned citizen, our innovative solution will give you the tools you need to make smarter energy choices and create a more sustainable future. So why wait? Start uncovering the patterns of Singapore's electricity consumption today and make informed decisions like never before!
+Whether you are a regulator, electricity retailer or a concerned citizen, our innovative solution will give you the tools you need to make smarter energy choices and create a more sustainable future. So why wait? Start uncovering the patterns of Singapore's electricity consumption today and make informed decisions like never before!
 
 ## Dashboard Features
 
