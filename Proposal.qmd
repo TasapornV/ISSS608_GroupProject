@@ -74,7 +74,7 @@ To provide users some basic insights on the Singapore electricity consumption, a
 
 ![](images/app1.png)
 
-### ![](images/app2.png)
+![](images/app2.png)
 
 ![](images/app3.png)
 
@@ -92,13 +92,13 @@ Clustering analysis is performed to help users identify clusters with distinct c
 
 #### Application Design
 
-INSERT SCREENSHOT
+![](images/app5.png)
+
+![](images/app6.png)
 
 ### Inferential Analysis
 
 When there are more than two sample groups, ANOVA (Analysis of Variance) is used to test if there are statistically significant differences between the means of these independent sample groups. In other words, it compares the means of different samples to determine the influence of one or more factors.
-
-\[TBC\] Correlation plots, also known as correlograms for more than two variables, facilitate the visualization of the correlation between continuous variables.\[TBC\]
 
 #### Main R Packages & Functions
 
@@ -108,9 +108,9 @@ When there are more than two sample groups, ANOVA (Analysis of Variance) is used
 
 #### Application Design
 
-INSERT SCREENSHOT
+![](images/app7.png)
 
-### Time Series Forecasting
+### ![](images/app8.png)Time Series Forecasting
 
 Various predictive models are built onto the app for users to forecast the future consumption trends. The model accuracy and confidence level are also made available for users.
 
@@ -121,7 +121,7 @@ Various predictive models are built onto the app for users to forecast the futur
 
 #### Application Design
 
-INSERT SCREENSHOT
+![](images/app9.png)
 
 ### Data
 
@@ -129,7 +129,7 @@ A data view is introduced to provide the user with an overview of how the data a
 
 #### Visual Design
 
-![](images/DesignDraft10.png)
+![](images/app10.png)
 
 ## Project Timeline
 

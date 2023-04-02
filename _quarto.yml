@@ -15,6 +15,7 @@ website:
       - text: "Project Snapshot"
         href: "proposal.html"
       - text: "Poster"
+        href: "poster.html"
       - text: "developer Guideline"
         href: "Shiny_App_G9/Sandbox_cleaned.html"
       - text: "RShiny App"
