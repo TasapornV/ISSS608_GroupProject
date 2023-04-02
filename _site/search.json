@@ -67,14 +67,14 @@
     "href": "Proposal.html",
     "title": "Project Snapshot",
     "section": "",
-    "text": "Singapore has progressively moved towards an open electricity market since 2001 to ensure a reliable energy supply and promote effective competition in the energy market.\nWith growing competition in the market, it becomes increasingly important for market players such as regulators, suppliers and retailers to understand the electricity consumption pattern in Singapore to ensure adequate supply planning and pricing structure.\nTo assist relevant market players in analyzing electricity consumption data effectively, we created this RShinny App to visualize Singapore electricity consumption pattern and trend, perform statistical analysis as well as forecast the future trends."
+    "text": "Singapore has progressively moved towards an open electricity market since 2001 to ensure a reliable energy supply and promote effective competition in the energy market.\nWith growing competition in the market, it becomes increasingly important for market players such as regulators, suppliers and retailers to understand the electricity consumption pattern in Singapore to ensure adequate supply planning and pricing structure.\nTo assist relevant market players in analyzing electricity consumption data effectively, we created this RShiny App to visualize Singapore electricity consumption pattern and trend, perform statistical analysis as well as forecast the future trends."
   },
   {
     "objectID": "Proposal.html#scope",
     "href": "Proposal.html#scope",
     "title": "Project Snapshot",
     "section": "2 Scope",
-    "text": "2 Scope\nOur RShinny app allows users to interact with the data to:\n\nExplore the electricity consumption patterns and trends in Singapore,\nCluster planning areas based on similarities in consumption patterns,\nPerform inferential statistical analysis, and\nForecast future consumption trend.\n\nA detailed description and sketch of the proposed analyses and visualizations are presented in section 4 of this proposal."
+    "text": "2 Scope\nOur RShiny app allows users to interact with the data to:\n\nExplore the electricity consumption patterns and trends in Singapore,\nCluster planning areas based on similarities in consumption patterns,\nPerform inferential statistical analysis, and\nForecast future consumption trend.\n\nA detailed description and sketch of the proposed analyses and visualizations are presented in section 4 of this proposal."
   },
   {
     "objectID": "Proposal.html#data",
