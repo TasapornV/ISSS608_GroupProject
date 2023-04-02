@@ -14,7 +14,7 @@
 # for(p in packages){
 #   library(p,character.only = T)
 # }
-# 
+
 library(CGPfunctions)
 library(cluster)
 library(data.table)
@@ -71,6 +71,7 @@ arima_arima <- readRDS(file = "RDS/arima_arima.rds")
 full_arima_stl <- readRDS(file = "RDS/full_arima_stl.rds")
 arima_ts <- readRDS(file = "RDS/arima_ts.rds")
 full_arima <- readRDS(file = "RDS/full_arima.rds")
+
 # reading the map file
 mpsz        <- st_read(dsn = 'master-plan-2014-subzone-boundary-web-shp',
                        layer = 'MP14_SUBZONE_WEB_PL',
@@ -335,19 +336,13 @@ ui = dashboardPage(skin = "yellow",
                                                    fluidPage(
                                                      fluidRow(
                                                        column(width = 3, 
-                                                              # numericInput("arima_d", "input order of differencing", value=1),
-                                                              # numericInput("arima_d2", "input order of seasonal differencing", value=2),
-                                                              # checkboxInput("arima_d3", "allow drift", value = FALSE),
-                                                              # numericInput("k2", "Select Number of Cluster",
-                                                              #              min = 1, max = 10, value = 2))
                                                               numericInput("year", "Months to predict", min = 12, max = 72, step=12, value = 36),
                                                               pickerInput("forecast", "Select forecast method",
                                                                           choices = c("Automatic ARIMA forecasts",
                                                                                       "STL forecasts",
                                                                                       "TBATS forecasts"),
                                                                           selected = "Automatic ARIMA forecasts")
-                                                              # ,
-                                                              # verbatimTextOutput("arimatext")
+                                                            
                                                        ),
                                                        column(width = 9, withSpinner(plotOutput("arima",height=350)))),
                                                      fluidRow(
@@ -698,7 +693,7 @@ server = function(input, output, session) {
                      linewidth=0.5) +
           facet_grid(~month) +
           theme(axis.text.x = element_text(angle=90, vjust=1, hjust=1)) +
-          labs(title = paste("Cycleplot Shwoing Consumption (GWh) in Selected Towns" , startyear,"-",endyear),
+          labs(title = paste("Cycleplot Showing Consumption (GWh) in Selected Towns" , startyear,"-",endyear),
                subtitle = paste0(chosendata[1,6],": ",input$towns)) +
           scale_x_discrete(breaks=c("2005","2010","2015","2020")) +
           xlab("") +

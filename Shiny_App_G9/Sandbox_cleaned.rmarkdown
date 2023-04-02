@@ -1,0 +1,1160 @@
+---
+title: "Project sandbox"
+subtitle: "Uncover Singapore electricity consumption"
+author: "Tasaporn Visawameteekul, Law Shiang Row, Khoo Wei Lun"
+date: "29 March 2023"
+date-modified: "`r Sys.Date()`"
+affiliation: "SMU MITB"
+execute:
+  warning: false
+  error: false
+  message: false
+format: 
+  html:
+    mainfont: system-ui
+    fontsize: medium
+    code-fold: false
+    code-block-border-left: "#63B9A0"
+    code-overflow: wrap
+    highlight-style: solarized
+    page-layout: full
+    number-sections: false
+    title-block-banner: true
+    fig-align: center
+    reader-mode: true
+---
+
+
+## Install and launching R packages
+
+
+```{r init, results='hide', message=FALSE}
+packages = c('tidyverse', 'ggstatsplot', 'psych', 'lubridate', 'ggrepel', 'plotly', "tidyr", "readr")
+for(p in packages){
+  if(!require(p,character.only = T)){
+    install.packages(p)
+  }
+  library(p,character.only = T)
+}
+```
+
+
+## Read data and compress in RDS file
+
+We use the **`readr`** package in R to read three CSV files and store them as data frames in the variables **`T2.3`**, **`T3.4`**, and **`T3.5`**. Here's a brief explanation of what each line does:
+
+1.  **`library(readr)`**: This line loads the **`readr`** package, which provides functions for reading and writing delimited files in R.
+2.  **`T2.3 <- read_csv("data/T2-3.csv")`**: This line reads the CSV file located at **`"data/T2-3.csv"`** using the **`read_csv()`** function from the **`readr`** package. The resulting data frame is stored in the variable **`T2.3`**.
+3.  **`T3.4 <- read_csv("data/T3-4.csv")`**: This line reads the CSV file located at **`"data/T3-4.csv"`** using the **`read_csv()`** function from the **`readr`** package. The resulting data frame is stored in the variable **`T3.4`**.
+4.  **`T3.5 <- read_csv("data/T3-5.csv")`**: This line reads the CSV file located at **`"data/T3-5.csv"`** using the **`read_csv()`** function from the **`readr`** package. The resulting data frame is stored in the variable **`T3.5`**.
+
+
+```{r read data, warning=FALSE, message=FALSE}
+# library(readr)
+
+# Peak System Demand
+T2.3 <- read_csv("data/T2-3.csv")
+# Total Household Electricity Consumption by Dwelling Type
+T3.4 <- read_csv("data/T3-4.csv")
+# Average Monthly Household Electricity Consumption by Planning Area & Dwelling Type
+T3.5 <- read_csv("data/T3-5.csv")
+```
+
+
+### Data table
+
+This section provides a summary of the data tables utilized in the project, offering insight into the original data's appearance. The project employs three tables, namely
+
+-   T2.3 peak system demand
+-   T3.4 Total household electricity consumption by dwelling type
+-   T3.5 Average Monthly Household Electricity Consumption by Planning Area & Dwelling Type"
+
+T2.3 : Peak System Demand
+
+
+```{r T2.3, echo=FALSE}
+#| fig-width: 10
+head(T2.3, 5)
+```
+
+
+T3.4 : Total Household Electricity Consumption by Dwelling Type
+
+
+```{r T3.4, echo=FALSE}
+#| fig-width: 10
+head(T3.4, 5)
+```
+
+
+T3.5 : Average Monthly Household Electricity Consumption by Planning Area & Dwelling Type
+
+
+```{r T3.5, echo=FALSE}
+#| fig-width: 10
+head(T3.5, 5)
+```
+
+
+## 1 Overview
+
+### 1.1 Introduction
+
+The code uses the **`shiny`** and **`shinydashboard`** packages to create a web application to analyze and visualize data related to Singapore's energy consumption.
+
+The **`introtext`** variable contains a brief introduction to the Singaporean electricity market and the challenges in analyzing it.
+
+The **`ui`** function creates the user interface for the web application using **`dashboardPage`** and **`dashboardSidebar`**. The **`dashboardHeader`** function sets the title of the web app. The **`dashboardSidebar`** function creates a sidebar menu with a single menu item labeled "OVERVIEW".
+
+The **`dashboardBody`** function creates a body section with a single tab item labeled "overview". The **`navbarPage`** function creates a navigation bar with a single tab panel labeled "Introduction". The **`introtext`** variable is used as the content of this tab panel.
+
+The **`server`** function is empty in this code. Additional code would be added to the **`server`** function to create interactive features and to perform data analysis and visualization.
+
+
+```{r 1.1 Introduction, warning=FALSE, message=FALSE, output=FALSE}
+library(shiny)
+library(shinydashboard)
+
+introtext = "Singapore has progressively moved towards an open electricity market since 2001 
+to ensure a reliable energy supply and promote effective competition in the energy market.
+However, it is challenging to analyze the energy market and make informed decisions due to 
+several variable components that could influence the market. First, the price of electricity 
+in the wholesale market fluctuates depending on the electricity demand and supply, which are 
+dependent on consumption patterns as well as gas industry respectively. About 95% of electricity 
+is generated using natural gas. Next, there are also multiple parties (Electricity Market Authority, 
+Power generation companies, Electricity Retailers, etc) involved in the electricity market.
+To address this challenge, we build this RShinny app to provide relevant stakeholders with means 
+to analyse and understand the data with applicable analytics models. Also, we want to help the 
+users explore more information about the Singapore energy market easily through visualizations."
+
+ui = dashboardPage(
+  dashboardHeader(title = 'Singapore Energy Consumption', titleWidth = 400),
+  
+  dashboardSidebar(width = 210,
+                   sidebarMenu(
+                     menuItem(" OVERVIEW", tabName = 'overview',    icon = icon("chalkboard-user"))
+                   )),
+  dashboardBody(
+    tabItems(
+      tabItem(
+        tabName = "overview",
+        navbarPage( "OVERVIEW",
+                    
+                    tabPanel("Introduction",introtext)
+        )
+      )
+    )
+  )
+)
+server = function(input, output, session) {}
+
+shinyApp(ui = ui, server = server)
+```
+
+
+### 1.2 Geofacet
+
+This code visualizes data related to household electricity consumption in Singapore. The application imports data from the T3.5 table and subsets it to exclude certain regions and types of housing, as well as convert certain columns to appropriate data types. The code then reads a shapefile that represents Singapore's subzones and imports an area grid data file.
+
+The user interface (UI) of the application shows the average monthly household electricity consumption by planning area and dwelling type. The user can choose to fix or free the y-axis scale.
+
+The server function includes a reactive expression that groups the data by year, dwelling type, and planning area to compute the average electricity consumption per account. The data is then merged with the area grid data file to obtain the spatial information necessary for plotting. The output plot is generated using ggplot2 and geofacet packages, which enable the use of subplots based on a grid of geographic regions. The output plot is reactive to changes made in the user interface.
+
+
+```{r 1.2 Geofacet, warning=FALSE, message=FALSE, output=FALSE}
+library(shiny)
+library(shinydashboard)
+library(geofacet)
+library(sf)
+
+town <- subset(T3.5, Description != 'Overall' & Description !='Central Region' & 
+                 Description !='East Region' & Description !='North East Region' &
+                 Description !='North Region' & Description !='West Region' &
+                 kwh_per_acc != 's' & dwelling_type != 'Private Housing' &
+                 dwelling_type != 'Public Housing' & month != 'Annual') %>%
+  mutate(kwh_per_acc = as.numeric(kwh_per_acc)) %>%
+  mutate(date = parse_date_time(paste0(year, "-", month,"-1"),"ymd"))
+
+
+# reading the map file
+mpsz <- st_read(dsn = 'master-plan-2014-subzone-boundary-web-shp',
+                layer = 'MP14_SUBZONE_WEB_PL',
+                crs = 3414)
+
+# Import the area grid data.
+area_grid <- read_csv("data/areagrid.csv")
+singapore <- st_transform(mpsz, 4326)
+
+ui = dashboardPage(
+  dashboardHeader(title = 'Singapore Energy Consumption', titleWidth = 400),
+  
+  dashboardSidebar(width = 210,
+                   sidebarMenu(
+                     menuItem(" OVERVIEW", tabName = 'overview',    icon = icon("chalkboard-user"))
+                   )),
+  dashboardBody(
+    tabItems(
+      tabItem(
+        tabName = "overview",
+        navbarPage( "OVERVIEW",
+                    tabPanel("Consumption by Planning Area & Dwelling Type",
+                            fluidPage(
+                              radioButtons("axis", label = "select axis control",
+                                           choices = c("fixed y-axis" = "fixed",
+                                                       "free y-axis" = "free_y"), 
+                                           inline = T),
+                              plotOutput("geo", height = 800)
+                            ))
+        )
+      )
+    )
+  )
+)
+
+server = function(input, output, session) {
+   geofacet <- town %>% 
+        group_by(year, dwelling_type, Description)  %>%
+        summarise(average_consumption = mean(kwh_per_acc, na.rm = TRUE))%>%
+        ungroup()
+  geofacet_gas_consump <- inner_join(geofacet, area_grid,
+                                     by = c("Description" = "name"))
+  # merge table with town name
+  common_grid <- area_grid[area_grid$name %in% unique(geofacet$Description),]
+  
+  observeEvent(input$axis,{
+    
+    output$geo <- renderPlot ({
+      ggplot(geofacet_gas_consump, aes(x = year, y = average_consumption)) +
+        geom_line(aes(color = as.factor(dwelling_type))) +
+        facet_geo(~Description, grid = common_grid, scales = input$axis) +
+        labs(title = "Average Monthly Household Electricity Consumption by Planning Area & Dwelling Type") +
+        theme(plot.title = element_text(size=22),
+              axis.text.x = element_text(size = 10, angle = 45),
+              axis.text.y = element_text(size = 10),
+              strip.text = element_text(size = 10),
+              legend.position = "right")
+    })
+  })
+}
+
+shinyApp(ui = ui, server = server)
+```
+
+
+![](page%201.png){fig-align="center"}
+
+### 1.3 Consumption by Dwelling type and Town
+
+This code loads the data from a data frame "T3.4" and filters it based on certain conditions such as the year, month, and dwelling type. The resulting data frame is stored in a new variable called "dwelling".
+
+The code then adds a new column called "class" to the "dwelling" data frame based on whether the dwelling type is "Private Apartments and Condominiums", "Landed Properties", or "Others" or whether it is "1-room / 2-room", "3-room", "4-room", or "5-room and Executive". The values in the "class" column are set to "Private" or "Public" based on the dwelling type.
+
+Finally, the "dwelling" data frame is saved as an RDS file called "dwelling.rds" in the "RDS" folder and then read back into the R environment using the "readRDS" function. The first five rows of the resulting data frame are displayed using the "head" function.
+
+
+```{r introduction dataprep, warning=FALSE, message=FALSE}
+
+dwelling <- T3.4 %>%
+  filter(year %in% c(2005:2022)) %>%
+  filter(month %in% c(1:12)) %>%
+  filter(DWELLING_TYPE %in% c('1-room / 2-room','3-room','4-room',
+                              '5-room and Executive',
+                              'Private Apartments and Condominiums',
+                              'Landed Properties', 'Others')) %>%
+  mutate(date = parse_date_time(paste0(year, "-", month,"-1"),"ymd"))
+
+#Add Private vs Public Classification
+dwelling$class <- case_when(
+    dwelling$DWELLING_TYPE %in% c('Private Apartments and Condominiums',
+                                 'Landed Properties', 'Others') ~ "Private",
+    dwelling$DWELLING_TYPE %in% c('1-room / 2-room','3-room','4-room',
+                                  '5-room and Executive') ~ "Public")
+
+saveRDS(dwelling, file = "RDS/dwelling.rds")
+
+dwelling <- readRDS(file = "RDS/dwelling.rds") # intro
+
+head(dwelling, 5)
+```
+
+
+This code is processing and filtering data related to electricity consumption in different towns, and then saving the selected data to an RDS file.
+
+The code starts by subsetting a data frame called T3.5 using the subset() function. The resulting data frame is called "town". The subset() function removes rows with certain conditions using logical operators. Rows where the "Description" column is equal to 'Overall', 'Central Region', 'East Region', 'North East Region', 'North Region', 'West Region' are removed. Rows with 's' in the "kwh_per_acc" column and rows where the "dwelling_type" column is equal to 'Private Housing' or 'Public Housing' are also removed. Finally, rows with the "month" column equal to 'Annual' are removed.
+
+The next step is to mutate the "town" data frame. First, the "kwh_per_acc" column is converted to numeric using the as.numeric() function. Next, a new "date" column is created by combining the "year" and "month" columns and converting it to a date using the parse_date_time() function.
+
+The "town" data frame is then grouped by "date" and "Description" columns and the "summarise" function is used to calculate the sum of "kwh_per_acc" divided by 1000. The resulting data frame is called "town_final".
+
+The "town_final" data frame is then manipulated using the pipe operator (%\>%) and several mutate() functions. First, a new column called "type" is created by copying the "Description" column. Then, a new column called "title" is created with the value 'Town'. The "year" and "month" columns are extracted from the "date" column using the year() and month() functions. Finally, a new data frame is created by selecting only certain columns.
+
+The resulting data frame is saved to an RDS file using the saveRDS() function. Finally, the first five rows of the resulting data frame are printed using the head() function.
+
+
+```{r data prep2, warning=FALSE, message=FALSE}
+town <- subset(T3.5, Description != 'Overall' & Description !='Central Region' & 
+                 Description !='East Region' & Description !='North East Region' &
+                 Description !='North Region' & Description !='West Region' &
+                 kwh_per_acc != 's' & dwelling_type != 'Private Housing' &
+                 dwelling_type != 'Public Housing' & month != 'Annual') %>%
+  mutate(kwh_per_acc = as.numeric(kwh_per_acc)) %>%
+  mutate(date = parse_date_time(paste0(year, "-", month,"-1"),"ymd"))
+
+town_final <- town %>% 
+  group_by(date, Description) %>%
+  summarise(consumption = sum(kwh_per_acc)/1000)
+
+region <- town %>% 
+  group_by(date, Region) %>% 
+  summarise(consumption = sum(kwh_per_acc)/1000)
+
+chosendata <- town_final %>%
+  mutate(type = Description) %>%
+  mutate(title = 'Town') %>%
+  mutate(year = year(date)) %>%
+  mutate (month = month(date)) %>%
+  select(c('year','month','date','type','consumption','title'))
+saveRDS(chosendata, file = "RDS/chosendata.rds")
+
+head(chosendata, 5)
+```
+
+```{r}
+dwelling_tog <- dwelling %>%
+  mutate(type = DWELLING_TYPE) %>%
+  mutate(consumption = consumption_GWh) %>%
+  mutate(title = 'Dwelling Type') %>%
+  select(c('year','month','date','type','consumption','class', 'title'))
+# saveRDS(dwelling_tog, file = "RDS/dwelling_tog.rds")
+
+town_tog <- town_final %>%
+  mutate(type = Description) %>%
+  mutate(title = 'Town') %>%
+  mutate(year = year(date)) %>%
+  mutate (month = month(date)) %>%
+  select(c('year','month','date','type','consumption','title'))
+# saveRDS(town_tog, file = "RDS/town_tog.rds")
+
+region_tog <- region %>%
+  mutate(type = Region) %>%
+  mutate(title = 'Region') %>%
+  mutate(year = year(date)) %>%
+  mutate (month = month(date)) %>%
+  mutate(unit = 'kWh') %>%
+  select(c('year','month','date','type','consumption','title'))
+# saveRDS(region_tog, file = "RDS/region_tog.rds")
+```
+
+
+#### Plot 1 - Line plot
+
+This code creates a line plot using ggplot to show the electricity consumption over time for a chosen data set. The data is stored in the RDS file "chosendata.rds" and is loaded using the **`readRDS()`** function.
+
+The **`ggplot()`** function is called and the **`data`** argument is set to **`chosendata`**, which contains the data to be plotted. The **`aes()`** function is used to specify the aesthetics of the plot. The x-axis is set to **`date`** and the y-axis is set to **`consumption`**, with lines colored according to the **`type`** of consumption.
+
+The **`geom_line()`** function is called to add the lines to the plot. The **`labs()`** function is used to add a title to the plot, as well as labels for the x and y axes. The **`scale_color_discrete()`** function is used to change the name of the legend for the line colors, and the **`theme()`** function is used to change the position of the legend to the bottom of the plot.
+
+
+```{r 1.3.1 Line plot, warning=FALSE, message=FALSE}
+chosendata <- readRDS(file = "RDS/chosendata.rds") # intro
+ggplot(data = chosendata, aes(x = date)) +
+  geom_line(aes(y = consumption, colour = type)) + 
+  labs(title = paste0("Electricity Consumption by ",chosendata[1,6]),
+      x = "Year", y = paste0("Consumption, GWh ")) +
+  scale_color_discrete(name="") +
+  theme(legend.position="bottom")
+```
+
+```{r}
+#choose between dwelling_tog, town_tog, region_tog
+chosendata <- town_tog
+
+#choosing the time period
+startyear <- 2005
+endyear <- 2021
+```
+
+```{r, warning=FALSE}
+
+library(ggstatsplot)
+town <- readRDS(file = "RDS/town.rds") 
+
+ ggbetweenstats(
+ data = town |> filter(town$Region %in% c("Central Region")),
+ x = Description,
+ y = kwh_per_acc,
+ type = "nonparametric",
+ p.adjust.method = "fdr",
+messages = FALSE
+ )
+```
+
+
+#### Plot 2 - Cycle plot
+
+The code creates a cycle plot for electricity consumption in a specific location and dwelling type using the **`ggplot2`** package.
+
+The first line of code defines a variable **`select_type`** that specifies the type of dwelling to be plotted. This is followed by a data manipulation pipeline using **`dplyr`** to filter the data for the specified dwelling type and format the year and month variables as factors with specific levels.
+
+The next section of code computes the average consumption per month across all years for the selected dwelling type and stores this in the **`hline.data`** variable.
+
+The final section of code creates the cycle plot using **`ggplot2`**. The **`geom_line`** function is used to plot the electricity consumption data over time for each month, with each month represented by a different color. The **`geom_hline`** function adds a horizontal line representing the average consumption for each month across all years. The **`facet_grid`** function is used to split the plot into individual panels for each month. The **`theme`** function is used to adjust the appearance of the plot, such as the angle of the x-axis text labels. The **`labs`** function is used to add a title and subtitle to the plot, with the subtitle indicating the specific dwelling type being plotted. Finally, the **`scale_x_discrete`** function is used to set the x-axis breaks to specific years and the **`xlab`** and **`ylab`** functions are used to label the x and y axes, respectively.
+
+
+```{r 1.3.2 Cycle plot, warning=FALSE, message=FALSE}
+select_type <- 'Bishan'
+select_cycle <- chosendata %>% 
+  filter(type %in% c(select_type)) %>%
+  mutate(year = factor(year, levels = 2005:2022),
+         month = factor(month, levels = 1:12))
+
+#Computing year average by months
+hline.data <- select_cycle %>%
+  group_by(month) %>%
+  summarise(avg_cons = mean(consumption))
+
+#Plotting cycle plot for electricity consumption per dwelling type
+ggplot() + 
+  geom_line(data = select_cycle,
+            aes(x=year,y=consumption, group=month), colour = "black") +
+  geom_hline(data = hline.data,
+             aes(yintercept=avg_cons),
+             linetype=6, 
+             colour="red", 
+             linewidth=0.5) +
+  facet_grid(~month) +
+  theme(axis.text.x = element_text(angle=90, vjust=1, hjust=1)) +
+  labs(title = paste0("Cycleplot for Chosen ",chosendata[1,6],"'s Consumption (GWh) , Jan 2005-Jun 2022"),
+       subtitle = paste0(chosendata[1,6],": ",select_type)) +
+  scale_x_discrete(breaks=c("2005","2010","2015","2020")) +
+  xlab("") +
+  ylab("Consumption, GWh")
+```
+
+
+#### Plot 3 - Sparkline Table
+
+
+```{r 1.3.3 Sparkline table, warning=FALSE, message=FALSE}
+library(gtExtras)
+library(svglite)
+#Preparing the data for report 
+d_report <- chosendata %>%   
+  filter(year %in% c(startyear:endyear)) %>%   
+  mutate(`Category`= type) %>%   
+  group_by(`Category`) %>%   
+  summarise("Min" = min(consumption, na.rm = T),             
+            "Max" = max(consumption, na.rm = T),
+            "Average" = mean(consumption, na.rm = T)) 
+
+d_sparks <- chosendata %>%   
+  filter(year %in% c(startyear:endyear)) %>%   
+  mutate(`Category`= type) %>%   
+  group_by(`Category`) %>%   
+  summarize(`Monthly Consumption` = list(consumption))
+saveRDS(d_sparks, file = "RDS/d_sparks.rds")
+
+report_data = left_join(d_report, d_sparks)
+saveRDS(report_data, file = "RDS/report_data.rds")
+
+head(report_data, 5)
+```
+
+
+#### Plot 4 - Slopegraph
+
+
+```{r 1.3.4 Slope graph, warning=FALSE, message=FALSE}
+
+```
+
+
+## 2. Clustering
+
+### 2.1 Hierachical clustering
+
+This code reads in a CSV file named "T3-5.csv" using the **`read_csv`** function from the **`readr`** package. It then applies several data transformations to create a new data frame named **`clus`** and saves both the original and transformed data frames as RDS files.
+
+First, the code filters out any rows where the month is "Annual", the year is before 2018, the dwelling type is "Overall", or the description column contains the strings "Region", "Pioneer", or "Overall". The resulting data frame is stored in **`clus_data`**.
+
+Next, the code transforms the **`kwh_per_acc`** column from character to numeric format using **`as.numeric()`**. It also creates a new column named **`date`** by concatenating the **`year`** and **`month`** columns and parsing them as dates using the **`parse_date_time()`** function from the **`lubridate`** package. The **`month`** and **`year`** columns are then removed using the **`subset()`** function.
+
+The **`pivot_wider()`** function from the **`tidyr`** package is used to pivot the **`clus_data`** data frame wider so that the **`kwh_per_acc`** values for each date become their own column. The resulting data frame is stored in **`clus`**.
+
+Finally, any rows with missing values are removed using **`na.omit()`**, and the **`Description`** column is moved to be the first column in the data frame using the **`relocate()`** function from the **`dplyr`** package. The resulting data frames, **`clus_data`** and **`clus`**, are saved as RDS files.
+
+After saving the data frames, the code reads them back in using the **`readRDS()`** function and displays the first five rows of each data frame using **`head()`**.
+
+
+```{r clustering data prep, warning=FALSE, message=FALSE}
+library(lubridate)
+
+T3.5 <- read_csv("data/T3-5.csv")
+clus_data <- T3.5 %>% 
+  filter(month != "Annual" & 
+           year > 2017 & 
+           dwelling_type != "Overall" &
+           !str_detect(Description,"Region|Pioneer|Overall"))
+
+# transform dataset
+# convert kwh into numbers
+clus_data$kwh_per_acc <- as.numeric(clus_data$kwh_per_acc)
+# join month and year into a date
+clus_data$date <- parse_date_time(paste(clus_data$year, clus_data$month), orders=c("%Y %m")) 
+
+# drop month and year column
+clus_data <- subset(clus_data, select=-c(month, year, Region)) %>%
+  arrange(date)
+
+# pivot wider
+clus <- clus_data %>%
+  pivot_wider(names_from=date, values_from=kwh_per_acc) 
+
+# omit na
+clus <- na.omit(clus)
+clus <- clus %>% relocate(Description, .before = dwelling_type)
+
+saveRDS(clus_data, file = "RDS/clus_data.rds")
+saveRDS(clus, file = "RDS/clus.rds")
+
+clus_data <- readRDS(file = "RDS/clus_data.rds") # clustering
+clus <- readRDS(file = "RDS/clus.rds") # clustering
+head(clus_data, 5)
+head(clus, 5)
+```
+
+
+#### Plot 1 - Method selection table
+
+This code calculates the clustering distance matrix using the "maximum" method on a normalized data frame (**`clus_group1`**) which summarizes the electricity consumption data by **`Description`**. The **`dist()`** function computes the Euclidean distances between each pair of rows in the input matrix, which is then used to generate a hierarchical clustering using the **`hclust()`** function. The **`normalize()`** function is used to normalize the input data, so that each variable has zero mean and unit variance. The resulting clustering distance matrix is stored in the **`clustering`** variable, which will be used to find the optimal number of clusters using the elbow method. The **`dendextend`** and **`BBmisc`** packages are loaded, which provide functions to manipulate and plot dendrograms.
+
+
+```{r 2.1.1 Method selection table, warning=FALSE, message=FALSE}
+# once user have gotten the clustering method from above, they need to input that to find the optimal number of k
+library(dendextend)
+library(BBmisc)
+clus_group1 <- clus[,-c(2)] %>%
+  group_by(Description) %>%
+  summarise_each(list(sum))
+
+clustering <- dist(normalize(clus_group1[, -1]),  method = "maximum")
+dend_expend(clustering)[[3]]
+```
+
+
+#### Plot 2 - Heatmap
+
+This code generates a heatmaply visualization of the hierarchical clustering results for the energy consumption data of different towns over time. The data is first summarized by taking the sum of energy consumption for each town across time. The resulting data frame is then converted to a matrix, which is used to generate the heatmaply plot.
+
+The heatmaply function is called with several arguments, including:
+
+-   clus_matrix1: the matrix of energy consumption data to be visualized
+-   scale: the scaling method to be used (in this case, column scaling is used)
+-   dist_method: the distance metric to be used for clustering (in this case, Euclidean distance is used)
+-   hclust_method: the hierarchical clustering method to be used (in this case, average linkage is used)
+-   Colv: whether to show a column dendrogram (in this case, set to NA to not show)
+-   seriate: the seriation method to be used (in this case, set to "none" to not reorder rows and columns)
+-   k_row: the number of clusters to show in the row dendrogram (in this case, set to 3)
+-   margins: the size of the margins (in this case, set to c(NA,200,50,NA))
+-   colors: the color scheme to be used (in this case, viridis with 256 colors)
+-   fontsize_row: the font size for row labels
+-   fontsize_col: the font size for column labels
+-   main: the main title for the plot
+-   ylab: the y-axis label for the plot
+-   xlab: the x-axis label for the plot
+
+
+```{r 2.1.2 Heatmap, warning=FALSE, message=FALSE}
+library(heatmaply)
+clus_group1 <- clus[,-c(2)] %>%
+  group_by(Description) %>%
+  summarise_each(list(sum))
+
+# making "Description" the row name (index)
+row.names(clus_group1) <- clus_group1$Description
+
+# Making it into a matrix
+clus_matrix1 <- data.matrix(clus_group1)
+
+# plot
+heatmaply(clus_matrix1[,-c(1)],
+          scale = "column",
+          dist_method = "euclidean",
+          hclust_method = "average",
+          Colv=NA,
+          seriate = "none",
+          k_row = 3,
+          margins = c(NA,200,50,NA),
+          colors = viridis(
+            n= 256, alpha=1, 
+            begin=0, end=1,
+            option="viridis"),
+          fontsize_row = 5,
+          fontsize_col = 5,
+          main="Hierarchical Clustering",
+          ylab = "Towns",
+          xlab = "Time")
+```
+
+
+#### Plot 3 - Number of cluster plot
+
+This code is creating a plot to determine the optimal number of clusters (k) based on the hierarchical clustering method applied earlier.
+
+The first line creates a hierarchical clustering object using the **`hclust`** function, with the distance matrix obtained from **`dist`** and the McQuitty linkage method.
+
+The second line uses the **`find_k`** function from the **`BBmisc`** package to calculate the optimal number of clusters based on the within-cluster sum of squares (WSS) method. This function takes the hierarchical clustering object as input and returns the optimal number of clusters.
+
+Finally, the third line creates a plot of the number of clusters against the WSS values using the **`plot`** function. The **`warning`** and **`message`** arguments are set to **`FALSE`** to suppress any warnings or messages that might be produced during the plot creation.
+
+
+```{r 2.1.3 Number of cluster plot, warning=FALSE, message=FALSE}
+clust2 <- hclust(clustering, method = "mcquitty")
+num_k <- find_k(clust2)
+plot(num_k)
+```
+
+
+#### Plot 4 - Map
+
+This code generates a choropleth map that shows the clustering result on a map of Singapore.
+
+First, the code reads in a map file of Singapore, which contains the boundaries of subzones, and transforms the map to a common coordinate reference system (CRS). Then, the clustering result is joined with the map data based on the name of the subzones.
+
+Next, the code uses the tmap package to create a choropleth map. The **`tm_shape()`** function sets the shape object to be the joined map data. The **`tm_fill()`** function fills the shapes with colors based on the cluster column, and the **`id`** parameter specifies the column to use for the map's IDs. The **`style`** parameter specifies the type of binning method to use, and the **`palette`** parameter sets the color palette to use for the map. Finally, the **`tm_borders()`** function adds borders to the shapes with an alpha value of 0.7.
+
+The **`tmap_mode("view")`** function is used to set the plot mode to interactive, which allows the user to zoom and pan around the map.
+
+
+```{r 2.1.4 map, warning=FALSE, message=FALSE}
+## Add clusters to dataframe
+
+num_clus <- cutree(clust2, k=3)
+clus_hc <- cbind(clus_group1, cluster = as.factor(num_clus))
+
+library(sf)
+# reading the map file
+mpsz <- st_read(dsn = 'master-plan-2014-subzone-boundary-web-shp',
+                layer = 'MP14_SUBZONE_WEB_PL',
+                crs = 3414) 
+
+singapore <- st_transform(mpsz, 4326)
+
+library(tmap)
+# change Description to upper case
+clus_hc$Description <- toupper(clus_hc$Description)
+
+# Preparing the choropleth map
+mpsz_clus <- left_join(singapore, clus_hc, by = c("PLN_AREA_N" = "Description"))
+tmap_mode("view")
+tm_shape(mpsz_clus)+
+  tmap_options(check.and.fix = TRUE)+
+  tm_fill("cluster", id=paste("PLN_AREA_N"),
+          style = "pretty",
+          palette = "Blues") +
+  tm_borders(alpha = 0.7)
+```
+
+
+### 2.2 Time Series clustering
+
+This code performs time series clustering analysis and visualization for Singapore's subzones based on the Dynamic Time Warping (DTW) algorithm. The data is preprocessed and clustered using the **`tsclust`** function from the **`dtwclust`** package, where the input parameters include the type of clustering method, the number of clusters, distance function, hierarchical clustering method, and additional arguments for distance function. The resulting clusters are added to the original data frame using **`left_join`**.
+
+The time series data is transformed from wide to long format using the **`gather`** function and plotted using the **`plot_time_series`** function from the **`timetk`** package. The time series plot is faceted by cluster and includes a plotly slider for interactive visualization.
+
+The resulting clusters are visualized using a choropleth map of Singapore's subzones. The map is created using the **`tmap`** package, where the subzones are joined with the clustered data using **`left_join`** and then plotted using the **`tm_fill`** function. The subzones are colored according to the cluster group using a green color palette, and subzone borders are added with an alpha value of 0.7.
+
+
+```{r 2.2 Time series clustering}
+library(dtwclust)
+library(tibble)
+library(ggdendro)
+
+# Clustering Method (type) ("partitional", "hierarchical", "tadpole", "fuzzy".) - fixed at hierarchical, otherwise need to change the quote because some parameters apply only to certain methods
+# parameter 1: Number of cluster (k)
+# parameter 2: Distance function (distance) (dtw_basic, dtw, dtw2, lbk, lbi, sbd, gak, sdtw) - full form can be found https://www.rdocumentation.org/packages/dtwclust/versions/5.5.12/topics/tsclust
+# parameter 3: hierarchical clustering method ("ward.D", "ward.D2", "single", "complete", "average", "mcquitty", "median" or "centroid" .)
+
+
+cluster_dtw <- tsclust(clus_matrix1[,-c(1)],
+                       type = "h", 
+                       k=2,
+                       distance="dtw",
+                       control = hierarchical_control(method = "ward.D"),
+                       preproc = NULL,
+                       args=tsclust_args(dist = list(window.size = 5L)))
+
+hclus_dtw <- cutree(cluster_dtw, k=4) %>%
+  as.data.frame(.) %>%
+  rename(.,cluster_group = .) %>%
+  rownames_to_column("type_col")
+
+# hcdata <- dendro_data(cluster_dtw)
+# names_order <- hcdata$labels$label
+
+library(ggplot2)
+library(ggiraph)
+library(timetk)
+
+# add the cluster number
+dtw_cluster <- clus_group1 %>%
+  left_join(hclus_dtw, by=c("Description" = "type_col")) 
+
+# change date columns into rows
+dtw_cluster_t <- dtw_cluster %>%
+  mutate_at(vars(contains("202")),as.numeric) %>%
+  gather(Date, value, 2:55)
+
+# Add the word "Cluster"
+dtw_cluster_t$cluster_group <- paste("Cluster", dtw_cluster_t$cluster_group)
+
+# convert Date into date format
+dtw_cluster_t$Date <- parse_date_time(dtw_cluster_t$Date, orders=c("%Y-%m-%d")) 
+
+# plot time series by cluster
+
+ts <- plot_time_series(.data=dtw_cluster_t,
+                 .date_var=Date, 
+                 .value=value,
+                 .color_var=Description,
+                 .facet_var=cluster_group,
+                 .facet_ncol=2,
+                 .facet_scales = "free_y",
+                 .smooth=FALSE,
+                 .line_size = 0.3,
+                 .plotly_slider = TRUE,
+                 .title = "Time Series Plot by cluster") 
+
+ts <- ts %>%
+  layout(hovermode="x",
+         hoverlabel=list(font=list(size=7)))
+ts
+
+# how to modify the tooltip? Town is being shown twice here...
+
+library(sf)
+# reading the map file
+mpsz <- st_read(dsn = 'master-plan-2014-subzone-boundary-web-shp',
+                layer = 'MP14_SUBZONE_WEB_PL',
+                crs = 3414) 
+
+singapore <- st_transform(mpsz, 4326)
+
+library(tmap)
+# change Description to upper case
+dtw_cluster_t$Description <- toupper(dtw_cluster_t$Description)
+
+# Preparing the choropleth map
+mpsz_clus_dtw <- left_join(singapore, dtw_cluster_t, by = c("PLN_AREA_N" = "Description"))
+tmap_mode("view")
+tm_shape(mpsz_clus_dtw)+
+  tmap_options(check.and.fix = TRUE)+
+  tm_fill("cluster_group", id=paste("PLN_AREA_N"),
+          style = "pretty",
+          palette = "Greens") +
+  tm_borders(alpha = 0.7)
+```
+
+
+## 3. Inferential - ANOVA
+
+The first part of the code reads data from several RDS files, including T3-5.rds that contains monthly household electricity consumption data by planning area and dwelling type. The data is saved into a new variable named consumption, which is then modified using mutate to convert kwh_per_acc to a numeric variable and year to a character variable. The modified consumption data is then saved into an RDS file named anova.rds.
+
+The next part of the code installs and loads several packages using a for loop that checks whether each package is installed and installs it if it is not.
+
+The UI section of the code creates a dashboard with a sidebar menu and a tab for inferential statistics. The inferential statistics tab has a sub-menu with a single option for ANOVA. The ANOVA tab has two rows, each with two columns. The left column in the first row contains a pickerInput element that allows the user to select a parameter (dwelling_type, Region, or year) and a verbatimTextOutput element that displays ANOVA statistics for the selected parameter. The right column in the first row contains a plotOutput element that displays a boxplot of kwh_per_acc by planning area. The left column in the second row contains a pickerInput element that allows the user to select a region (Central Region, North East Region, East Region, North Region, or West Region) and a verbatimTextOutput element that displays ANOVA statistics for the selected region. The right column in the second row contains a plotOutput element that displays a boxplot of kwh_per_acc by dwelling type.
+
+The server section of the code defines the behavior of the dashboard. It starts by loading the consumption data from the anova.rds file and modifying it as described earlier. The server then defines an observeEvent function that listens for changes in the anovainput pickerInput element. Depending on the selected parameter, the function generates a boxplot of kwh_per_acc by planning area or dwelling type, or ANOVA statistics for the selected parameter. The output is displayed in the corresponding plotOutput or verbatimTextOutput element.
+
+
+```{r anova data, warning=FALSE, message=FALSE}
+T3.5 <- readRDS(file = "RDS/T3-5.rds")
+consumption <- T3.5
+consumption <- consumption %>% 
+  mutate(kwh_per_acc = as.numeric(kwh_per_acc)) %>% 
+  mutate(year = as.character(year))
+saveRDS(consumption, file = "RDS/anova.rds")
+```
+
+
+### 3.1 Box plot anova
+
+The "ANOVA" sub-tab uses the **`ggstatsplot`** package to create boxplots and ANOVA tables for different variables related to energy consumption. Users can select a variable from a picker input, and the dashboard will display the appropriate boxplot and ANOVA table based on the user's selection.
+
+The code reads in several data files, including data on peak system demand, household electricity consumption, dwelling types, and planning areas. It also imports a map file and area grid data.
+
+The **`ui`** function creates the dashboard's user interface, while the **`server`** function contains the server-side logic for generating the dashboard's content based on user inputs.
+
+
+```{r anova box plot, warning=FALSE, message=FALSE, output=FALSE}
+# LIBRARY -----------------------------------------------------------------
+# library(forecast)
+# library(dplyr)
+# library(tidyr)
+# library(tidyverse)
+
+packages = c('dplyr', 'ggplot2',
+             'ggstatsplot', 'ggrepel', 'ggridges', 'gt', 'gtExtras',
+             'knitr','plotly', 'lubridate', 'psych','ggstatsplot',
+             'reactablefmtr', 'readr', 'sf', 'shiny', 'shinydashboard',
+             'shinythemes', 'shinyWidgets', 'stats', 'tibble', 'tidymodels',
+             'tidyquant', 'tidyr', 'tidyverse'
+            )
+
+for(p in packages){
+  if(!require(p,character.only = T)){
+    install.packages(p)
+  }
+  library(p,character.only = T)
+}
+
+# READ DATA ---------------------------------------------------------------
+## Read compressed data file
+T2.3 <- readRDS(file = "RDS/T2-3.rds") # Peak System Demand
+T3.4 <- readRDS(file = "RDS/T3-4.rds") # Total Household Electricity Consumption by Dwelling Type
+T3.5 <- readRDS(file = "RDS/T3-5.rds") # Average Monthly Household Electricity Consumption by Planning Area & Dwelling Type
+dwelling <- readRDS(file = "RDS/dwelling.rds")
+town <- readRDS(file = "RDS/town.rds")
+
+# reading the map file
+mpsz <- st_read(dsn = 'master-plan-2014-subzone-boundary-web-shp',
+                layer = 'MP14_SUBZONE_WEB_PL',
+                crs = 3414)
+
+# Import the area grid data.
+area_grid <- read_csv("data/areagrid.csv")
+singapore <- st_transform(mpsz, 4326)
+
+
+# PARAMETER ---------------------------------------------------------------
+years <- c("2022","2021", "2020", "2019", "2018", "2017")
+regions <- c( "Central Region", "North East Region", "East Region", "North Region", "West Region")
+
+
+# UI ----------------------------------------------------------------------
+ui = dashboardPage(
+  dashboardHeader(title = 'Singapore Energy Consumption', titleWidth = 400),
+  
+  dashboardSidebar(width = 210,
+                   sidebarMenu(
+                     menuItem(" INFERENTIAL STATISTICS",  
+                              tabName = "inferential", 
+                              icon = icon("magnifying-glass-chart")
+                              )
+                   )
+  ),
+  dashboardBody(
+    tabItems(
+      
+      ## 3 INFERENTIAL STATISTICS ------------------------------------------------
+      tabItem(
+        tabName = "inferential",
+        navbarPage("INFERENTIAL STATISTICS", 
+                   
+                   ### 3.1 anova ---------------------------------------------
+                   tabPanel("ANOVA",
+                            fluidPage(
+                              fluidRow(
+                                column(5,
+                                       pickerInput(inputId = "anovainput", 
+                                                   label = "Select Parameter",
+                                                   choices = c("dwelling_type", "Region", "year"), 
+                                                   selected = "dwelling_type",
+                                                   options = list(`actions-box` = TRUE), 
+                                                   multiple = F),
+                                       verbatimTextOutput("anovastat")
+                                ),
+                                column(7, plotOutput("dwellingstat"))
+                              ),
+                              
+                              fluidRow(
+                                column(5,
+                                       pickerInput(inputId = "region", 
+                                                   label = "Select Region",
+                                                   choices = regions, 
+                                                   selected = "Central Region",
+                                                   options = list(`actions-box` = TRUE), 
+                                                   multiple = F),
+                                       verbatimTextOutput("anovastat2")
+                                ),
+                                column(7, plotOutput("dwellingstat2"))
+                              )
+                            ))
+        ))
+    ) #close tabItems
+  ) #close dashboard body
+) #close UI
+
+# SERVER ------------------------------------------------------------------
+
+server = function(input, output, session) {
+  
+  # anova -----------------------------------------------------------------
+  consumption <- T3.5
+  consumption <- consumption %>% 
+    mutate(kwh_per_acc = as.numeric(kwh_per_acc)) %>% 
+    mutate(year = as.character(year))
+  
+  observeEvent(input$anovainput,{
+    if(input$anovainput == "Region"){output$dwellingstat <- renderPlot({
+      consumption %>%
+        mutate(class = fct_reorder(Region, kwh_per_acc, .fun='mean')) %>%
+        ggplot( aes(x=reorder(Region, kwh_per_acc), y=kwh_per_acc)) +
+        geom_boxplot() +
+        stat_summary(fun.y=mean, geom="point", color="red") +
+        theme(legend.position="none") +
+        theme(axis.text.x = element_text(angle = 45, vjust = 0.5, hjust=1)) +
+        ggtitle("Boxplot of consumption per planning area")
+    })
+    }
+    if(input$anovainput == "year") {
+  output$dwellingstat <- renderPlot({
+    ggbetweenstats(
+  data = consumption,
+  x = year,
+  y = kwh_per_acc,
+  # type = "np",
+  messages = FALSE
+)
+})}
+    if(input$anovainput == "dwelling_type"){output$dwellingstat <- renderPlot({
+      consumption %>%
+        mutate(class = fct_reorder(dwelling_type, kwh_per_acc, .fun='mean')) %>%
+        ggplot( aes(x=reorder(dwelling_type, kwh_per_acc), y=kwh_per_acc)) +
+        geom_boxplot() +
+        stat_summary(fun.y=mean, geom="point", color="red") +
+        theme(legend.position="none") +
+        theme(axis.text.x = element_text(angle = 45, vjust = 0.5, hjust=1)) +
+        ggtitle("Boxplot of consumption per planning area")
+    })}
+    if(input$anovainput == "dwelling_type"){
+      output$anovastat <- renderPrint({
+        summary(aov(kwh_per_acc ~ dwelling_type, data = consumption))
+      })}
+    if(input$anovainput == "Region"){
+      output$anovastat <- renderPrint({
+        summary(aov(kwh_per_acc ~ Region, data = consumption))
+      })}
+    if(input$anovainput == "year"){
+      output$anovastat <- renderPrint({
+        summary(aov(kwh_per_acc ~ year, data = consumption))
+      })}
+  })
+  
+  # anova2 ---------------------------------------------------------------------
+  observeEvent(input$region,{
+    output$dwellingstat2 <- renderPlot({
+      consumption %>%
+        filter(Region==input$region) %>% 
+        mutate(class = fct_reorder(Description, kwh_per_acc, .fun='mean')) %>%
+        ggplot( aes(x=reorder(Description, kwh_per_acc), y=kwh_per_acc)) +
+        geom_boxplot() +
+        stat_summary(fun.y=mean, geom="point", color="red") +
+        theme(legend.position="none") +
+        theme(axis.text.x = element_text(angle = 45, vjust = 0.5, hjust=1)) +
+        ggtitle("Boxplot of consumption per planning area")
+    })
+    
+    output$anovastat2 <- renderPrint({
+      consumption %>% 
+        filter(Region == input$region)
+      summary(aov(kwh_per_acc ~ Description, data = consumption))
+    })
+  })
+}
+
+shinyApp(ui = ui, server = server)
+```
+
+
+### 3.2 Betweenstats plot anova
+
+This code first loads the "ggstatsplot" package and then reads in a dataset called "consumption" from a RDS file located in the "RDS" directory.
+
+The ggstatsplot function "ggbarstats" is then used to create a bar plot with error bars to visualize the mean and confidence intervals of the "kwh_per_acc" variable across different levels of the "Region" variable.
+
+The "data" argument specifies the dataset to be used, "x" specifies the variable to be plotted on the x-axis (Region), and "y" specifies the variable to be plotted on the y-axis (kwh_per_acc). The "messages" argument is set to FALSE to suppress any messages that may be generated during the plot creation process.
+
+Note that while the code itself doesn't include an ANOVA test, one could perform an ANOVA on this data outside of this code to determine if there are significant differences in the mean kwh_per_acc values between the different regions.
+
+
+```{r anova betweenstats, message=FALSE, warning=FALSE}
+library(ggstatsplot)
+town <- readRDS(file = "RDS/town.rds") # Geofacet
+
+    ggbetweenstats(
+          data = town,
+          x = Region,
+          y = kwh_per_acc,
+          messages = FALSE
+        )
+```
+
+
+## 4. Time series forecasting
+
+
+```{r timeseries_library}
+packages = c('tidyverse','tidyquant','tsibbledata','tsibble','feasts'
+             ,'stats','lubridate','data.table','rmarkdown','knitr')
+for (p in packages) {
+  if(!require(p,character.only = T)){
+    install.packages(p)
+  }
+  library(p,character.only = T)
+}
+```
+
+```{r timeseries_data, warning=FALSE, message=FALSE}
+arima <- T2.3
+arima$Date <- yearmonth(as.yearmon(paste(arima$year, arima$mth), "%Y %m"))
+arima2 <- T3.4
+arima2$Date <- yearmonth(as.yearmon(paste(arima2$year, arima2$month), "%Y %m"))
+arima2 <- arima2 %>% 
+  filter(month != "Annual") %>% 
+  group_by(Date) %>% 
+  summarise(sum = sum(consumption_GWh))
+
+
+saveRDS(arima, file = "RDS/arima.rds")
+saveRDS(arima2, file = "RDS/arima2.rds")
+
+arima <- readRDS(file = "RDS/arima.rds") # arima
+arima2 <- readRDS(file = "RDS/arima2.rds") # arima
+
+paged_table(arima)
+paged_table(arima2)
+```
+
+```{r, warning = FALSE, message=FALSE}
+arima_tsbl  = as_tsibble(arima)
+arima_tsbl2  = as_tsibble(arima2)
+
+head(arima_tsbl)
+head(arima_tsbl2)
+```
+
+```{r, message=FALSE, warning=FALSE}
+arima_tsbl  = as_tsibble(arima)
+full_arima = arima_tsbl %>%
+  fill_gaps() %>% 
+  tidyr::fill(peak_system_demand_mw, .direction = "down")
+
+arima_tsbl2  = as_tsibble(arima2)
+full_arima2 = arima_tsbl2 %>%
+  fill_gaps() %>% 
+  tidyr::fill(sum, .direction = "down")
+
+saveRDS(arima_tsbl, file = "RDS/arima_tsbl.rds")
+saveRDS(arima_tsbl2, file = "RDS/arima_tsbl2.rds")
+saveRDS(full_arima, file = "RDS/full_arima.rds")
+saveRDS(full_arima2, file = "RDS/full_arima2.rds")
+
+head(full_arima)
+head(full_arima2)
+```
+
+```{r}
+arima <- town %>% 
+  group_by(date) %>% 
+  summarise(sum = sum(kwh_per_acc)) %>% 
+  mutate(month = month(date)) %>% 
+  mutate(year = year(date))
+
+arima$date <- yearmonth(as.yearmon(paste(arima$year, arima$month), "%Y %m"))
+
+arima_tsbl  = as_tsibble(arima)
+saveRDS(arima_tsbl, file = "RDS/arima_tsbl.rds")
+```
+
+```{r arima, message=FALSE, warning=FALSE}
+full_arima = arima_tsbl %>%
+  fill_gaps() %>% 
+  tidyr::fill(sum, .direction = "down")
+
+head(arima_tsbl)
+head(full_arima)
+
+saveRDS(full_arima, file = "RDS/full_arima.rds")
+```
+
+```{r}
+library(timetk)
+arima_tsbl$date <- as.Date(arima_tsbl$date)
+
+arima_tsbl %>%
+  plot_time_series(date, sum, .facet_ncol = 2,.interactive = TRUE)
+```
+
+```{r}
+full_arima_stl=full_arima %>% 
+  summarise(sum = sum(sum)) %>% 
+  model(STL(sum ~ season(window = 5))) %>% 
+  components()
+
+full_arima_stl2=full_arima2 %>% 
+  summarise(sum = sum(sum)) %>% 
+  model(STL(sum ~ season(window = 5))) %>% 
+  components()
+
+saveRDS(full_arima_stl, file = "RDS/full_arima_stl.rds")
+
+head(full_arima_stl)
+head(full_arima_stl2)
+```
+
+```{r}
+
+full_arima_stl %>% 
+  summarise(sum = sum(sum)) %>%
+  model(STL(sum ~ season(window = 5))) %>% 
+  components() %>%
+  autoplot()
+```
+
+```{r, warning=FALSE, message=FALSE}
+arima_tsbl  = as_tsibble(arima)
+full_arima = arima_tsbl %>%
+  # filter(year==2017) %>% 
+  fill_gaps() %>% 
+  tidyr::fill(sum, .direction = "down")
+
+full_arima %>%
+  gg_tsdisplay(difference(sum), plot_type='partial')
+```
+
+```{r}
+library(forecast)
+arima_ts <- ts(data=arima$sum, start = c(2005,1), end = c(2022, 6), frequency=12)
+plot.ts(arima_ts, plot.type=('single'))    
+arima_arima <- auto.arima(arima_ts)
+
+saveRDS(arima_arima, file = "RDS/arima_arima.rds")
+saveRDS(arima_ts, file = "RDS/arima_ts.rds")
+```
+
+```{r}
+arima_ts %>%
+  auto.arima() %>%
+  forecast(h=20) %>%
+  autoplot()
+```
+
+```{r}
+arima_ts %>%
+  stlm(modelfunction=ar) %>%
+  forecast(h=36) %>%
+  autoplot()
+```
+
+```{r}
+arima_ts %>%
+  tbats() %>%
+  forecast() %>%
+  autoplot()
+```
+
+```{r}
+plot(forecast(arima_arima, h = 48))
+```
+

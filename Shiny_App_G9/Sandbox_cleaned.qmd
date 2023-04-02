@@ -307,7 +307,7 @@ dwelling_tog <- dwelling %>%
   mutate(consumption = consumption_GWh) %>%
   mutate(title = 'Dwelling Type') %>%
   select(c('year','month','date','type','consumption','class', 'title'))
-saveRDS(dwelling_tog, file = "RDS/dwelling_tog.rds")
+# saveRDS(dwelling_tog, file = "RDS/dwelling_tog.rds")
 
 town_tog <- town_final %>%
   mutate(type = Description) %>%
@@ -315,7 +315,7 @@ town_tog <- town_final %>%
   mutate(year = year(date)) %>%
   mutate (month = month(date)) %>%
   select(c('year','month','date','type','consumption','title'))
-saveRDS(town_tog, file = "RDS/town_tog.rds")
+# saveRDS(town_tog, file = "RDS/town_tog.rds")
 
 region_tog <- region %>%
   mutate(type = Region) %>%
@@ -324,7 +324,7 @@ region_tog <- region %>%
   mutate (month = month(date)) %>%
   mutate(unit = 'kWh') %>%
   select(c('year','month','date','type','consumption','title'))
-saveRDS(region_tog, file = "RDS/region_tog.rds")
+# saveRDS(region_tog, file = "RDS/region_tog.rds")
 ```
 
 #### Plot 1 - Line plot
