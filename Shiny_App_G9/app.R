@@ -54,6 +54,7 @@ library(shinycssloaders)
 library(shinydashboard)
 library(shinythemes)
 library(shinyWidgets)
+library(sparkline)
 library(stats)
 library(svglite)
 # library(tibble)
@@ -165,6 +166,8 @@ ui = dashboardPage(skin = "yellow",
                                               ),
                                               fluidRow(
                                                 column(12, plotlyOutput("cycleplot")),
+                                                column(12, sparklineOutput("d_sparks")),
+                                                
                                                 column(6, tableOutput("sparktable"))
                                               )
                                      ),
@@ -719,6 +722,10 @@ server = function(input, output, session) {
       mutate(`Category`= type) %>%   
       group_by(`Category`) %>%   
       summarize(`Monthly Consumption` = list(consumption))
+    
+    output$d_sparks <- renderSparkline({
+      d_sparks
+    })
     
     report_data = left_join(d_report, d_sparks) 
     
