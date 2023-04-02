@@ -584,32 +584,6 @@ server = function(input, output, session) {
     startyear <- input$slider_year[1]
     endyear <- input$slider_year[2]
     
-    ## sparklines -----------------------------------------------------------------
-    d_sparks <- dwelling %>%
-      filter(year %in% c(startyear:endyear)) %>%
-      mutate(`Dwelling Type` = DWELLING_TYPE) %>%
-      group_by(`Dwelling Type`) %>%
-      summarize(`Monthly Consumption` = list(consumption_GWh))
-    
-    #react_sparkline
-    output$sparktable <- renderReactable(reactable(
-      d_sparks,
-      defaultPageSize = 13,
-      columns = list(
-        `Dwelling Type` = colDef(maxWidth = 200),
-        `Monthly Consumption` = colDef(
-          cell = react_sparkline(
-            d_sparks,
-            highlight_points = highlight_points(
-              min = "red", max = "blue"),
-            line_width = 1,
-            bandline = "innerquartiles",
-            bandline_color = "green"
-          )
-        )
-      )
-    ))
-    
     # line ----------------------------------------------------------------------
     chosendata <- chosendata %>%
       filter(year %in% c(startyear:endyear)) %>% 
@@ -748,7 +722,7 @@ server = function(input, output, session) {
     
     report_data = left_join(d_report, d_sparks) 
     
-    output$spark <- renderTable({report_data %>% 
+    output$sparktable <- renderTable({report_data %>% 
       gt() %>% 
       gt_plt_sparkline('Monthly Consumption')
     })
