@@ -1,6 +1,6 @@
 ---
-title: "Project sandbox"
-subtitle: "Uncover Singapore electricity consumption"
+title: "Developer Guideline"
+subtitle: "Visualise & Analyse Singapore Electricity Consumption with RShiny App"
 author: "Tasaporn Visawameteekul, Law Shiang Row, Khoo Wei Lun"
 date: "29 March 2023"
 date-modified: "`r Sys.Date()`"
@@ -22,6 +22,7 @@ format:
     title-block-banner: true
     fig-align: center
     reader-mode: true
+---oper
 ---
 
 ## Install and launching R packages
@@ -56,7 +57,7 @@ T3.4 <- read_csv("data/T3-4.csv")
 T3.5 <- read_csv("data/T3-5.csv")
 ```
 
-### Data table
+### Data Table
 
 This section provides a summary of the data tables utilized in the project, offering insight into the original data's appearance. The project employs three tables, namely
 

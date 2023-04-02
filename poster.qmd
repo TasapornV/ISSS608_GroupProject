@@ -2,4 +2,4 @@
 title: "poster"
 ---
 
-![](images/poster.png)
+![](images/ISSS608%20Poster%20(A1%20size)-02.png){width=100%}

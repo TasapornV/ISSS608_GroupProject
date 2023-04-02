@@ -42,4 +42,4 @@ Singapore has progressively moved towards an open electricity market since 2001 
 
 With growing competition in the market, it becomes increasingly important for market players such as regulators, suppliers and retailers to understand the electricity consumption pattern in Singapore to ensure adequate supply planning and pricing structure.
 
-To assist relevant market players in analyzing electricity consumption data effectively, we created this RShinny App to visualize Singapore electricity consumption pattern and trend, perform statistical analysis as well as forecast the future trends.
+To assist relevant market players in analyzing electricity consumption data effectively, we created this RShiny App to visualize Singapore electricity consumption pattern and trend, perform statistical analysis as well as forecast the future trends.

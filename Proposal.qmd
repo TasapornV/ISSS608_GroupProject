@@ -1,6 +1,6 @@
 ---
 title: "Project Snapshot"
-subtitle: "Visualise & Analyse Singapore Electricity Consumption with RShinny App"
+subtitle: "Visualise & Analyse Singapore Electricity Consumption with RShiny App"
 author: "Tasaporn Visawameteekul, Law Shiang Row, Khoo Wei Lun"
 date: "29 March 2023"
 date-modified: "`r Sys.Date()`"
@@ -30,11 +30,11 @@ Singapore has progressively moved towards an open electricity market since 2001 
 
 With growing competition in the market, it becomes increasingly important for market players such as regulators, suppliers and retailers to understand the electricity consumption pattern in Singapore to ensure adequate supply planning and pricing structure.
 
-To assist relevant market players in analyzing electricity consumption data effectively, we created this RShinny App to visualize Singapore electricity consumption pattern and trend, perform statistical analysis as well as forecast the future trends.
+To assist relevant market players in analyzing electricity consumption data effectively, we created this RShiny App to visualize Singapore electricity consumption pattern and trend, perform statistical analysis as well as forecast the future trends.
 
 ## Scope
 
-Our RShinny app allows users to interact with the data to:
+Our RShiny app allows users to interact with the data to:
 
 1.  Explore the electricity consumption patterns and trends in Singapore,
 2.  Cluster planning areas based on similarities in consumption patterns,
@@ -110,7 +110,9 @@ When there are more than two sample groups, ANOVA (Analysis of Variance) is used
 
 ![](images/app7.png)
 
-![](images/app8.png)Time Series Forecasting
+![](images/app8.png)
+
+### Time Series Forecasting
 
 Various predictive models are built onto the app for users to forecast the future consumption trends. The model accuracy and confidence level are also made available for users.
 
