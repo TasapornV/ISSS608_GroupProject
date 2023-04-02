@@ -2,4 +2,4 @@
 title: "poster"
 ---
 
-![](images/image-2059962290.png)
+![](images/poster.png)

@@ -24,7 +24,7 @@ format:
     reader-mode: true
 ---
 
-## Uncover patterns in Singapore electricity consumption
+## Uncover patterns of Singapore electricity consumption
 
 Looking for insights into Singapore's electricity consumption pattern? Our visual analytics can help you uncover valuable patterns and insights that will revolutionize the way you analyse structured data.
 

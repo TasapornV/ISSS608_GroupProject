@@ -2,7 +2,7 @@ project:
   type: website
 
 website:
-  title: "Power Visual"
+  title: "POWER ANALYTICS"
   page-navigation: true
   favicon: "images/logo1.png"
 
@@ -11,6 +11,7 @@ website:
     background: "#AF8D2F"
     left:
       - icon: "house-fill"
+        text: "home"
         href: "index.html"
       - text: "Project Snapshot"
         href: "proposal.html"
