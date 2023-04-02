@@ -2,6 +2,4 @@
 title: "poster"
 ---
 
-::: column-page
-![](images/poster.png){width="4000"}
-:::
+![](images/ISSS608%20Poster%20(A1%20size)-02.png){width=100%}

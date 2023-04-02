@@ -1,6 +1,6 @@
 ---
-title: "Project sandbox"
-subtitle: "Uncover Singapore electricity consumption"
+title: "Developer Guideline"
+subtitle: "Visualise & Analyse Singapore Electricity Consumption with RShiny App"
 author: "Tasaporn Visawameteekul, Law Shiang Row, Khoo Wei Lun"
 date: "29 March 2023"
 date-modified: "`r Sys.Date()`"
@@ -22,6 +22,7 @@ format:
     title-block-banner: true
     fig-align: center
     reader-mode: true
+---oper
 ---
 
 ## Install and launching R packages
@@ -56,7 +57,7 @@ T3.4 <- read_csv("data/T3-4.csv")
 T3.5 <- read_csv("data/T3-5.csv")
 ```
 
-### Data table
+### Data Table
 
 This section provides a summary of the data tables utilized in the project, offering insight into the original data's appearance. The project employs three tables, namely
 
@@ -307,7 +308,7 @@ dwelling_tog <- dwelling %>%
   mutate(consumption = consumption_GWh) %>%
   mutate(title = 'Dwelling Type') %>%
   select(c('year','month','date','type','consumption','class', 'title'))
-# saveRDS(dwelling_tog, file = "RDS/dwelling_tog.rds")
+saveRDS(dwelling_tog, file = "RDS/dwelling_tog.rds")
 
 town_tog <- town_final %>%
   mutate(type = Description) %>%
@@ -315,7 +316,7 @@ town_tog <- town_final %>%
   mutate(year = year(date)) %>%
   mutate (month = month(date)) %>%
   select(c('year','month','date','type','consumption','title'))
-# saveRDS(town_tog, file = "RDS/town_tog.rds")
+saveRDS(town_tog, file = "RDS/town_tog.rds")
 
 region_tog <- region %>%
   mutate(type = Region) %>%
@@ -324,7 +325,7 @@ region_tog <- region %>%
   mutate (month = month(date)) %>%
   mutate(unit = 'kWh') %>%
   select(c('year','month','date','type','consumption','title'))
-# saveRDS(region_tog, file = "RDS/region_tog.rds")
+saveRDS(region_tog, file = "RDS/region_tog.rds")
 ```
 
 #### Plot 1 - Line plot
