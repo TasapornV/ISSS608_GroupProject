@@ -494,17 +494,10 @@ arima2 <- arima2 %>%
   summarise(sum = sum(consumption_GWh))
 arima3 <- T3.5 
 arima3$Date <- yearmonth(as.yearmon(paste(arima3$year, arima3$month), "%Y %m"))
-# arima3 <- arima3 %>% 
-#   filter(month != "Annual") %>% 
-#   group_by(Date) %>% 
-#   summarise(sum = sum(as.numeric(kwh_per_acc)))
-# arima3 <- arima3 %>% 
-#   group_by(Date) %>% 
-#   summarise(avg = mean(kwh_per_acc))
+
 
 paged_table(arima)
 paged_table(arima2)
-# paged_table(arima3)
 ```
 
 ```{r, warning = FALSE, message=FALSE}
