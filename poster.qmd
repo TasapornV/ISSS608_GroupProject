@@ -2,4 +2,10 @@
 title: "poster"
 ---
 
+<<<<<<< HEAD
 ![](images/ISSS608%20Poster%20(A1%20size)-02.png){width=100%}
+=======
+::: column-page
+![](images/poster.png)
+:::
+>>>>>>> 664063d40138842cbe0d986b7c61a213983925d1
