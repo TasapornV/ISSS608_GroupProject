@@ -3,5 +3,5 @@ title: "poster"
 ---
 
 ::: column-page
-![](images/poster.png){width="4000"}
+![](images/poster.png){width="400"}
 :::
