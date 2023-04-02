@@ -3,6 +3,7 @@
 <<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 >>>>>>> parent of d409dc5 (Tidy up)
 =======
@@ -39,6 +40,8 @@
 <<<<<<< HEAD
 <<<<<<< HEAD
 =======
+=======
+>>>>>>> parent of 0f5f47e (edit proposal page)
   --quarto-hl-ot-color: #003B4F;
   --quarto-hl-at-color: #657422;
   --quarto-hl-ss-color: #20794D;
@@ -68,11 +71,14 @@
   --quarto-hl-sc-color: #5E5E5E;
   --quarto-hl-dv-color: #AD0000;
   --quarto-hl-kw-color: #003B4F;
+<<<<<<< HEAD
 >>>>>>> de089071b19393a8e15c08c66545244e7b60ace3
 =======
 >>>>>>> parent of d409dc5 (Tidy up)
 =======
 >>>>>>> parent of d409dc5 (Tidy up)
+=======
+>>>>>>> parent of 0f5f47e (edit proposal page)
 }
 
 /* other quarto variables */
@@ -84,16 +90,21 @@ pre > code.sourceCode > span {
 <<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 >>>>>>> parent of d409dc5 (Tidy up)
   color: #657b83;
+=======
+  color: #003B4F;
+>>>>>>> parent of 0f5f47e (edit proposal page)
 }
 
 code span {
-  color: #657b83;
+  color: #003B4F;
 }
 
 code.sourceCode > span {
+<<<<<<< HEAD
   color: #657b83;
 <<<<<<< HEAD
 =======
@@ -116,6 +127,9 @@ code.sourceCode > span {
 >>>>>>> parent of d409dc5 (Tidy up)
 =======
 >>>>>>> parent of d409dc5 (Tidy up)
+=======
+  color: #003B4F;
+>>>>>>> parent of 0f5f47e (edit proposal page)
 }
 
 div.sourceCode,
@@ -123,96 +137,64 @@ div.sourceCode pre.sourceCode {
 <<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 >>>>>>> parent of d409dc5 (Tidy up)
   color: #657b83;
+=======
+  color: #003B4F;
+>>>>>>> parent of 0f5f47e (edit proposal page)
 }
 
-code span.kw {
-  color: #859900;
-  font-weight: bold;
-}
-
-code span.fu {
-  color: #268bd2;
-}
-
-code span.va {
-  color: #268bd2;
-}
-
-code span.cf {
-  color: #859900;
-  font-weight: bold;
-}
-
-code span.op {
-  color: #859900;
-}
-
-code span.bu {
-  color: #cb4b16;
-}
-
-code span.ex {
-  color: #268bd2;
-  font-weight: bold;
-}
-
-code span.pp {
-  color: #cb4b16;
+code span.ot {
+  color: #003B4F;
 }
 
 code span.at {
-  color: #268bd2;
-}
-
-code span.ch {
-  color: #2aa198;
-}
-
-code span.sc {
-  color: #dc322f;
-}
-
-code span.st {
-  color: #2aa198;
-}
-
-code span.vs {
-  color: #2aa198;
+  color: #657422;
 }
 
 code span.ss {
-  color: #dc322f;
+  color: #20794D;
 }
 
-code span.im {
-  color: #2aa198;
+code span.an {
+  color: #5E5E5E;
 }
 
-code span.dt {
-  color: #b58900;
-  font-weight: bold;
+code span.fu {
+  color: #4758AB;
 }
 
-code span.dv {
-  color: #2aa198;
+code span.st {
+  color: #20794D;
+}
+
+code span.cf {
+  color: #003B4F;
+}
+
+code span.op {
+  color: #5E5E5E;
+}
+
+code span.er {
+  color: #AD0000;
 }
 
 code span.bn {
-  color: #2aa198;
+  color: #AD0000;
 }
 
-code span.fl {
-  color: #2aa198;
+code span.al {
+  color: #AD0000;
 }
 
-code span.cn {
-  color: #2aa198;
-  font-weight: bold;
+code span.va {
+  color: #111111;
 }
 
+<<<<<<< HEAD
 code span.co {
   color: #93a1a1;
 <<<<<<< HEAD
@@ -318,6 +300,22 @@ code span.co {
 >>>>>>> parent of d409dc5 (Tidy up)
 =======
 >>>>>>> parent of d409dc5 (Tidy up)
+=======
+code span.pp {
+  color: #AD0000;
+}
+
+code span.in {
+  color: #5E5E5E;
+}
+
+code span.vs {
+  color: #20794D;
+}
+
+code span.wa {
+  color: #5E5E5E;
+>>>>>>> parent of 0f5f47e (edit proposal page)
   font-style: italic;
 }
 
@@ -325,32 +323,59 @@ code span.do {
 <<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 >>>>>>> parent of d409dc5 (Tidy up)
   color: #dc322f;
+=======
+  color: #5E5E5E;
+  font-style: italic;
+>>>>>>> parent of 0f5f47e (edit proposal page)
 }
 
-code span.an {
-  color: #268bd2;
+code span.im {
+  color: #00769E;
+}
+
+code span.ch {
+  color: #20794D;
+}
+
+code span.dt {
+  color: #AD0000;
+}
+
+code span.fl {
+  color: #AD0000;
+}
+
+code span.co {
+  color: #5E5E5E;
 }
 
 code span.cv {
+<<<<<<< HEAD
   color: #2aa198;
 <<<<<<< HEAD
+=======
+  color: #5E5E5E;
+  font-style: italic;
+>>>>>>> parent of 0f5f47e (edit proposal page)
 }
 
-code span.re {
-  color: #268bd2;
+code span.cn {
+  color: #8f5902;
 }
 
-code span.in {
-  color: #b58900;
+code span.sc {
+  color: #5E5E5E;
 }
 
-code span.wa {
-  color: #cb4b16;
+code span.dv {
+  color: #AD0000;
 }
 
+<<<<<<< HEAD
 code span.al {
   color: #d33682;
   font-weight: bold;
@@ -420,6 +445,10 @@ code span.er {
 >>>>>>> parent of d409dc5 (Tidy up)
 =======
 >>>>>>> parent of d409dc5 (Tidy up)
+=======
+code span.kw {
+  color: #003B4F;
+>>>>>>> parent of 0f5f47e (edit proposal page)
 }
 
 .prevent-inlining {
