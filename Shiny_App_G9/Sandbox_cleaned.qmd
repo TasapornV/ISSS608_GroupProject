@@ -1083,8 +1083,30 @@ plot.ts(arima_ts, plot.type=('single'))
 arima_arima <- auto.arima(arima_ts)
 
 saveRDS(arima_arima, file = "RDS/arima_arima.rds")
+saveRDS(arima_ts, file = "RDS/arima_ts.rds")
 ```
 
 ```{r}
-plot(forecast(arima_arima))
+arima_ts %>%
+  auto.arima() %>%
+  forecast(h=20) %>%
+  autoplot()
+```
+
+```{r}
+arima_ts %>%
+  stlm(modelfunction=ar) %>%
+  forecast(h=36) %>%
+  autoplot()
+```
+
+```{r}
+arima_ts %>%
+  tbats() %>%
+  forecast() %>%
+  autoplot()
+```
+
+```{r}
+plot(forecast(arima_arima, h = 48))
 ```

@@ -69,6 +69,7 @@ report_data <- readRDS(file = "RDS/report_data.rds") #sparktable
 d_sparks    <- readRDS(file = "RDS/d_sparks.rds")
 arima_arima <- readRDS(file = "RDS/arima_arima.rds")
 full_arima_stl <- readRDS(file = "RDS/full_arima_stl.rds")
+arima_ts <- readRDS(file = "RDS/arima_ts.rds")
 
 # reading the map file
 mpsz        <- st_read(dsn = 'master-plan-2014-subzone-boundary-web-shp',
@@ -333,13 +334,22 @@ ui = dashboardPage(skin = "yellow",
                                           tabPanel("Trend Prediction",
                                                    fluidPage(
                                                      fluidRow(
-                                                       column(width = 5, 
-                                                              numericInput("arima_d", "input order of differencing", value=1),
-                                                              numericInput("arima_d2", "input order of seasonal differencing", value=2),
-                                                              checkboxInput("arima_d3", "allow drift", value = FALSE),
-                                                              sliderInput("year", "Select year", min = 2005, max = 2022, step=1, round=TRUE, value = 2022),
-                                                              verbatimTextOutput("arimatext")),
-                                                       column(width = 7, withSpinner(plotOutput("arima",height=350)))),
+                                                       column(width = 3, 
+                                                              # numericInput("arima_d", "input order of differencing", value=1),
+                                                              # numericInput("arima_d2", "input order of seasonal differencing", value=2),
+                                                              # checkboxInput("arima_d3", "allow drift", value = FALSE),
+                                                              # numericInput("k2", "Select Number of Cluster",
+                                                              #              min = 1, max = 10, value = 2))
+                                                              numericInput("year", "Months to predict", min = 12, max = 72, step=12, value = 36),
+                                                              pickerInput("forecast", "Select forecast method",
+                                                                          choices = c("Automatic ARIMA forecasts",
+                                                                                      "STL forecasts",
+                                                                                      "TBATS forecasts"),
+                                                                          selected = "Automatic ARIMA forecasts")
+                                                              # ,
+                                                              # verbatimTextOutput("arimatext")
+                                                              ),
+                                                       column(width = 9, withSpinner(plotOutput("arima",height=350)))),
                                                      fluidRow(
                                                        column(width = 6, plotOutput("arima_plot",height=400)),
                                                        column(width = 6, plotOutput("season"))
@@ -414,32 +424,50 @@ server = function(input, output, session) {
   })
   
   # arima ----------------------------------------------------------------------
-  
-  arima <- T2.3
-  arima$Date <- yearmonth(as.yearmon(paste(arima$year, arima$mth), "%Y %m"))
-  arima_ts <- ts(data=arima$peak_system_demand_mw)
-  
-  observeEvent(c(input$arima_d,input$arima_d2, input$arima_d3, input$year), {
-    # arima_arima = auto.arima(arima_ts, d = input$arima_d, D = input$arima_d2, allowdrift = input$arima_d3)
-    output$arima <- renderPlot({
-     
-      plot(forecast(arima_arima))
-    })
-    output$arimatext <- renderPrint(arima_arima)
-    arima_tsbl  = as_tsibble(arima)
-    full_arima = arima_tsbl %>%
-      filter(year==input$year) %>% 
-      fill_gaps() %>% 
-      tidyr::fill(peak_system_demand_mw, .direction = "down")
+
+  observeEvent(c(input$forecast, input$year), {
+
+    if(input$forecast == "Automatic ARIMA forecasts")  {
+      plot <- arima_ts %>%
+        auto.arima() %>%
+        forecast(h=input$year) %>%
+        autoplot()
+        output$arima <- renderPlot({
+         plot
+          # plot(forecast(arima_arima))
+        })
+    }
+
+    if(input$forecast == "STL forecasts")  {
+      plot <- arima_ts %>%
+        stlm(modelfunction=ar) %>%
+        forecast(h=input$year) %>%
+        autoplot()
+      output$arima <- renderPlot({
+        plot
+      })
+    }
+
+    if(input$forecast == "TBATS forecasts")  {
+      plot <- arima_ts %>%
+        tbats() %>%
+        forecast() %>%
+        autoplot()
+
+      output$arima <- renderPlot({
+        plot
+      })
+    }
+ 
     output$arima_plot <- renderPlot({
       full_arima %>%
-        gg_tsdisplay(difference(peak_system_demand_mw), plot_type='partial')
+        gg_tsdisplay(difference(sum), plot_type='partial')
     })
-    
+
     output$season <- renderPlot(({
-      full_arima_stl %>% 
+      full_arima_stl %>%
         summarise(sum = sum(sum)) %>%
-        model(STL(sum ~ season(window = 5))) %>% 
+        model(STL(sum ~ season(window = 5))) %>%
         components() %>%
         autoplot()
     }))
@@ -587,6 +615,7 @@ server = function(input, output, session) {
         )
     })
   })
+  
   # consumption by town --------------------------------------------------------
   
   observeEvent(c(input$slider_year, input$slope_value, input$towns),{
