@@ -70,7 +70,7 @@ d_sparks    <- readRDS(file = "RDS/d_sparks.rds")
 arima_arima <- readRDS(file = "RDS/arima_arima.rds")
 full_arima_stl <- readRDS(file = "RDS/full_arima_stl.rds")
 arima_ts <- readRDS(file = "RDS/arima_ts.rds")
-
+full_arima <- readRDS(file = "RDS/full_arima.rds")
 # reading the map file
 mpsz        <- st_read(dsn = 'master-plan-2014-subzone-boundary-web-shp',
                        layer = 'MP14_SUBZONE_WEB_PL',
@@ -348,7 +348,7 @@ ui = dashboardPage(skin = "yellow",
                                                                           selected = "Automatic ARIMA forecasts")
                                                               # ,
                                                               # verbatimTextOutput("arimatext")
-                                                              ),
+                                                       ),
                                                        column(width = 9, withSpinner(plotOutput("arima",height=350)))),
                                                      fluidRow(
                                                        column(width = 6, plotOutput("arima_plot",height=400)),
@@ -424,20 +424,20 @@ server = function(input, output, session) {
   })
   
   # arima ----------------------------------------------------------------------
-
+  
   observeEvent(c(input$forecast, input$year), {
-
+    
     if(input$forecast == "Automatic ARIMA forecasts")  {
       plot <- arima_ts %>%
         auto.arima() %>%
         forecast(h=input$year) %>%
         autoplot()
-        output$arima <- renderPlot({
-         plot
-          # plot(forecast(arima_arima))
-        })
+      output$arima <- renderPlot({
+        plot
+        # plot(forecast(arima_arima))
+      })
     }
-
+    
     if(input$forecast == "STL forecasts")  {
       plot <- arima_ts %>%
         stlm(modelfunction=ar) %>%
@@ -447,23 +447,23 @@ server = function(input, output, session) {
         plot
       })
     }
-
+    
     if(input$forecast == "TBATS forecasts")  {
       plot <- arima_ts %>%
         tbats() %>%
         forecast() %>%
         autoplot()
-
+      
       output$arima <- renderPlot({
         plot
       })
     }
- 
+    
     output$arima_plot <- renderPlot({
       full_arima %>%
         gg_tsdisplay(difference(sum), plot_type='partial')
     })
-
+    
     output$season <- renderPlot(({
       full_arima_stl %>%
         summarise(sum = sum(sum)) %>%
