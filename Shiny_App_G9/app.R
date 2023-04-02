@@ -56,6 +56,8 @@ arima_arima <- readRDS(file = "RDS/arima_arima.rds")
 full_arima_stl <- readRDS(file = "RDS/full_arima_stl.rds")
 arima_ts <- readRDS(file = "RDS/arima_ts.rds")
 full_arima <- readRDS(file = "RDS/full_arima.rds")
+clus_matrix1 <- readRDS(file = "RDS/clus_matrix1.rds")
+clus_group1 <- readRDS(file = "RDS/clus_group1.rds")
 # reading the map file
 mpsz        <- st_read(dsn = 'master-plan-2014-subzone-boundary-web-shp',
                        layer = 'MP14_SUBZONE_WEB_PL',
@@ -234,8 +236,9 @@ ui = dashboardPage(skin = "yellow",
                                                  column(3,numericInput("k2", "Select Number of Cluster",
                                                                        min = 1, max = 10, value = 2))
                                                ),
-                                               withSpinner(plotlyOutput("dtw", height =500)),
-                                               withSpinner(tmapOutput("dtwmap", height =500))
+                                               withSpinner(plotlyOutput("dtw", height =300))
+                                                ,
+                                               (tmapOutput("dtwmap", height =500))
                                              ))
                          )
                        ),
@@ -545,11 +548,10 @@ server = function(input, output, session) {
   })
   
   # anova betweenstat -----------------------------------------------------------
-  observeEvent(c(input$anovainput2, input$conf, input$typegg),{
+  plot1_data <- reactive({
     if(input$anovainput2 == "Region") {
-      output$dwellingstat3 <- renderPlot({
+      town %>%
         ggbetweenstats(
-          data = town,
           x = Region,
           y = kwh_per_acc,
           conf.level = input$conf,
@@ -557,12 +559,10 @@ server = function(input, output, session) {
           type = input$typegg,
           messages = FALSE
         )
-      })}
-    
-    if(input$anovainput2 == "year") {
-      output$dwellingstat3 <- renderPlot({
+    } 
+    if(input$anovainput2 == "Year") {
+      town %>%
         ggbetweenstats(
-          data = town,
           x = year,
           y = kwh_per_acc,
           conf.level = input$conf,
@@ -570,12 +570,10 @@ server = function(input, output, session) {
           type = input$typegg,
           messages = FALSE
         )
-      })}
-    
-    if(input$anovainput2 == "dwelling_type") {
-      output$dwellingstat3 <- renderPlot({
+    }
+    if(input$anovainput2 == "Dwelling Type") {
+      consumption %>%
         ggbetweenstats(
-          data = consumption,
           x = dwelling_type,
           y = kwh_per_acc,
           conf.level = input$conf,
@@ -583,22 +581,30 @@ server = function(input, output, session) {
           type = input$typegg,
           messages = FALSE
         )
-      })}
+    }
   })
   
-  # anova betweenstat2 ----------------------------------------------------------
-  observeEvent(c(input$region2, input$conf, input$typegg),{
-    output$dwellingstat4 <- renderPlot({
-      town %>%
-        filter(Region == input$region2) %>%
-        ggbetweenstats(
-          x = Description,
-          y = kwh_per_acc,
-          conf.level = input$conf,
-          type = input$typegg,
-          messages = FALSE
-        )
-    })
+  # Render the first plot
+  output$dwellingstat3 <- renderPlot({
+    plot1_data()
+  })
+  
+  # Reactive expression for the second plot
+  plot2_data <- reactive({
+    town %>%
+      filter(Region == input$region2) %>%
+      ggbetweenstats(
+        x = Description,
+        y = kwh_per_acc,
+        conf.level = input$conf,
+        type = input$typegg,
+        messages = FALSE
+      )
+  })
+  
+  # Render the second plot
+  output$dwellingstat4 <- renderPlot({
+    plot2_data()
   })
   
   # consumption by town --------------------------------------------------------
@@ -917,15 +923,15 @@ server = function(input, output, session) {
   })
   
   # clustering dendro ----------------------------------------------------------
-  clus_group1 <- clus[,-c(2)] %>%
-    group_by(Description) %>%
-    summarise_each(list(sum))
-  
-  # making "Description" the row name (index)
-  row.names(clus_group1) <- clus_group1$Description
-  
-  # Making it into a matrix
-  clus_matrix1 <- data.matrix(clus_group1)
+  # clus_group1 <- clus[,-c(2)] %>%
+  #   group_by(Description) %>%
+  #   summarise_each(list(sum))
+  # 
+  # # making "Description" the row name (index)
+  # row.names(clus_group1) <- clus_group1$Description
+  # 
+  # # Making it into a matrix
+  # clus_matrix1 <- data.matrix(clus_group1)
   
   # plot
   observeEvent(c(input$k, input$method, input$distance, input$seriate),{

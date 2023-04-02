@@ -733,6 +733,22 @@ tm_shape(mpsz_clus_dtw)+
   tm_borders(alpha = 0.7)
 ```
 
+```{r}
+clus        <- readRDS(file = "RDS/clus.rds")
+clus_group1 <- clus[,-c(2)] %>%
+    group_by(Description) %>%
+    summarise_each(list(sum))
+  
+  # making "Description" the row name (index)
+  row.names(clus_group1) <- clus_group1$Description
+  
+  # Making it into a matrix
+  clus_matrix1 <- data.matrix(clus_group1)
+  saveRDS(clus_matrix1, file = "RDS/clus_matrix1.rds")
+  saveRDS(clus_group1, file = "RDS/clus_group1.rds")
+  
+```
+
 ## 3. Inferential - ANOVA
 
 The first part of the code reads data from several RDS files, including T3-5.rds that contains monthly household electricity consumption data by planning area and dwelling type. The data is saved into a new variable named consumption, which is then modified using mutate to convert kwh_per_acc to a numeric variable and year to a character variable. The modified consumption data is then saved into an RDS file named anova.rds.
