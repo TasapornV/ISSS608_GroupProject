@@ -413,6 +413,7 @@ d_sparks <- chosendata %>%
   mutate(`Category`= type) %>%   
   group_by(`Category`) %>%   
   summarize(`Monthly Consumption` = list(consumption))
+saveRDS(d_sparks, file = "RDS/d_sparks.rds")
 
 report_data = left_join(d_report, d_sparks)
 saveRDS(report_data, file = "RDS/report_data.rds")

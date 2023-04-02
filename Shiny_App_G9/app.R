@@ -18,6 +18,7 @@
 library(CGPfunctions)
 library(cluster)
 library(data.table)
+library(dataui)
 library(dendextend)
 library(dplyr)
 library(dtwclust)
@@ -65,6 +66,7 @@ clus        <- readRDS(file = "RDS/clus.rds") # clustering
 chosendata  <- readRDS(file = "RDS/chosendata.rds") # intro
 dwelling    <- readRDS(file = "RDS/dwelling.rds") #intro
 report_data <- readRDS(file = "RDS/report_data.rds") #sparktable
+d_sparks    <- readRDS(file = "RDS/d_sparks.rds")
 
 # reading the map file
 mpsz        <- st_read(dsn = 'master-plan-2014-subzone-boundary-web-shp',
