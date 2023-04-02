@@ -636,12 +636,13 @@ server = function(input, output, session) {
     if (input$slope_value == "sum") {
       cons_year <- cons_yr %>%
         group_by(type, year) %>%
-        summarise(mean_cons=round(sum(consumption),2))
+        summarise(across(consumption, sum, .names = "mean_cons"))
       
       #Computing year average by months
       hline.data <- select_cycle %>%
         group_by(month) %>%
-        summarise(avg_cons = sum(consumption))
+        summarise(across(consumption, sum, .names = "avg_cons"))
+      
       output$cycleplot <- renderPlotly({
         #Plotting cycle plot for electricity consumption per dwelling type
         ggplot() + 
@@ -665,7 +666,7 @@ server = function(input, output, session) {
     if (input$slope_value == "average") {
       cons_year <- cons_yr %>%
         group_by(type, year) %>%
-        summarise(mean_cons=round(mean(consumption),2))
+        summarise(across(consumption, ~ mean(., na.rm = TRUE), .names = "mean_cons"))
       
       #Computing year average by months
       hline.data <- select_cycle %>%
@@ -683,7 +684,7 @@ server = function(input, output, session) {
                      linewidth=0.5) +
           facet_grid(~month) +
           theme(axis.text.x = element_text(angle=90, vjust=1, hjust=1)) +
-          labs(title = paste("Cycleplot Shwoing Consumption (GWh) in Selected Towns" , startyear,"-",endyear),
+          labs(title = paste("Cycleplot Showing Consumption (GWh) in Selected Towns" , startyear,"-",endyear),
                subtitle = paste0(chosendata[1,6],": ",input$towns)) +
           scale_x_discrete(breaks=c("2005","2010","2015","2020")) +
           xlab("") +
@@ -976,7 +977,7 @@ server = function(input, output, session) {
               palette = viridis(input$k)) +
       tm_borders(alpha = 0.7)
     
-    current.mode <- tmap_mode("plot")
+    # current.mode <- tmap_mode("plot")
     
     tmap_mode("view")
     output$map <- renderTmap(
