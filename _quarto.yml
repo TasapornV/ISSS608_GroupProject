@@ -12,10 +12,10 @@ website:
     left:
       - icon: "house-fill"
         href: "index.html"
-      - text: "Project prototype"
+      - text: "Project Snapshot"
         href: "proposal.html"
       - text: "Poster"
-      - text: "developer guideline - code explanation"
+      - text: "developer Guideline"
         href: "Shiny_App_G9/Sandbox_cleaned.html"
       - text: "RShiny App"
         href: https://tasatasa.shinyapps.io/Shiny_App_G9/
