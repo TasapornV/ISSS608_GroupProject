@@ -559,11 +559,11 @@ server = function(input, output, session) {
         )
       })}
     
-    if(input$anovainput2 == "Dwelling_type") {
+    if(input$anovainput2 == "dwelling_type") {
       output$dwellingstat3 <- renderPlot({
         ggbetweenstats(
           data = consumption,
-          x = Dwelling_type,
+          x = dwelling_type,
           y = kwh_per_acc,
           conf.level = input$conf,
           pairwise.display = "significant",
