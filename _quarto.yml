@@ -4,7 +4,7 @@ project:
 website:
   title: "Power Visual"
   page-navigation: true
-  favicon: "logo1.png"
+  favicon: "images/logo1.png"
 
   navbar:
     logo: "nav_logo.png"

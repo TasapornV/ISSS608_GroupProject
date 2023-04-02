@@ -1,40 +1,31 @@
 ---
-title: "Power Analytics User guide"
-# author: "Shiang Row, Tasaporn Visawameteekul, Khoo Wei Lun"
-format: revealjs
+title: "App User Guideline"
 ---
 
-## 
+![](images/UG0.png){width="1920"}
 
-![](images/UG0.png){fig-align="center"}
+![](images/UG1.png)
 
-![](images/UG1.png){fig-align="center"}
+![](images/UG2.png)
 
-![](images/UG2.png){fig-align="center"}
-:::
+![](images/UG3.png)
 
-:::
-![](images/UG3.png){fig-align="center"}
-:::
+![](images/UG4.png)
 
-::: nonincremental
-![](images/UG4.png){fig-align="center"}
-:::
+![](images/UG5.png)
 
-::: nonincremental
-![](images/UG5.png){fig-align="center"}
-:::
+![](images/UG6.png)
 
-::: nonincremental
-![](images/UG6.png){fig-align="center"}
-:::
+![](images/UG7.png)
 
-::: nonincremental
-![](images/UG7.png){fig-align="center"}
-:::
+![](images/UG8.png)
 
-::: nonincremental
-![](images/UG8.png){fig-align="center"}
+![](images/UG9.png)
 
-![](images/UG9.png){fig-align="center"} ![](images/UG10.png){fig-align="center"} ![](images/UG11.png){fig-align="center"} ![](images/UG12.png){fig-align="center"} ![](images/UG13.png){fig-align="center"}
-:::
+![](images/UG10.png)
+
+![](images/UG11.png)
+
+![](images/UG12.png)
+
+![](images/UG13.png)
