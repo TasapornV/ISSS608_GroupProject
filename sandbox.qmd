@@ -42,13 +42,13 @@ This section of code is used to compress the file so that it will not load too s
 
 ```{r read data, warning=FALSE, message=FALSE}
 library(readr)
-#T2.3 <- read_csv("data/T2-3.csv")
+T2.3 <- read_csv("data/T2-3.csv")
 #saveRDS(T2.3, file = "RDS/T2-3.rds")
 
-T3.4 <- read_csv("C:/weilunkhoo/ISSS608_GroupProject/Shiny_App_G9/data/T3-4.csv")
+T3.4 <- read_csv("data/T3-4.csv")
 #saveRDS(T3.4, file = "RDS/T3-4.rds")
 
-T3.5 <- read_csv("C:/weilunkhoo/ISSS608_GroupProject/Shiny_App_G9/data/T3-5.csv")
+T3.5 <- read_csv("data/T3-5.csv")
 #saveRDS(T3.5, file = "RDS/T3-5.rds")
 
 ```
@@ -488,31 +488,40 @@ arima <- T2.3
 arima$Date <- yearmonth(as.yearmon(paste(arima$year, arima$mth), "%Y %m"))
 arima2 <- T3.4
 arima2$Date <- yearmonth(as.yearmon(paste(arima2$year, arima2$month), "%Y %m"))
+arima2 <- arima2 %>% 
+  filter(month != "Annual") %>% 
+  group_by(Date) %>% 
+  summarise(sum = sum(consumption_GWh))
 arima3 <- T3.5 
 arima3$Date <- yearmonth(as.yearmon(paste(arima3$year, arima3$month), "%Y %m"))
-# arima3 <- arima3 %>% 
-#   group_by(Date) %>% 
-#   summarise(avg = mean(kwh_per_acc))
+
 
 paged_table(arima)
 paged_table(arima2)
-paged_table(arima3)
 ```
 
-```{r}
+```{r, warning = FALSE, message=FALSE}
 arima_tsbl  = as_tsibble(arima)
+arima_tsbl2  = as_tsibble(arima2)
 
 head(arima_tsbl)
-
+head(arima_tsbl2)
 ```
 
-```{r}
+```{r, message=FALSE, warning=FALSE}
 arima_tsbl  = as_tsibble(arima)
 full_arima = arima_tsbl %>%
   fill_gaps() %>% 
   tidyr::fill(peak_system_demand_mw, .direction = "down")
 
+arima_tsbl2  = as_tsibble(arima2)
+full_arima2 = arima_tsbl2 %>%
+  fill_gaps() %>% 
+  tidyr::fill(sum, .direction = "down")
+
+
 head(full_arima)
+head(full_arima2)
 ```
 
 ```{r}
@@ -522,7 +531,15 @@ full_arima_mth_agg = full_arima %>%
     avg_demand = mean(peak_system_demand_mw, na.rm = TRUE)
   )
 
+full_arima_mth_agg2 = full_arima2 %>%
+  # index_by(Date = ~ Date(.)) %>% 
+  summarise(
+    avg_demand = mean(sum, na.rm = TRUE)
+  )
+
+
 head(full_arima_mth_agg)
+head(full_arima_mth_agg2)
 ```
 
 Seasonal plot
@@ -530,6 +547,12 @@ Seasonal plot
 ```{r}
 full_arima %>%
    gg_season(peak_system_demand_mw)+
+  labs(title = "",
+       subtitle = "",
+       y = "peak_system_demand_mw")
+
+full_arima2 %>%
+   gg_season(sum)+
   labs(title = "",
        subtitle = "",
        y = "peak_system_demand_mw")
@@ -569,13 +592,27 @@ full_arima_stl=full_arima %>%
   model(STL(peak_system_demand_mw ~ season(window = 5))) %>% 
   components()
 
+full_arima_stl2=full_arima2 %>% 
+  summarise(sum = sum(sum)) %>% 
+  model(STL(sum ~ season(window = 5))) %>% 
+  components()
+
 head(full_arima_stl)
+head(full_arima_stl2)
 ```
 
 ```{r}
 full_arima_stl %>% 
   summarise(peak_system_demand_mw = sum(peak_system_demand_mw)) %>% 
   model(STL(peak_system_demand_mw ~ season(window = 5))) %>% 
+  components() %>%
+  autoplot()+
+  labs(title = "",
+       y = "peak_system_demand_mw")
+
+full_arima_stl2 %>% 
+  summarise(sum= sum(sum)) %>% 
+  model(STL(sum ~ season(window = 5))) %>% 
   components() %>%
   autoplot()+
   labs(title = "",
@@ -597,9 +634,21 @@ for (p in packages) {
 }
 ```
 
-```{r}
+```{r, warning=FALSE, message=FALSE}
 arima %>%
   ggplot(aes(x = Date, y = peak_system_demand_mw)) +
+  geom_line(size = 0.5)+
+  labs(title = "") +
+  theme(text = element_text(color = "#444444", family = 'Helvetica Neue')
+        ,plot.title = element_text(size = 35, color = '#333333')
+        ,axis.title = element_text(size = 14, color = '#333333')
+        ,axis.title.y = element_text(angle = 0, vjust = .5)
+        ) +
+    theme_tq() + 
+    scale_color_tq()
+
+arima2 %>%
+  ggplot(aes(x = Date, y = sum)) +
   geom_line(size = 0.5)+
   labs(title = "") +
   theme(text = element_text(color = "#444444", family = 'Helvetica Neue')
@@ -613,12 +662,54 @@ arima %>%
 
 ```{r}
 arima_ts <- ts(data=arima$peak_system_demand_mw, start = c(2005,1), end = c(2022, 6), frequency=12)
-plot.ts(arima_ts, plot.type=('single'))                   
+plot.ts(arima_ts, plot.type=('single'))            
+
+arima_ts2 <- ts(data=arima2$sum, start = c(2005,1), end = c(2022, 6), frequency=12)
+plot.ts(arima_ts2, plot.type=('single'))     
+```
+
+```{r}
+library(forecast)
+
+# Fit ARIMA model
+fit <- arima(arima_ts, order = c(1,0,1))
+
+# Compute forecast
+fc <- forecast(fit)
+
+# Plot forecast and state estimates
+plot(fc, plot.conf = FALSE)
+lines(fit$states[, 1], col = 'red')
+
+```
+
+```{r}
+# fit <- ets(window(arima_ts))
+# fit2 <- ets(window(arima_ts2))
+# fit2 <- arima(window(arima_ts))
+# fit3 <- tslm(window(arima_ts))
+# Generate forecasts using the ARIMA method
+# plot(forecast(fit))
+# plot(forecast(arima_ts, h =10, model = fit2))
+
+```
+
+```{r}
+# fit <- ets(y = selectedData1(),model = switch(input$models,
+#                                                    ANN = "ANN",
+#                                                    ANA = "ANA",
+#                                                    AMM = "AMM",
+#                                                    AAN = "AAN",
+#                                                    AAA = "AAA",
+#                                                    MMM = "MMM")
 ```
 
 ```{r}
 arima_ds = diff(arima_ts, differences = 2)
 ggplotly(plot(arima_ds))
+
+arima_ds2 = diff(arima_ts2, differences = 2)
+ggplotly(plot(arima_ds2))
 ```
 
 ```{r}
@@ -627,6 +718,11 @@ library(forecast)
 arima_arima <- auto.arima(arima_ts)
 arima_arima
 plot(forecast(arima_arima))
+
+
+arima_arima2 <- auto.arima(arima_ts2)
+arima_arima2
+plot(forecast(arima_arima2))
 
 ```
 
@@ -1493,7 +1589,7 @@ library(zoo)
   
 # arima_ts <- ts(data=a$avgcon, start = c(2005,1), end = c(2022,6), frequency=12)
 
-# fit <- ets(window(arima_ts))
+fit <- ets(window(arima_ts))
 # fit2 <- arima(window(arima_ts))
 # fit3 <- tslm(window(arima_ts))
 # Generate forecasts using the ARIMA method
