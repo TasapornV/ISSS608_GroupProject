@@ -17,11 +17,11 @@ website:
         href: "proposal.html"
       - text: "Poster"
         href: "poster.html"
-      - text: "Developer Guideline"
+      - text: "developer Guideline"
         href: "Shiny_App_G9/Sandbox_cleaned.html"
       - text: "RShiny App"
         href: https://teampoweranalytics.shinyapps.io/Shiny_App_G9/
-      - text: "User Guide for App"
+      - text: "User Guideline for App"
         href: "User guide.html"
     right:
       - icon: github
