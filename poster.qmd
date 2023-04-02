@@ -3,7 +3,11 @@ title: "poster"
 ---
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 ![](images/ISSS608%20Poster%20(A1%20size)-02.png){width="100%"}
+=======
+![](images/poster.png)
+>>>>>>> parent of d409dc5 (Tidy up)
 =======
 ![](images/poster.png)
 >>>>>>> parent of d409dc5 (Tidy up)

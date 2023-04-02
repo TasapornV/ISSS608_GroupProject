@@ -2,6 +2,9 @@
 :root {
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> parent of d409dc5 (Tidy up)
 =======
 >>>>>>> parent of d409dc5 (Tidy up)
   --quarto-hl-kw-color: #859900;
@@ -33,6 +36,7 @@
   --quarto-hl-wa-color: #cb4b16;
   --quarto-hl-al-color: #d33682;
   --quarto-hl-er-color: #dc322f;
+<<<<<<< HEAD
 <<<<<<< HEAD
 =======
   --quarto-hl-ot-color: #003B4F;
@@ -67,6 +71,8 @@
 >>>>>>> de089071b19393a8e15c08c66545244e7b60ace3
 =======
 >>>>>>> parent of d409dc5 (Tidy up)
+=======
+>>>>>>> parent of d409dc5 (Tidy up)
 }
 
 /* other quarto variables */
@@ -77,6 +83,9 @@
 pre > code.sourceCode > span {
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> parent of d409dc5 (Tidy up)
   color: #657b83;
 }
 
@@ -86,6 +95,7 @@ code span {
 
 code.sourceCode > span {
   color: #657b83;
+<<<<<<< HEAD
 =======
   color: #003B4F;
 =======
@@ -103,6 +113,8 @@ code.sourceCode > span {
 >>>>>>> de089071b19393a8e15c08c66545244e7b60ace3
 =======
   color: #657b83;
+>>>>>>> parent of d409dc5 (Tidy up)
+=======
 >>>>>>> parent of d409dc5 (Tidy up)
 }
 
@@ -110,6 +122,9 @@ div.sourceCode,
 div.sourceCode pre.sourceCode {
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> parent of d409dc5 (Tidy up)
   color: #657b83;
 }
 
@@ -200,6 +215,7 @@ code span.cn {
 
 code span.co {
   color: #93a1a1;
+<<<<<<< HEAD
 =======
   color: #003B4F;
 =======
@@ -299,6 +315,8 @@ code span.cn {
 
 code span.co {
   color: #93a1a1;
+>>>>>>> parent of d409dc5 (Tidy up)
+=======
 >>>>>>> parent of d409dc5 (Tidy up)
   font-style: italic;
 }
@@ -306,6 +324,9 @@ code span.co {
 code span.do {
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> parent of d409dc5 (Tidy up)
   color: #dc322f;
 }
 
@@ -315,6 +336,7 @@ code span.an {
 
 code span.cv {
   color: #2aa198;
+<<<<<<< HEAD
 }
 
 code span.re {
@@ -370,6 +392,22 @@ code span.kw {
   color: #003B4F;
 >>>>>>> de089071b19393a8e15c08c66545244e7b60ace3
 =======
+=======
+}
+
+code span.re {
+  color: #268bd2;
+}
+
+code span.in {
+  color: #b58900;
+}
+
+code span.wa {
+  color: #cb4b16;
+}
+
+>>>>>>> parent of d409dc5 (Tidy up)
 code span.al {
   color: #d33682;
   font-weight: bold;
@@ -378,6 +416,9 @@ code span.al {
 code span.er {
   color: #dc322f;
   text-decoration: underline;
+<<<<<<< HEAD
+>>>>>>> parent of d409dc5 (Tidy up)
+=======
 >>>>>>> parent of d409dc5 (Tidy up)
 }
 
