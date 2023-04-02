@@ -286,6 +286,10 @@ town_final <- town %>%
   group_by(date, Description) %>%
   summarise(consumption = sum(kwh_per_acc)/1000)
 
+region <- town %>% 
+  group_by(date, Region) %>% 
+  summarise(consumption = sum(kwh_per_acc)/1000)
+
 chosendata <- town_final %>%
   mutate(type = Description) %>%
   mutate(title = 'Town') %>%
@@ -411,13 +415,9 @@ d_sparks <- chosendata %>%
   summarize(`Monthly Consumption` = list(consumption))
 
 report_data = left_join(d_report, d_sparks)
+saveRDS(report_data, file = "RDS/report_data.rds")
 
-head(d_report, 5)
-head(d_sparks)
-# 
-# report_data %>% 
-#   gt() %>% 
-#   gt_plt_sparkline('Monthly Consumption')
+head(report_data, 5)
 ```
 
 #### Plot 4 - Slopegraph
@@ -1005,10 +1005,6 @@ arima_tsbl  = as_tsibble(arima)
 saveRDS(arima_tsbl, file = "RDS/arima_tsbl.rds")
 ```
 
-```{r}
-
-```
-
 ```{r arima, message=FALSE, warning=FALSE}
 full_arima = arima_tsbl %>%
   fill_gaps() %>% 
@@ -1029,19 +1025,24 @@ arima_tsbl %>%
 ```
 
 ```{r}
-full_arima_stl %>% 
-  summarise(sum = sum(sum)) %>%
+full_arima_stl=full_arima %>% 
+  summarise(sum = sum(sum)) %>% 
   model(STL(sum ~ season(window = 5))) %>% 
-  components() %>%
-  autoplot()+
-  labs(title = "",
-       y = "peak_system_demand_mw")
+  components()
+
+full_arima_stl2=full_arima2 %>% 
+  summarise(sum = sum(sum)) %>% 
+  model(STL(sum ~ season(window = 5))) %>% 
+  components()
+
+head(full_arima_stl)
+head(full_arima_stl2)
 ```
 
 ```{r}
 
 full_arima_stl %>% 
-  # summarise(peak_system_demand_mw = sum(peak_system_demand_mw)) %>% 
+  summarise(sum = sum(sum)) %>%
   model(STL(sum ~ season(window = 5))) %>% 
   components() %>%
   autoplot()
@@ -1056,10 +1057,4 @@ full_arima = arima_tsbl %>%
 
 full_arima %>%
   gg_tsdisplay(difference(sum), plot_type='partial')
-```
-
-```{r}
-arima%>%
-  group_by(symbol) %>%
-  plot_time_series(date, adjusted, .facet_ncol = 2, .title = "Selected Asia Pacific Airline stock price",.interactive = TRUE)
 ```

@@ -18,33 +18,21 @@
 library(CGPfunctions)
 library(cluster)
 library(data.table)
-# library(dataui)
 library(dendextend)
-# library(devtools)
-# library(DT)
 library(dplyr)
 library(dtwclust)
-# library(earth)
-# library(fable)
-# library(feasts)
+library(feasts)
 library(forecast)
-# library(fpc)
 library(geofacet)
 library(ggdendro)
-# library(ggiraph)
 library(ggplot2)
 library(ggstatsplot)
-# library(ggrepel)
-# library(ggridges)
 library(gt)
-# library(gtExtras)
+library(gtExtras)
 library(heatmaply)
-# library(knitr)
 library(plotly)
 library(PMCMRplus)
 library(lubridate)
-# library(psych)
-# library(RColorBrewer)
 library(reactable)
 library(reactablefmtr)
 library(readr)
@@ -57,47 +45,47 @@ library(shinyWidgets)
 library(sparkline)
 library(stats)
 library(svglite)
-# library(tibble)
-# library(tidymodels)
-# library(tidyquant)
 library(tidyr)
 library(tidyverse)
 library(timetk)
 library(tmap)
-# library(treemap)
 library(TSclust)
-# library(tseries)
 library(tsibble)
-# library(tsibbletalk)
 library(zoo)
+
 # READ DATA ---------------------------------------------------------------
 ## Read compressed data file
-T2.3 <- readRDS(file = "RDS/T2-3.rds") # Peak System Demand
-T3.4 <- readRDS(file = "RDS/T3-4.rds") # Total Household Electricity Consumption by Dwelling Type
-T3.5 <- readRDS(file = "RDS/T3-5.rds") # Average Monthly Household Electricity Consumption by Town & Dwelling Type
+T2.3        <- readRDS(file = "RDS/T2-3.rds") # Peak System Demand
+T3.4        <- readRDS(file = "RDS/T3-4.rds") # Total Household Electricity Consumption by Dwelling Type
+T3.5        <- readRDS(file = "RDS/T3-5.rds") # Average Monthly Household Electricity Consumption by Town & Dwelling Type
 consumption <- readRDS(file = "RDS/anova.rds") # Anova
-town <- readRDS(file = "RDS/town.rds") # Geofacet
-clus_data <- readRDS(file = "RDS/clus_data.rds") # clustering
-clus <- readRDS(file = "RDS/clus.rds") # clustering
-chosendata <- readRDS(file = "RDS/chosendata.rds") # intro
-dwelling <- readRDS(file = "RDS/dwelling.rds") #intro
+town        <- readRDS(file = "RDS/town.rds") # Geofacet
+clus_data   <- readRDS(file = "RDS/clus_data.rds") # clustering
+clus        <- readRDS(file = "RDS/clus.rds") # clustering
+chosendata  <- readRDS(file = "RDS/chosendata.rds") # intro
+dwelling    <- readRDS(file = "RDS/dwelling.rds") #intro
+report_data <- readRDS(file = "RDS/report_data.rds") #sparktable
+
 # reading the map file
-mpsz <- st_read(dsn = 'master-plan-2014-subzone-boundary-web-shp',
-                layer = 'MP14_SUBZONE_WEB_PL',
-                crs = 3414)
+mpsz        <- st_read(dsn = 'master-plan-2014-subzone-boundary-web-shp',
+                       layer = 'MP14_SUBZONE_WEB_PL',
+                       crs = 3414)
+
 # Import the area grid data.
 area_grid <- read_csv("data/areagrid.csv")
 singapore <- st_transform(mpsz, 4326)
+
 # PARAMETER ---------------------------------------------------------------
-years <- c("2022","2021", "2020", "2019", "2018", "2017")
-regions <- c("Central Region", "North East Region", "East Region", "North Region", "West Region")
-tables <- c("Peak System Demand" = "T2.3",
-            "Total Household Electricity Consumption by Dwelling Type" = "T3.4",
-            "Average Monthly Household Electricity Consumption by Town & Dwelling Type" = "T3.5")
-type <- c("parametric", "nonparametric", "robust", "bayes")
-towns <- unique(chosendata$type)
+years        <- c("2022","2021", "2020", "2019", "2018", "2017")
+regions      <- c("Central Region", "North East Region", "East Region", "North Region", "West Region")
+tables       <- c("Peak System Demand" = "T2.3",
+                  "Total Household Electricity Consumption by Dwelling Type" = "T3.4",
+                  "Average Monthly Household Electricity Consumption by Town & Dwelling Type" = "T3.5")
+type         <- c("parametric", "nonparametric", "robust", "bayes")
+towns        <- unique(chosendata$type)
 dwellingtype <- unique(dwelling$DWELLING_TYPE)
-introtext <- "Welcome to our Singapore Electricity Consumption Visualization Application. This interactive tool allows you to explore and analyze the electricity consumption patterns in Singapore over the past decade. With data sourced from official government records, our application presents a range of visually appealing and informative charts and graphs, providing insights into trends and patterns in energy consumption across various sectors, including residential, commercial, and industrial. Whether you're a policy maker, a researcher, or a concerned citizen, our tool provides a powerful platform to understand and interpret the dynamics of energy use in Singapore, and to make informed decisions that can shape a sustainable future for all."
+introtext    <- "Welcome to our Singapore Electricity Consumption Visualization Application. This interactive tool allows you to explore and analyze the electricity consumption patterns in Singapore over the past decade. With data sourced from official government records, our application presents a range of visually appealing and informative charts and graphs, providing insights into trends and patterns in energy consumption across various sectors, including residential, commercial, and industrial. Whether you're a policy maker, a researcher, or a concerned citizen, our tool provides a powerful platform to understand and interpret the dynamics of energy use in Singapore, and to make informed decisions that can shape a sustainable future for all."
+
 # UI ----------------------------------------------------------------------
 ui = dashboardPage(skin = "yellow",
                    dashboardHeader(title = 'Singapore Electricity Consumption', titleWidth = 400),
@@ -172,14 +160,17 @@ ui = dashboardPage(skin = "yellow",
                                      ### 1.4 Consumption by Dwelling type and dwelling type -------
                                      tabPanel("Consumption by Dwelling Type",
                                               fluidRow(
-                                                column(3, sliderInput("slider_year2", "Year",min = 2005,
+                                                column(3, sliderInput("slider_year2", "Select year",min = 2005,
                                                                       max = 2022, step = 1, round = FALSE,
                                                                       value =  c(2005, 2021),
                                                                       sep = "")),
-                                                column(3, pickerInput("towns2", "Select Dwelling Type", choices = dwellingtype,
+                                                column(3, pickerInput("towns2", 
+                                                                      "Select Dwelling Type", 
+                                                                      choices = dwellingtype,
                                                                       selected = c("3-room", "4-room"),
                                                                       multiple = TRUE)),
-                                                column(3, radioButtons("slope_value2", "Select Slopegraph Value",
+                                                column(3, radioButtons("slope_value2", 
+                                                                       "Select Slopegraph Value",
                                                                        choices = c("Sum"="sum", "Average"="average", "Median"="median"),
                                                                        inline = TRUE,
                                                                        selected = "average"))
@@ -215,7 +206,10 @@ ui = dashboardPage(skin = "yellow",
                                                                       selected = "complete")),
                                                  
                                                  column(2, pickerInput("seriate", "Select Seriation",
-                                                                       choices = c("Optimal Leaf Ordering" = "OLO", "Gruvaeus and Wainer" = "GW", "Mean"="mean", "None" = "none"))),
+                                                                       choices = c("Optimal Leaf Ordering" = "OLO", 
+                                                                                   "Gruvaeus and Wainer" = "GW", 
+                                                                                   "Mean"="mean", 
+                                                                                   "None" = "none"))),
                                                  
                                                  
                                                  column(2,numericInput("k", "Select Number of Cluster",
@@ -309,8 +303,8 @@ ui = dashboardPage(skin = "yellow",
                                                          inputId = "typegg",
                                                          label = "Select type of test",
                                                          choices = c("parametric" = "p", "nonparametric" = "np", "robust" = "r", "Bayes Factor" = "bf")))
-                                                
-                                                       ),
+                                                       
+                                                     ),
                                                      fluidRow(withSpinner(plotOutput("dwellingstat3"))),
                                                      fluidRow(
                                                        pickerInput(inputId = "region2",
@@ -435,7 +429,6 @@ server = function(input, output, session) {
     })
   })
   
-  
   # anova boxplot-----------------------------------------------------------------
   observeEvent(input$anovainput,{
     if(input$anovainput == "Region"){
@@ -515,7 +508,6 @@ server = function(input, output, session) {
         xlab('')
     })
     
-    
     output$anovastat2 <- renderPrint({
       town %>% 
         filter(Region == input$region)
@@ -585,7 +577,7 @@ server = function(input, output, session) {
     startyear <- input$slider_year[1]
     endyear <- input$slider_year[2]
     
-    # line ----------------------------------------------------------------------
+    ## line ----------------------------------------------------------------------
     chosendata <- chosendata %>%
       filter(year %in% c(startyear:endyear)) %>% 
       filter(type %in% input$towns)
@@ -601,16 +593,14 @@ server = function(input, output, session) {
         layout(legend = list(orientation = "h", x = 0.1, y = -0.2))
     })
     
-    
-    # cycle plot -----------------------------------------------------------------
+    ## cycle plot -----------------------------------------------------------------
     
     select_cycle <- chosendata %>% 
       filter(type %in% input$towns) %>%
       mutate(year = factor(year, levels = startyear:endyear),
              month = factor(month, levels = 1:12))
     
-    
-    # slope graph---------------------------------------------------------------
+    ## slope graph---------------------------------------------------------------
     cons_yr <- chosendata
     
     if (input$slope_value == "sum") {
@@ -705,22 +695,10 @@ server = function(input, output, session) {
                                          subtitle = "",
                                          caption = "")
     output$slope <- renderPlot({p_slopegraph1})
-    # sparkline -------------------------------------------------
-    
-    d_report <- chosendata %>%   
-      filter(year %in% c(startyear:endyear)) %>%   
-      mutate(`Category`= type) %>%   
-      group_by(`Category`) %>%   
-      summarise("Min" = min(consumption, na.rm = T),             
-                "Max" = max(consumption, na.rm = T),
-                "Average" = mean(consumption, na.rm = T)) 
-    
-    d_sparks <- chosendata %>%   
-      filter(year %in% c(startyear:endyear)) %>%   
-      mutate(`Category`= type) %>%   
-      group_by(`Category`) %>%   
-      summarize(`Monthly Consumption` = list(consumption))
-    
+    ## sparkline -------------------------------------------------
+
+    report_data <- report_data %>% 
+      filter(Category %in% input$towns)
     #react_sparkline
     output$sparktable <- renderReactable(reactable(
       report_data,
@@ -738,11 +716,9 @@ server = function(input, output, session) {
             line_width = 1,
             bandline = "innerquartiles",
             bandline_color = "green"
-          )
-        ))))
-
-    
-  })
+          ))
+        )))
+    })
   
   # consumption by dwelling type -------------------------------------------------
   
@@ -808,8 +784,6 @@ server = function(input, output, session) {
         layout(legend = list(orientation = "h", x = 0.1, y = -0.2))
     })
     
-    
-    
     # slope graph 2---------------------------------------------------------------
     
     if (input$slope_value2 == "sum") {
@@ -838,9 +812,10 @@ server = function(input, output, session) {
     output$slope2 <- renderPlot({p_slopegraph1})
     
   })
-  
-  #  dtw ------------------------------------------------------------------------
+  #  clustering ------------------------------------------------------------------------ 
+
   observeEvent(c(input$k2, input$method2, input$distance_func),{
+    ##  dtw ------------------------------------------------------------------------
     cluster_dtw <- tsclust(clus_matrix1[,-c(1)],
                            type = "h",
                            k=input$k2,
@@ -945,11 +920,8 @@ server = function(input, output, session) {
     clustering <- dist(normalize(clus_group1[, -1]), method=input$distance)
     out <- dend_expend(clus, dist_methods = input$distance)
     out <- out$performance
-    # clustering dendex --------------------------------------------------------
-    output$dendextend <- renderDataTable(
-      
-      out
-    )
+    ## clustering dendex --------------------------------------------------------
+    output$dendextend <- renderDataTable( out )
     
     # clustering number k ------------------------------------------------------
     clust2 <- hclust(clustering, method = input$method)
@@ -964,7 +936,7 @@ server = function(input, output, session) {
     
     clus_hc$Description <- toupper(clus_hc$Description)
     
-    # Preparing the choropleth map
+   ## Preparing the choropleth map
     mpsz_clus <- left_join(singapore, clus_hc, by = c("PLN_AREA_N" = "Description"))
     map <- tm_shape(mpsz_clus)+
       tmap_options(check.and.fix = TRUE)+
@@ -1068,8 +1040,7 @@ server = function(input, output, session) {
   })
   
   output$description2 <- renderText({
-    paste("Select a region below to study the differences in mean consumption between towns located in the selected region.
-")
+    paste("Select a region below to study the differences in mean consumption between towns located in the selected region.")
   })
 }
 shinyApp(ui = ui, server = server)
