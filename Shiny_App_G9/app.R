@@ -236,7 +236,7 @@ ui = dashboardPage(skin = "yellow",
                                                  column(3,numericInput("k2", "Select Number of Cluster",
                                                                        min = 1, max = 10, value = 2))
                                                ),
-                                               withSpinner(plotlyOutput("dtw", height =300))
+                                               withSpinner(plotlyOutput("dtw", height =500))
                                                 ,
                                                (tmapOutput("dtwmap", height =500))
                                              ))
@@ -904,12 +904,18 @@ server = function(input, output, session) {
     dtw_cluster_t$Description <- toupper(dtw_cluster_t$Description)
     
     # Preparing the choropleth map
-    mpsz_clus_dtw <- left_join(singapore, dtw_cluster_t, by = c("PLN_AREA_N" = "Description"))
+    # mpsz_clus_dtw <- mpsz
     
+    # map <- tm_shape(mpsz_clus)+
+    #   tmap_options(check.and.fix = TRUE)+
+    #   tm_fill("cluster", id=paste("PLN_AREA_N"),
+    #           style = "pretty",
+    #           palette = viridis(input$k)) +
+    #   tm_borders(alpha = 0.7)
     
-    map2 <- tm_shape(mpsz_clus_dtw)+
+    map2 <- tm_shape(mpsz)+
       tmap_options(check.and.fix = TRUE)+
-      tm_fill("cluster_group", id=paste("PLN_AREA_N"),
+      tm_fill("dtw_cluster_t", id=paste("PLN_AREA_N"),
               style = "pretty",
               palette = "Greens") +
       tm_borders(alpha = 0.7)
